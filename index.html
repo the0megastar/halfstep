@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <title>Roman · Halfstep</title>
+    <meta name="description" content="Double-check Roman's MDI insulin math with step-by-step educational explanations and half-unit rounding." />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <link rel="manifest" href="./manifest.json" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Halfstep" />
+    <meta name="theme-color" content="#20211f" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="./src/main.tsx"></script>
+    <script>
+      if ('serviceWorker' in navigator) {
+        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+          navigator.serviceWorker.getRegistrations().then(function(registrations) {
+            for (var reg of registrations) {
+              reg.unregister();
+            }
+          });
+          if ('caches' in window) {
+            caches.keys().then(function(names) {
+              for (var name of names) caches.delete(name);
+            });
+          }
+        } else if (window.location.protocol.startsWith('http')) {
+          window.addEventListener('load', function() {
+            navigator.serviceWorker.register('./sw.js').catch(function() {});
+          });
+        }
+      }
+    </script>
+  </body>
+</html>

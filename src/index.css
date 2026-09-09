@@ -1,0 +1,1850 @@
+/* ==========================================================================
+   Halfstep - Roman's Pediatric MDI Arithmetic Checker
+   Themes: Design A (Glyph) & Design B (Apple Titanium Liquid Glass)
+   Supports Light & Dark Modes across both designs
+   ========================================================================== */
+
+/* Local font definitions for offline school environment */
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('./fonts/manrope-400.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('./fonts/manrope-500.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('./fonts/manrope-600.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('./fonts/manrope-700.ttf') format('truetype');
+}
+
+/* Base Reset & Box Sizing */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  font-size: 16px;
+  scroll-behavior: smooth;
+  color-scheme: light dark;
+}
+
+html[data-theme="light"] {
+  color-scheme: light;
+}
+
+html[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+button, input, select, textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  background: none;
+  border: none;
+}
+
+/* Master Site Container */
+.site {
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+/* --------------------------------------------------------------------------
+   THEME A: GLYPH (Direct tokens from Glyph gh-pages project)
+   -------------------------------------------------------------------------- */
+
+/* Glyph Dark Mode */
+[data-theme="dark"] .site.glyph {
+  --bg-base: #20211f;
+  --bg-surface: #292a27;
+  --bg-surface-elevated: #32332f;
+  --bg-card: #292a27;
+  --bg-glass: #20211f;
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-card: rgba(255, 255, 255, 0.1);
+  --border-highlight: #9b7864;
+
+  --text-main: #f5f3ed;
+  --text-muted: #bcbdb3;
+  --text-dim: #aaa99e;
+
+  --accent-primary: #efaa87;
+  --accent-hover: #f4bea2;
+  --accent-subtle: #3c3028;
+
+  --card-radius: 6px;
+  --panel-result-bg: #272b26;
+  --panel-result-border: #555e50;
+  --panel-result-text: #f7f6ee;
+  --dose-num-color: #2ec27e;
+  --dose-stage-bg: #3c4439;
+  --dose-stage-border: #555e50;
+
+  font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background-color: var(--bg-base);
+  color: var(--text-main);
+}
+
+/* Glyph Light Mode */
+[data-theme="light"] .site.glyph {
+  --bg-base: #f8f7f3;
+  --bg-surface: #fffefa;
+  --bg-surface-elevated: #eeede7;
+  --bg-card: #fffefa;
+  --bg-glass: #f8f7f3;
+  --border-subtle: #e2e2d9;
+  --border-card: #deded5;
+  --border-highlight: #a5917d;
+
+  --text-main: #252723;
+  --text-muted: #62645b;
+  --text-dim: #6b6d62;
+
+  --accent-primary: #a54727;
+  --accent-hover: #84371c;
+  --accent-subtle: #f2e5da;
+
+  --card-radius: 6px;
+  --panel-result-bg: #e8eadf;
+  --panel-result-border: #a4aa98;
+  --panel-result-text: #252723;
+  --dose-num-color: #247345;
+  --dose-stage-bg: #dfe4d5;
+  --dose-stage-border: #b8c0ad;
+
+  font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background-color: var(--bg-base);
+  color: var(--text-main);
+}
+
+/* Glyph Elements */
+.glyph .brand-mark {
+  background-color: var(--accent-primary);
+  color: var(--bg-base);
+  border-radius: 5px;
+}
+
+.glyph .brand-dot {
+  color: var(--accent-primary);
+}
+
+.glyph .eyebrow {
+  color: var(--accent-primary);
+  font-weight: 700;
+}
+
+.glyph h1 span {
+  color: var(--accent-primary);
+}
+
+.glyph .topbar {
+  background-color: var(--bg-base);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.glyph .design-switcher {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-card);
+  border-radius: 6px;
+  padding: 3px;
+}
+
+.glyph .switch-btn {
+  border-radius: 4px;
+}
+
+.glyph .switch-btn.active {
+  background-color: var(--text-main);
+  color: var(--bg-base) !important;
+  font-weight: 600;
+}
+
+.glyph .nav-btn,
+.glyph .theme-toggle-btn {
+  color: var(--text-main);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-card);
+  border-radius: 5px;
+}
+
+.glyph .nav-btn:hover,
+.glyph .nav-btn.active,
+.glyph .theme-toggle-btn:hover {
+  color: var(--accent-primary);
+  border-color: var(--border-highlight);
+  background: var(--bg-surface-elevated, var(--bg-surface));
+}
+
+.glyph .locked-pill {
+  background-color: var(--accent-subtle);
+  color: var(--accent-primary);
+  border: 1px solid var(--border-card);
+  border-radius: 9999px;
+}
+
+.glyph .pulse-dot {
+  background-color: var(--accent-primary);
+}
+
+.glyph .heading-badge {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-card);
+  border-radius: 6px;
+}
+
+.glyph .settings-card {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-card);
+  border-radius: var(--card-radius);
+}
+
+.glyph .card-surface {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-card);
+  border-radius: var(--card-radius);
+}
+
+/* Calculated Dose - Authentically styled after Glyph gh-pages "Small changes" detail-band */
+.glyph .card-surface.result-panel {
+  background-color: #272b26 !important;
+  border-color: #555e50 !important;
+  color: #f7f6ee !important;
+}
+
+.glyph .result-panel .card-header h2 {
+  color: #f7f6ee !important;
+}
+
+.glyph .result-panel .step-tag {
+  color: #deac8c !important;
+}
+
+.glyph .result-panel .icon-badge {
+  color: #deac8c;
+  background: rgba(222, 172, 140, 0.12);
+  border: 1px solid rgba(222, 172, 140, 0.25);
+}
+
+.glyph .dose-callout:not(.is-empty):not(.dose-low) {
+  background-color: #3c4439 !important;
+  border: 1px solid #555e50 !important;
+  border-radius: 6px;
+  padding: 16px 18px;
+}
+
+.glyph .hero-dose-number:not(.text-low) {
+  color: #f7f6ee !important; /* Exact same ivory color as "Small changes." on Glyph website */
+}
+
+.glyph .hero-dose-unit {
+  color: #c3cbbb !important;
+}
+
+.glyph .result-panel .exact-text {
+  color: #bec5b7 !important;
+}
+
+.glyph .result-panel .exact-text strong {
+  color: #f7f6ee !important;
+}
+
+.glyph .result-panel .breakdown-card {
+  background-color: #3c4439 !important;
+  border: 1px solid #555e50 !important;
+  color: #f7f6ee !important;
+}
+
+.glyph .result-panel .breakdown-title {
+  color: #c3cbbb !important;
+}
+
+.glyph .result-panel .breakdown-title svg {
+  color: #deac8c !important;
+}
+
+.glyph .result-panel .breakdown-formula span {
+  color: #bec5b7 !important;
+}
+
+.glyph .result-panel .breakdown-formula strong {
+  color: #f7f6ee !important;
+}
+
+.glyph .result-panel .breakdown-note {
+  color: #c3cbbb !important;
+}
+
+.glyph .result-panel .teaching-box {
+  background-color: #3c4439 !important;
+  border: 1px solid #555e50 !important;
+}
+
+.glyph .result-panel .teaching-header {
+  color: #deac8c !important;
+}
+
+.glyph .result-panel .teaching-header svg {
+  color: #deac8c !important;
+}
+
+.glyph .result-panel .teaching-sentence {
+  color: #f7f6ee !important;
+}
+
+.glyph .input-container {
+  background-color: var(--bg-base);
+  border: 1px solid var(--border-card);
+  border-radius: 5px;
+}
+
+.glyph .input-container:focus-within {
+  border-color: var(--accent-primary);
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 1px;
+}
+
+.glyph .teaching-box {
+  background-color: var(--bg-surface-elevated);
+  border: 1px solid var(--border-card);
+  border-radius: 5px;
+}
+
+.glyph .breakdown-card {
+  background-color: var(--bg-surface-elevated);
+  border: 1px solid var(--border-card);
+  border-radius: 5px;
+}
+
+.glyph .f-block {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-card);
+  border-radius: 5px;
+}
+
+.glyph .ref-item {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-card);
+  border-radius: 5px;
+}
+
+.glyph .ref-item.is-active {
+  background-color: var(--accent-subtle);
+  border-color: var(--border-highlight);
+}
+
+.glyph .rounding-pill {
+  background-color: var(--accent-subtle);
+  color: var(--accent-primary);
+  border: 1px solid var(--border-card);
+}
+
+/* --------------------------------------------------------------------------
+   THEME B: LIQUID GLASS (Apple Titanium & White Rounded Frosted Glass)
+   Zero blue tints! Pure optical frosted glass and titanium accents.
+   -------------------------------------------------------------------------- */
+
+/* Glass Dark Mode (Apple Natural Titanium Frosted Glass) */
+[data-theme="dark"] .site.glass {
+  --bg-canvas: #151618;
+  --glass-surface: rgba(28, 29, 33, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.12);
+  --glass-border-specular: rgba(255, 255, 255, 0.22);
+  --text-main: #f5f5f7;
+  --text-muted: #9e9ea3;
+  --text-dim: #6e6e73;
+  --accent: #e5e5ea;
+  --accent-tint: rgba(255, 255, 255, 0.12);
+  --card-radius: 26px;
+  --ambient-glow: rgba(255, 255, 255, 0.04);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", system-ui, sans-serif;
+  background-color: var(--bg-canvas);
+  color: var(--text-main);
+}
+
+/* Glass Light Mode (Apple White Rounded & Clear Translucent Glass) */
+[data-theme="light"] .site.glass {
+  --bg-canvas: #f2f2f6;
+  --glass-surface: rgba(255, 255, 255, 0.78);
+  --glass-border: rgba(255, 255, 255, 0.95);
+  --glass-border-specular: rgba(255, 255, 255, 1);
+  --text-main: #1d1d1f;
+  --text-muted: #6e6e73;
+  --text-dim: #86868b;
+  --accent: #1d1d1f;
+  --accent-tint: rgba(0, 0, 0, 0.05);
+  --card-radius: 26px;
+  --ambient-glow: rgba(255, 255, 255, 0.6);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", system-ui, sans-serif;
+  background-color: var(--bg-canvas);
+  color: var(--text-main);
+}
+
+/* Ambient Titanium Reflections (No blue) */
+.glass-ambient {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.glass-ambient .glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(120px);
+}
+
+[data-theme="dark"] .glass-ambient .glow-top {
+  width: 500px;
+  height: 500px;
+  top: -100px;
+  left: 10%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+}
+
+[data-theme="dark"] .glass-ambient .glow-bottom {
+  width: 600px;
+  height: 600px;
+  bottom: -150px;
+  right: 10%;
+  background: radial-gradient(circle, rgba(200, 190, 180, 0.04) 0%, transparent 70%);
+}
+
+[data-theme="light"] .glass-ambient .glow-top {
+  width: 500px;
+  height: 500px;
+  top: -100px;
+  left: 10%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.8) 0%, transparent 70%);
+}
+
+[data-theme="light"] .glass-ambient .glow-bottom {
+  width: 600px;
+  height: 600px;
+  bottom: -150px;
+  right: 10%;
+  background: radial-gradient(circle, rgba(240, 238, 235, 0.7) 0%, transparent 70%);
+}
+
+.glass .topbar {
+  background: var(--glass-surface);
+  backdrop-filter: blur(35px) saturate(160%);
+  -webkit-backdrop-filter: blur(35px) saturate(160%);
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.glass .brand-mark {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.08));
+  color: var(--text-main);
+  border: 1px solid var(--glass-border-specular);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  border-radius: 12px;
+}
+
+.glass .brand-dot {
+  color: var(--accent);
+}
+
+.glass .eyebrow {
+  color: var(--text-muted);
+  letter-spacing: 0.1em;
+}
+
+.glass h1 {
+  font-weight: 700;
+  letter-spacing: -0.04em;
+}
+
+.glass h1 span {
+  color: var(--accent);
+}
+
+.glass .design-switcher {
+  background: var(--accent-tint);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 30px;
+  padding: 4px;
+}
+
+.glass .switch-btn.active {
+  background: var(--glass-surface);
+  color: var(--text-main);
+  border: 1px solid var(--glass-border-specular);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  font-weight: 600;
+}
+
+.glass .theme-toggle-btn {
+  background: var(--accent-tint);
+  border: 1px solid var(--glass-border);
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: inline-grid;
+  place-items: center;
+  color: var(--text-main);
+}
+
+.glass .theme-toggle-btn:hover {
+  background: var(--glass-surface);
+  border-color: var(--glass-border-specular);
+}
+
+.glass .locked-pill {
+  background: var(--accent-tint);
+  color: var(--text-main);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.glass .pulse-dot {
+  background-color: var(--accent);
+}
+
+.glass .heading-badge {
+  background: var(--glass-surface);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  border: 1px solid var(--glass-border);
+  border-radius: 18px;
+}
+
+.glass .settings-card,
+.glass .card-surface {
+  background: var(--glass-surface);
+  backdrop-filter: blur(35px) saturate(160%);
+  -webkit-backdrop-filter: blur(35px) saturate(160%);
+  border: 1px solid var(--glass-border);
+  border-top-color: var(--glass-border-specular);
+  border-radius: var(--card-radius);
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.3),
+    0 14px 36px rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="dark"] .glass .settings-card,
+[data-theme="dark"] .glass .card-surface {
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.18),
+    0 16px 40px rgba(0, 0, 0, 0.4);
+}
+
+.glass .input-container {
+  background: var(--accent-tint);
+  border: 1px solid var(--glass-border);
+  border-radius: 18px;
+  transition: all 0.2s;
+}
+
+.glass .input-container:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-tint);
+}
+
+.glass .teaching-box {
+  background: var(--accent-tint);
+  border: 1px solid var(--glass-border);
+  border-radius: 18px;
+}
+
+.glass .breakdown-card {
+  background: var(--accent-tint);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+}
+
+.glass .f-block {
+  background: var(--glass-surface);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: 18px;
+}
+
+.glass .rounding-pill {
+  background: var(--accent-tint);
+  color: var(--text-main);
+  border: 1px solid var(--glass-border);
+}
+
+.glass .ref-item {
+  background: var(--accent-tint);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+}
+
+.glass .ref-item.is-active {
+  background: var(--glass-surface);
+  border-color: var(--accent);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* --------------------------------------------------------------------------
+   SHARED CONTROLS & LAYOUT
+   -------------------------------------------------------------------------- */
+
+/* Top Navigation Bar */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  width: 100%;
+}
+
+.topbar-inner {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  user-select: none;
+}
+
+.brand-mark {
+  display: inline-grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  font-size: 1.25rem;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.brand-name {
+  display: inline-flex;
+  align-items: baseline;
+}
+
+.header-controls,
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Design Switcher */
+.design-switcher {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.switch-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  transition: all 0.2s ease;
+  min-height: 34px;
+}
+
+.switch-btn:hover {
+  color: var(--text-main);
+}
+
+.badge-letter {
+  display: inline-grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: rgba(128, 128, 128, 0.2);
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+/* Nav Action Buttons */
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+}
+
+.nav-btn {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+  cursor: pointer;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-card);
+  color: var(--text-main);
+  transition: all 0.15s ease;
+  line-height: 1;
+}
+
+.theme-toggle-btn {
+  padding: 0;
+}
+
+/* Settings Dropdown (Directly inspired by Glyph portable packages dropdown) */
+.settings-dropdown-wrapper {
+  position: relative;
+}
+
+.settings-dropdown-panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 330px;
+  max-width: calc(100vw - 32px);
+  box-sizing: border-box;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-card);
+  border-radius: 8px;
+  padding: 14px 16px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.22);
+  z-index: 1000;
+  text-align: left;
+  animation: dropdownFadeIn 0.18s ease forwards;
+}
+
+@keyframes dropdownFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dropdown-header {
+  padding-bottom: 10px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.dropdown-header-main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 3px;
+}
+
+.dropdown-title {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--text-main);
+  letter-spacing: -0.01em;
+}
+
+.dropdown-subtitle {
+  font-size: 0.74rem;
+  color: var(--text-muted);
+}
+
+/* Status Chips (from Glyph) */
+.chip {
+  font-size: 9px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.chip-locked {
+  color: var(--accent-primary);
+  background: var(--accent-subtle);
+  border: 1px solid var(--border-card);
+}
+
+.dropdown-metric-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.dropdown-metric-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 10px;
+  background: var(--bg-surface-elevated, rgba(128, 128, 128, 0.04));
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+}
+
+.dropdown-metric-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.dropdown-metric-name {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.dropdown-metric-caption {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dropdown-metric-val {
+  font-family: var(--font-sans);
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--accent-primary);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+}
+
+.dropdown-footer {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  color: var(--text-dim);
+}
+
+.dropdown-lock-icon {
+  flex-shrink: 0;
+  color: var(--text-muted);
+}
+
+/* Orders Locked Pill */
+.locked-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* Workspace Container */
+.workspace {
+  position: relative;
+  z-index: 1;
+  max-width: 1120px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 36px 24px 60px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+/* Page Heading */
+.page-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.heading-text {
+  max-width: 620px;
+}
+
+h1 {
+  font-size: clamp(2.6rem, 5vw, 4rem);
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+  margin-bottom: 3px;
+}
+
+.eyebrow {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--accent-primary, var(--accent));
+  margin-bottom: 5px;
+}
+
+.intro {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+.heading-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+}
+
+.heading-badge strong {
+  display: block;
+  font-size: 0.85rem;
+}
+
+.heading-badge small {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  animation: pulse-dot 2s infinite ease-in-out;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.4); opacity: 0.7; }
+}
+
+/* Settings Banner (Prescribed & Locked) */
+.settings-card {
+  padding: 22px 28px;
+}
+
+.settings-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border-card, rgba(128, 128, 128, 0.15));
+}
+
+.settings-header h3 {
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.settings-header p {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.settings-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+}
+
+.metric-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.metric-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
+}
+
+.label-compact,
+.unit-compact {
+  display: none;
+}
+
+.label-full,
+.unit-full {
+  display: inline;
+}
+
+.metric-value {
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.metric-value small {
+  font-size: 0.85rem;
+  font-weight: 400;
+  color: var(--text-muted);
+}
+
+.metric-caption {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  margin-top: 2px;
+}
+
+/* Universal Button Styles (Directly from Glyph) */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 5px;
+  font-weight: 600;
+  font-size: 13px;
+  padding: 9px 16px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.btn-primary {
+  background: var(--text-main);
+  border: 1px solid var(--text-main);
+  color: var(--bg-base) !important;
+}
+
+.btn-primary:hover {
+  background: var(--accent-primary, var(--accent));
+  border-color: var(--accent-primary, var(--accent));
+  color: var(--bg-base) !important;
+}
+
+.btn-primary svg {
+  color: inherit;
+  stroke: currentColor;
+}
+
+.btn-secondary {
+  background: var(--bg-surface, rgba(128, 128, 128, 0.1));
+  border-color: var(--border-card, rgba(128, 128, 128, 0.2));
+  color: var(--text-main);
+}
+
+.btn-secondary:hover {
+  background: var(--bg-surface-elevated, rgba(128, 128, 128, 0.18));
+  border-color: var(--border-highlight, var(--accent));
+}
+
+.btn-clear {
+  padding: 6px 14px;
+  font-size: 0.8rem;
+}
+
+/* Glyph Black Button for Clear (matches 'Download Flatpak' primary button) */
+[data-theme="light"] .glyph .btn-clear.btn-primary {
+  background: #252723;
+  border: 1px solid #252723;
+  color: #f8f7f3 !important;
+}
+
+[data-theme="light"] .glyph .btn-clear.btn-primary:hover {
+  background: #a54727;
+  border-color: #a54727;
+  color: #f8f7f3 !important;
+}
+
+[data-theme="dark"] .glyph .btn-clear.btn-primary {
+  background: #141513;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  color: #f5f3ed !important;
+}
+
+[data-theme="dark"] .glyph .btn-clear.btn-primary:hover {
+  background: #efaa87;
+  border-color: #efaa87;
+  color: #20211f !important;
+}
+
+/* Clinical Alert Banners */
+.alert-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px 20px;
+  border-radius: 12px;
+  animation: slide-down 0.25s ease-out;
+}
+
+@keyframes slide-down {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.alert-banner h4 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.alert-banner p {
+  font-size: 0.85rem;
+  line-height: 1.45;
+}
+
+.alert-critical {
+  background-color: rgba(220, 50, 50, 0.12);
+  border: 1px solid rgba(220, 50, 50, 0.35);
+  color: #d32f2f;
+}
+[data-theme="dark"] .alert-critical {
+  background-color: rgba(235, 60, 60, 0.15);
+  border-color: rgba(235, 60, 60, 0.4);
+  color: #ff9999;
+}
+[data-theme="dark"] .alert-critical h4 { color: #ffcccc; }
+.alert-critical svg { color: #e53935; flex-shrink: 0; margin-top: 2px; }
+
+.alert-warning {
+  background-color: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  color: #b45309;
+}
+[data-theme="dark"] .alert-warning {
+  background-color: rgba(255, 170, 0, 0.15);
+  border-color: rgba(255, 170, 0, 0.4);
+  color: #ffe082;
+}
+[data-theme="dark"] .alert-warning h4 { color: #fff3c4; }
+.alert-warning svg { color: #f59e0b; flex-shrink: 0; margin-top: 2px; }
+
+.alert-caution {
+  background-color: rgba(100, 116, 139, 0.12);
+  border: 1px solid rgba(100, 116, 139, 0.3);
+  color: #475569;
+}
+[data-theme="dark"] .alert-caution {
+  background-color: rgba(148, 163, 184, 0.14);
+  border-color: rgba(148, 163, 184, 0.28);
+  color: #cbd5e1;
+}
+[data-theme="dark"] .alert-caution h4 { color: #f1f5f9; }
+.alert-caution svg { color: #64748b; flex-shrink: 0; margin-top: 2px; }
+
+/* Calculator Grid Layout */
+.calculator-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  align-items: stretch;
+}
+
+.card-surface {
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 22px;
+}
+
+.step-tag {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--accent-primary, var(--accent));
+  margin-bottom: 4px;
+}
+
+.card-header h2 {
+  font-size: 1.35rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+/* Input Fields */
+.input-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.field-group label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: var(--text-main);
+}
+
+.field-icon {
+  color: var(--accent-primary, var(--accent));
+}
+
+.input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-container input {
+  width: 100%;
+  height: 68px;
+  background: transparent;
+  border: none;
+  padding: 12px 85px 12px 18px;
+  font-size: 2rem;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  outline: none;
+  color: var(--text-main);
+}
+
+.input-container input::placeholder {
+  color: var(--text-dim);
+  opacity: 0.5;
+  font-weight: 400;
+  font-size: 1.4rem;
+}
+
+.unit-pill {
+  position: absolute;
+  right: 18px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.field-error {
+  font-size: 0.8rem;
+  color: #e53935;
+  margin-top: 6px;
+}
+
+.quick-help {
+  margin-top: 14px;
+  padding-top: 0;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  border-top: none;
+}
+
+/* Result Panel */
+.icon-badge {
+  display: inline-grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(128, 128, 128, 0.15);
+  color: var(--accent-primary, var(--accent));
+}
+
+.hero-dose-container {
+  margin-bottom: 20px;
+}
+
+.dose-callout {
+  display: flex;
+  flex-direction: column;
+}
+
+.dose-number-row {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.hero-dose-number {
+  font-size: clamp(3.2rem, 5.5vw, 4.6rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.05em;
+  font-variant-numeric: tabular-nums;
+}
+
+.hero-dose-unit {
+  font-size: 1.4rem;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.dose-callout.is-empty .hero-dose-number {
+  color: var(--text-dim);
+}
+
+.dose-callout.dose-low .hero-dose-number {
+  color: #e53935;
+  font-size: clamp(2.4rem, 4vw, 3.2rem);
+}
+
+.dose-sublabel {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-top: 6px;
+}
+
+.dose-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.rounding-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.exact-text {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+/* Step-by-Step Breakdown Cards (Directly under dose display) */
+.breakdown-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 14px;
+  margin-bottom: 14px;
+}
+
+.breakdown-card {
+  padding: 14px 16px;
+}
+
+/* Teaching Box (The dynamic conversational sentence underneath breakdown) */
+.teaching-box {
+  padding: 16px 18px;
+  margin-bottom: 0;
+  margin-top: 0;
+}
+
+.teaching-header {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--accent-primary, var(--accent));
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 8px;
+}
+
+.teaching-sentence {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--text-main);
+}
+
+.breakdown-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+.breakdown-formula {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 0.85rem;
+}
+
+.breakdown-formula strong {
+  font-size: 1.1rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.breakdown-formula strong small {
+  font-size: 0.75rem;
+  font-weight: 400;
+}
+
+.breakdown-formula .dim {
+  color: var(--text-dim);
+}
+
+.breakdown-note {
+  display: block;
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  margin-top: 6px;
+}
+
+/* LaTeX-Style Formula Card */
+.formula-section {
+  padding: 16px 0;
+  border-top: 1px solid var(--border-card, rgba(128, 128, 128, 0.15));
+  border-bottom: 1px solid var(--border-card, rgba(128, 128, 128, 0.15));
+}
+
+.formula-label {
+  margin-bottom: 12px;
+}
+
+.formula-label h3 {
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.latex-formula-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-card);
+  border-radius: var(--card-radius);
+  padding: 20px 24px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 12px;
+}
+
+.latex-math {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-family: 'STIX Two Math', 'Cambria Math', 'KaTeX_Math', 'Times New Roman', Georgia, serif;
+  color: var(--text-main);
+  user-select: none;
+}
+
+.math-var {
+  font-style: italic;
+  font-weight: 600;
+  font-size: 1.25rem;
+  letter-spacing: 0.02em;
+}
+
+.math-op {
+  font-family: var(--font-sans);
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: var(--accent-primary, var(--accent));
+  padding: 0 4px;
+}
+
+.math-fraction {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  vertical-align: middle;
+  padding: 0 2px;
+}
+
+.math-num {
+  font-style: italic;
+  padding: 0 10px 3px;
+  border-bottom: 1.5px solid var(--text-main);
+  width: 100%;
+  text-align: center;
+  font-size: 1.05rem;
+  white-space: nowrap;
+}
+
+.math-den {
+  padding: 3px 10px 0;
+  width: 100%;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.math-annotation {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  font-family: var(--font-sans);
+  letter-spacing: 0.01em;
+  margin: 0;
+}
+
+/* Rounding Reference Guide */
+.rounding-reference {
+  padding: 20px 24px;
+  border-radius: var(--card-radius);
+  background: var(--bg-surface, rgba(128, 128, 128, 0.05));
+  border: 1px solid var(--border-card, rgba(128, 128, 128, 0.12));
+}
+
+.ref-header {
+  margin-bottom: 14px;
+}
+
+.ref-header h4 {
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.ref-header p {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.ref-rules {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.ref-item {
+  padding: 12px 14px;
+  transition: all 0.2s;
+}
+
+.ref-tag {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--accent-primary, var(--accent));
+  margin-bottom: 4px;
+}
+
+.ref-desc {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+.ref-desc strong {
+  color: var(--text-main);
+}
+
+/* Footer Disclaimer */
+.footer-disclaimer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  line-height: 1.6;
+  padding-top: 8px;
+}
+
+.footer-disclaimer strong {
+  color: var(--text-muted);
+}
+
+/* --------------------------------------------------------------------------
+   RESPONSIVE DESIGN (Mobile, Tablet, Laptop)
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 900px) {
+  .settings-metrics {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+
+  .calculator-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .ref-rules {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .topbar-inner {
+    padding: 14px 16px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .workspace {
+    padding: 14px 14px 36px;
+    gap: 14px;
+  }
+
+  .page-heading {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+  }
+
+  h1 {
+    font-size: 2.25rem;
+    margin-bottom: 1px;
+  }
+
+  .eyebrow {
+    margin-bottom: 4px;
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+  }
+
+  .intro {
+    font-size: clamp(0.74rem, 2.85vw, 0.92rem);
+    line-height: 1.35;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .settings-card {
+    padding: 16px 12px;
+  }
+
+  .settings-metrics {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+  }
+
+  .metric-item {
+    min-width: 0;
+  }
+
+  .metric-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.02em;
+    margin-bottom: 2px;
+  }
+
+  .label-full,
+  .unit-full {
+    display: none;
+  }
+
+  .label-compact,
+  .unit-compact {
+    display: inline;
+  }
+
+  .metric-value {
+    font-size: 1.1rem;
+    letter-spacing: -0.02em;
+    white-space: nowrap;
+  }
+
+  .metric-value small {
+    font-size: 0.7rem;
+  }
+
+  .metric-caption {
+    display: none;
+  }
+
+  .card-surface {
+    padding: 16px 14px;
+  }
+
+  /* Mobile side-by-side inputs (Current Glucose & Carbs next to each other) */
+  .input-fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .field-group label {
+    font-size: 0.8rem;
+    gap: 5px;
+    margin-bottom: 5px;
+  }
+
+  .input-container input {
+    height: 52px;
+    font-size: 1.45rem;
+    padding: 8px 36px 8px 12px;
+  }
+
+  .input-container input::placeholder {
+    font-size: 1.15rem;
+  }
+
+  .unit-pill {
+    right: 10px;
+    font-size: 0.75rem;
+  }
+
+  .field-error {
+    font-size: 0.72rem;
+    margin-top: 4px;
+    line-height: 1.25;
+  }
+
+  .quick-help {
+    padding-top: 10px;
+    font-size: 0.76rem;
+  }
+
+  .quick-help p {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .settings-dropdown-panel {
+    right: -4px;
+    width: min(340px, calc(100vw - 28px));
+  }
+
+  .breakdown-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+
+  .breakdown-card {
+    padding: 10px 12px;
+  }
+
+  .breakdown-title {
+    font-size: 0.75rem;
+    margin-bottom: 4px;
+    gap: 4px;
+  }
+
+  .breakdown-formula {
+    font-size: 0.78rem;
+  }
+
+  .breakdown-formula strong {
+    font-size: 0.95rem;
+  }
+
+  .breakdown-note {
+    display: none;
+  }
+
+  .latex-formula-card {
+    padding: 14px 12px 12px;
+    gap: 10px;
+  }
+
+  .latex-math {
+    gap: 6px;
+    flex-wrap: nowrap;
+  }
+
+  .math-var {
+    font-size: 1.05rem;
+  }
+
+  .math-op {
+    font-size: 1.1rem;
+    padding: 0 2px;
+  }
+
+  .math-fraction {
+    padding: 0 1px;
+  }
+
+  .math-num {
+    font-size: 0.92rem;
+    padding: 0 6px 2px;
+  }
+
+  .math-den {
+    font-size: 0.92rem;
+    padding: 2px 6px 0;
+  }
+
+  .math-annotation {
+    font-size: 0.72rem;
+  }
+}
+
+@media (max-width: 350px) {
+  .settings-metrics {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .metric-increment {
+    display: none;
+  }
+}
+
+/* Accessibility & Preferences */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .glass .topbar,
+  .glass .settings-card,
+  .glass .card-surface,
+  .glass .design-switcher {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background-color: var(--bg-surface) !important;
+  }
+}

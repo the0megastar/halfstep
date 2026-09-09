@@ -1,0 +1,16 @@
+{
+  "name": "Halfstep - Roman's MDI Math",
+  "short_name": "Halfstep",
+  "description": "Double-check and learn Roman's insulin calculations with half-step pen rounding.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#121620",
+  "theme_color": "#121620",
+  "icons": [
+    {
+      "src": "./favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
