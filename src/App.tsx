@@ -20,6 +20,11 @@ import {
   type CalculationResult,
 } from '../lib/dose';
 
+function displayBreakdownUnits(value: number | null): string {
+  const formatted = displayUnits(value);
+  return value === null || formatted.startsWith('≈') ? formatted : `= ${formatted}`;
+}
+
 export default function App() {
   const [colorMode, setColorMode] = useState<'light' | 'dark'>(() => {
     if (typeof window !== 'undefined') {
@@ -241,17 +246,6 @@ export default function App() {
                 <span className="step-tag">STEP 01</span>
                 <h2 id="inputs-heading">Enter the numbers</h2>
               </div>
-              {(glucose !== '' || carbs !== '') && (
-                <button
-                  type="button"
-                  className="btn btn-primary btn-clear"
-                  onClick={handleClear}
-                  aria-label="Clear all inputs"
-                >
-                  <RotateCcw size={14} />
-                  <span>Clear</span>
-                </button>
-              )}
             </div>
 
             <div className="input-fields">
@@ -313,10 +307,23 @@ export default function App() {
               </div>
             </div>
 
-            <div className="quick-help">
-              <p>
-                💡 <strong>Tip:</strong> Enter glucose &amp; carbs. Updates instantly.
-              </p>
+            <div className="entry-footer">
+              <div className="quick-help">
+                <p>
+                  💡 <strong>Tip:</strong> <span className="tip-detail">Enter glucose &amp; carbs. </span>Updates instantly.
+                </p>
+              </div>
+              {(glucose !== '' || carbs !== '') && (
+                <button
+                  type="button"
+                  className="btn btn-clear"
+                  onClick={handleClear}
+                  aria-label="Clear all inputs"
+                >
+                  <RotateCcw size={14} />
+                  <span>Clear</span>
+                </button>
+              )}
             </div>
           </section>
 
@@ -374,7 +381,7 @@ export default function App() {
                   {result.carbs !== null ? (
                     <>
                       <span>{result.carbs}g &divide; 35</span>
-                      <strong>{displayUnits(result.food)} <small>u</small></strong>
+                      <strong>{displayBreakdownUnits(result.food)} <small>u</small></strong>
                     </>
                   ) : (
                     <>
@@ -401,17 +408,17 @@ export default function App() {
                   ) : result.isLowGlucose ? (
                     <>
                       <span className="text-low">Low (&lt; 70)</span>
-                      <strong className="text-low">0 <small>u</small></strong>
+                      <strong className="text-low">= 0 <small>u</small></strong>
                     </>
                   ) : result.belowTarget ? (
                     <>
                       <span>Below target (&lt; 150)</span>
-                      <strong>0 <small>u</small></strong>
+                      <strong>= 0 <small>u</small></strong>
                     </>
                   ) : (
                     <>
                       <span>({result.glucose} &minus; 150) &divide; 135</span>
-                      <strong>{displayUnits(result.correction)} <small>u</small></strong>
+                      <strong>{displayBreakdownUnits(result.correction)} <small>u</small></strong>
                     </>
                   )}
                 </div>

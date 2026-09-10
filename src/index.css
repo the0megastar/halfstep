@@ -81,7 +81,7 @@ button {
 .site {
   min-height: 100vh;
   position: relative;
-  overflow-x: hidden;
+  overflow-x: clip;
   display: flex;
   flex-direction: column;
   transition: background-color 0.25s ease, color 0.25s ease;
@@ -629,12 +629,13 @@ button {
   top: 0;
   z-index: 100;
   width: 100%;
+  padding-top: env(safe-area-inset-top, 0px);
 }
 
 .topbar-inner {
   max-width: 1120px;
   margin: 0 auto;
-  padding: 16px 24px;
+  padding: 16px max(24px, env(safe-area-inset-right, 0px)) 16px max(24px, env(safe-area-inset-left, 0px));
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -745,7 +746,10 @@ button {
   top: calc(100% + 8px);
   right: 0;
   width: 330px;
-  max-width: calc(100vw - 32px);
+  max-width: calc(100vw - 84px - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px));
+  max-height: calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 100px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
   box-sizing: border-box;
   background: var(--bg-surface);
   border: 1px solid var(--border-card);
@@ -891,7 +895,7 @@ button {
   max-width: 1120px;
   width: 100%;
   margin: 0 auto;
-  padding: 36px 24px 60px;
+  padding: 36px max(24px, env(safe-area-inset-right, 0px)) calc(60px + env(safe-area-inset-bottom, 0px)) max(24px, env(safe-area-inset-left, 0px));
   display: flex;
   flex-direction: column;
   gap: 28px;
@@ -1084,34 +1088,37 @@ h1 {
   border-color: var(--border-highlight, var(--accent));
 }
 
+.entry-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 12px;
+  min-height: 44px;
+}
+
+.entry-footer .btn-clear {
+  flex-shrink: 0;
+}
+
 .btn-clear {
-  padding: 6px 14px;
+  padding: 8px 12px;
+  min-height: 44px;
   font-size: 0.8rem;
+  color: var(--text-muted);
+  background: transparent;
+  border-color: var(--border-card);
 }
 
-/* Glyph Black Button for Clear (matches 'Download Flatpak' primary button) */
-[data-theme="light"] .glyph .btn-clear.btn-primary {
-  background: #252723;
-  border: 1px solid #252723;
-  color: #f8f7f3 !important;
+.btn-clear:hover {
+  color: var(--accent-primary);
+  background: var(--bg-surface-elevated);
+  border-color: var(--accent-primary);
 }
 
-[data-theme="light"] .glyph .btn-clear.btn-primary:hover {
-  background: #a54727;
-  border-color: #a54727;
-  color: #f8f7f3 !important;
-}
-
-[data-theme="dark"] .glyph .btn-clear.btn-primary {
-  background: #141513;
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  color: #f5f3ed !important;
-}
-
-[data-theme="dark"] .glyph .btn-clear.btn-primary:hover {
-  background: #efaa87;
-  border-color: #efaa87;
-  color: #20211f !important;
+.btn-clear:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 3px;
 }
 
 /* Clinical Alert Banners */
@@ -1279,7 +1286,8 @@ h1 {
 }
 
 .quick-help {
-  margin-top: 14px;
+  min-width: 0;
+  margin-top: 0;
   padding-top: 0;
   font-size: 0.85rem;
   color: var(--text-muted);
@@ -1364,17 +1372,26 @@ h1 {
   color: var(--text-muted);
 }
 
+/* Cards respond to the result panel, including narrow desktop columns. */
+.result-panel {
+  container-type: inline-size;
+  min-width: 0;
+}
+
 /* Step-by-Step Breakdown Cards (Directly under dose display) */
 .breakdown-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
   margin-top: 14px;
   margin-bottom: 14px;
 }
 
 .breakdown-card {
-  padding: 14px 16px;
+  padding: 20px 18px;
+  text-align: center;
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 /* Teaching Box (The dynamic conversational sentence underneath breakdown) */
@@ -1404,6 +1421,7 @@ h1 {
 
 .breakdown-title {
   display: flex;
+  justify-content: center;
   align-items: center;
   gap: 6px;
   font-size: 0.8rem;
@@ -1414,13 +1432,14 @@ h1 {
 
 .breakdown-formula {
   display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 8px;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
   font-size: 0.85rem;
 }
 
 .breakdown-formula strong {
+  white-space: nowrap;
   font-size: 1.1rem;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
@@ -1437,9 +1456,9 @@ h1 {
 
 .breakdown-note {
   display: block;
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   color: var(--text-dim);
-  margin-top: 6px;
+  margin-top: 12px;
 }
 
 /* LaTeX-Style Formula Card */
@@ -1618,14 +1637,14 @@ h1 {
 
 @media (max-width: 600px) {
   .topbar-inner {
-    padding: 14px 16px;
+    padding: 14px max(16px, env(safe-area-inset-right, 0px)) 14px max(16px, env(safe-area-inset-left, 0px));
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
   }
 
   .workspace {
-    padding: 14px 14px 36px;
+    padding: 14px max(14px, env(safe-area-inset-right, 0px)) calc(36px + env(safe-area-inset-bottom, 0px)) max(14px, env(safe-area-inset-left, 0px));
     gap: 14px;
   }
 
@@ -1736,14 +1755,12 @@ h1 {
   }
 
   .quick-help {
-    padding-top: 10px;
     font-size: 0.76rem;
+    line-height: 1.4;
   }
 
-  .quick-help p {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  .tip-detail {
+    display: none;
   }
 
   .settings-dropdown-panel {
@@ -1752,20 +1769,20 @@ h1 {
   }
 
   .breakdown-grid {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 8px;
     margin-top: 10px;
     margin-bottom: 10px;
   }
 
   .breakdown-card {
-    padding: 10px 12px;
+    padding: 18px 16px;
   }
 
   .breakdown-title {
     font-size: 0.75rem;
-    margin-bottom: 4px;
-    gap: 4px;
+    margin-bottom: 10px;
+    gap: 6px;
   }
 
   .breakdown-formula {
@@ -1777,7 +1794,7 @@ h1 {
   }
 
   .breakdown-note {
-    display: none;
+    line-height: 1.4;
   }
 
   .latex-formula-card {
@@ -1815,6 +1832,20 @@ h1 {
 
   .math-annotation {
     font-size: 0.72rem;
+  }
+}
+
+/* Preserve reading space on phones and short landscape screens. */
+@media (max-width: 600px), (max-height: 500px) {
+  .topbar {
+    position: relative;
+  }
+}
+
+/* Includes card padding: leave enough room for the correction expression. */
+@container (max-width: 359px) {
+  .breakdown-grid {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
