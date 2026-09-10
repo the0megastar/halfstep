@@ -310,7 +310,7 @@ export default function App() {
             <div className="entry-footer">
               <div className="quick-help">
                 <p>
-                  💡 <strong>Tip:</strong> <span className="tip-detail">Enter glucose &amp; carbs. </span>Updates instantly.
+                  💡 <strong>Tip:</strong> Enter glucose &amp; carbs. Updates instantly.
                 </p>
               </div>
               {(glucose !== '' || carbs !== '') && (
