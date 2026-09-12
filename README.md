@@ -75,3 +75,9 @@ This project is configured to deploy automatically via GitHub Actions:
 ## Safety Notice
 
 This tool is an arithmetic teaching aid and math double-checker. Always follow the physician-signed School Diabetes Medical Management Plan (DMMP) or 504 plan. Active insulin on board (IOB), exercise, illness, or ketones must be evaluated per doctor’s written orders.
+
+## Version 0.2.0: local injection history
+
+Open the history icon in the top navigation to record NovoLog actually administered. Review the dose, local administration time, and caregiver before confirming. Entries can be corrected or voided; original details remain in the record history.
+
+History is stored in this browser's IndexedDB. It is not shared or backed up, and clearing browser data removes it. Caregiver names are labels, not authenticated identities. Recording does not change calculator arithmetic. The navigation and history show three-hour countdowns and estimated IOB using a linear model based only on locally recorded NovoLog injections. Completed timers remain labeled in history. Caregiver synchronization, PIN authentication, and SMS are not included in this version.
