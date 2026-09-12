@@ -1,0 +1,438 @@
+/* ==========================================================================
+   Dropdowns & Popovers Styles
+   Reference: design-standards/DROPDOWNS.md
+   Includes Prescribed Settings Dropdown and Active Insulin (IOB) Dropdown.
+   ========================================================================== */
+
+/* Keyframe Animations (Y-axis vertical only per standard) */
+@keyframes dropdownFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes iobDropdownFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Status Chips */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.chip-locked {
+  color: var(--accent-primary);
+  background: var(--accent-subtle);
+  border: 1px solid var(--border-card);
+}
+
+.chip-active {
+  color: #2e7d32;
+  background: rgba(46, 125, 50, 0.12);
+  border: 1px solid rgba(46, 125, 50, 0.25);
+}
+
+[data-theme="dark"] .chip-active {
+  color: #81c784;
+  background: rgba(129, 199, 132, 0.15);
+  border-color: rgba(129, 199, 132, 0.3);
+}
+
+/* Shared Dropdown Header Anatomy */
+.dropdown-header {
+  padding-bottom: 10px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.dropdown-header-main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 3px;
+}
+
+.dropdown-header-main:last-child {
+  margin-bottom: 0;
+}
+
+.dropdown-title {
+  color: var(--text-main);
+}
+
+.dropdown-title-lock {
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.dropdown-subtitle {
+  color: var(--text-muted);
+}
+
+/* --------------------------------------------------------------------------
+   Settings Popover
+   -------------------------------------------------------------------------- */
+.settings-dropdown-wrapper {
+  position: relative;
+}
+
+.settings-dropdown-panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: auto;
+  width: 330px;
+  max-width: calc(100vw - 24px);
+  max-height: calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 100px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  box-sizing: border-box;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-card);
+  border-radius: 8px;
+  padding: 14px 16px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.22);
+  z-index: 1000;
+  text-align: left;
+  animation: dropdownFadeIn 0.18s ease forwards;
+}
+
+.dropdown-metric-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.dropdown-metric-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 10px;
+  background: var(--bg-surface-elevated, rgba(128, 128, 128, 0.04));
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+}
+
+.dropdown-metric-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.dropdown-metric-name {
+  color: var(--text-main);
+}
+
+.dropdown-metric-caption {
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dropdown-metric-val {
+  color: var(--accent-primary);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+}
+
+/* Footer standard: center-aligned with lock icon */
+.dropdown-footer {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 6px;
+  color: var(--text-dim);
+}
+
+.dropdown-lock-icon {
+  flex-shrink: 0;
+  color: var(--text-muted);
+}
+
+/* --------------------------------------------------------------------------
+   IOB Popover & Complication
+   -------------------------------------------------------------------------- */
+.iob-dropdown-wrapper {
+  position: relative;
+}
+
+.iob-badge-btn {
+  background: transparent;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: var(--text-main);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: background 0.15s ease, opacity 0.15s ease;
+  line-height: 1;
+}
+
+.iob-badge-btn:hover {
+  background: var(--bg-surface-elevated, rgba(128, 128, 128, 0.08));
+}
+
+.iob-badge-btn.active {
+  background: var(--bg-surface-elevated, rgba(128, 128, 128, 0.12));
+}
+
+.iob-badge-btn:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
+.iob-nav-values {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  line-height: 1.15;
+  white-space: nowrap;
+  text-align: left;
+  font-variant-numeric: tabular-nums;
+}
+
+.iob-nav-units {
+  font-weight: 600;
+  color: var(--text-main);
+  font-variant-numeric: tabular-nums;
+}
+
+.iob-nav-values small {
+  display: block;
+  color: var(--text-muted);
+}
+
+.iob-ring {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+}
+
+.iob-ring > svg:first-child {
+  position: absolute;
+  inset: 0;
+  width: 32px;
+  height: 32px;
+  transform: rotate(-90deg);
+  fill: none;
+  stroke-width: 2;
+}
+
+.iob-track {
+  stroke: var(--border-highlight);
+  opacity: 0.3;
+}
+
+.iob-fill {
+  stroke: var(--accent-primary);
+}
+
+.iob-dropdown-panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  width: 336px;
+  max-width: calc(100vw - 24px);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-card);
+  border-radius: 8px;
+  padding: 14px 16px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.22);
+  z-index: 1000;
+  text-align: left;
+  animation: iobDropdownFadeIn 0.18s ease forwards;
+  box-sizing: border-box;
+}
+
+.iob-summary-hero {
+  display: grid;
+  grid-template-columns: 1fr 1px 1fr;
+  grid-template-rows: auto auto;
+  row-gap: 6px;
+  align-items: center;
+  padding: 14px 16px;
+  background: var(--bg-surface-elevated, rgba(128, 128, 128, 0.04));
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  margin-bottom: 12px;
+  box-sizing: border-box;
+}
+
+.iob-hero-caption {
+  font-weight: 500;
+  color: var(--text-muted);
+  margin: 0;
+  white-space: nowrap;
+  text-align: center;
+}
+
+.iob-hero-caption.iob-hero-left {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.iob-hero-caption.iob-hero-right {
+  grid-column: 3;
+  grid-row: 1;
+}
+
+.iob-hero-divider {
+  grid-column: 2;
+  grid-row: 1 / -1;
+  width: 1px;
+  height: 100%;
+  min-height: 38px;
+  background: var(--border-subtle);
+  justify-self: center;
+  align-self: center;
+}
+
+.iob-hero-stat {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 4px;
+  white-space: nowrap;
+  margin: 0;
+}
+
+.iob-hero-stat.iob-hero-left {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.iob-hero-stat.iob-hero-right {
+  grid-column: 3;
+  grid-row: 2;
+}
+
+.iob-hero-value {
+  color: var(--accent-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.iob-hero-unit {
+  color: var(--accent-primary);
+}
+
+.iob-hero-timer-val {
+  color: var(--text-main);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.iob-active-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.iob-list-title {
+  color: var(--text-main);
+  margin-bottom: 6px;
+}
+
+.iob-item-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 10px;
+  background: var(--bg-base);
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+}
+
+.iob-item-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.iob-item-caregiver {
+  color: var(--text-muted);
+}
+
+.iob-item-timing {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.iob-item-remaining {
+  font-weight: 600;
+  color: var(--accent-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.iob-item-time-left {
+  color: var(--text-muted);
+}
+
+.iob-empty-note {
+  color: var(--text-muted);
+  padding: 8px 0;
+  margin: 0;
+}
+
+.iob-disclaimer {
+  color: var(--text-dim);
+  margin: 8px 0 12px 0;
+}
+
+.iob-dropdown-footer {
+  padding-top: 10px;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.iob-view-history-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background: var(--bg-surface-elevated, rgba(128, 128, 128, 0.05));
+  border: 1px solid var(--border-card);
+  border-radius: 6px;
+  color: var(--text-main);
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.iob-view-history-btn:hover {
+  background: rgba(128, 128, 128, 0.12);
+}

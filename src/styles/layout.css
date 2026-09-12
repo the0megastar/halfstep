@@ -1,0 +1,157 @@
+/* ==========================================================================
+   App Layout & Navigation Styles
+   ========================================================================== */
+
+/* Master Site Container */
+.site {
+  min-height: 100vh;
+  position: relative;
+  overflow-x: clip;
+  display: flex;
+  flex-direction: column;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+/* Top Navigation Bar */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  width: 100%;
+  padding-top: env(safe-area-inset-top, 0px);
+  background-color: var(--bg-base);
+  border-bottom: 1px solid var(--border-subtle);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.topbar-inner {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 16px max(24px, env(safe-area-inset-right, 0px)) 16px max(24px, env(safe-area-inset-left, 0px));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  user-select: none;
+}
+
+.brand-mark {
+  display: inline-grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  font-size: 1.25rem;
+  font-weight: 800;
+  flex-shrink: 0;
+  background-color: var(--accent-primary);
+  color: var(--bg-base);
+  border-radius: 5px;
+}
+
+.brand-name {
+  display: inline-flex;
+  align-items: baseline;
+  color: var(--text-main);
+}
+
+.brand-dot {
+  color: var(--accent-primary);
+}
+
+/* Nav Action Buttons & Touch Target Standards (>= 44px) */
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+}
+
+.nav-btn {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+  color: var(--text-main);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-card);
+  transition: all 0.15s ease;
+  position: relative;
+}
+
+/* Expanded invisible touch target for mobile */
+.nav-btn::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  min-width: 44px;
+  min-height: 44px;
+  width: 100%;
+  height: 100%;
+}
+
+.nav-btn:hover,
+.nav-btn.active {
+  color: var(--accent-primary);
+  border-color: var(--border-highlight);
+  background: var(--bg-surface-elevated, var(--bg-surface));
+}
+
+.nav-btn:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
+.theme-toggle-btn {
+  composes: nav-btn;
+}
+
+/* Workspace Container */
+.workspace {
+  flex: 1;
+  max-width: 1080px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 36px 24px 60px;
+  box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+  .topbar-inner {
+    padding: 12px 16px;
+  }
+  .workspace {
+    padding: 24px 16px 48px;
+  }
+}
+
+@media (max-width: 420px) {
+  .topbar-inner {
+    gap: 6px;
+  }
+  .nav-actions {
+    gap: 4px;
+  }
+  .brand {
+    font-size: 1.15rem;
+  }
+  .brand-mark {
+    width: 28px;
+    height: 28px;
+    font-size: 1rem;
+  }
+}
