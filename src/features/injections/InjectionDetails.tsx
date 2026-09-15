@@ -1,4 +1,3 @@
-import React from 'react';
 import type { Injection } from '../../../lib/injections';
 import { formatTimestamp } from './dateUtils';
 

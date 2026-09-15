@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { SlidersHorizontal, Lock } from 'lucide-react';
 import { useDropdownBoundary } from '../../hooks/useDropdownBoundary';
 import { ROMAN } from '../../../lib/dose';

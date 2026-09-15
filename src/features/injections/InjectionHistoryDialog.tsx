@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import { useRef, useEffect } from 'react';
 import { X } from 'lucide-react';
 import { createInjection, reviseInjection, type Injection } from '../../../lib/injections';
 import { InjectionList } from './InjectionList';

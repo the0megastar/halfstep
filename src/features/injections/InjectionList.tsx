@@ -1,4 +1,3 @@
-import React from 'react';
 import { Plus } from 'lucide-react';
 import type { Injection } from '../../../lib/injections';
 import { injectionProgress, remainingLabel } from '../../../lib/iob';

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { ArrowLeft, Moon, Sun, Copy, Check, Type, Eye } from 'lucide-react';
+import { useState } from 'react';
+import { ArrowLeft, Moon, Sun, Copy, Check } from 'lucide-react';
 
 interface TypographySpecimenProps {
   onBack: () => void;

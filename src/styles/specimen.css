@@ -71,13 +71,6 @@
   letter-spacing: 0.04em;
 }
 
-.specimen-title {
-  font-size: 1.05rem;
-  font-weight: 700;
-  margin: 0;
-  color: var(--text-main);
-}
-
 .specimen-content {
   max-width: 1000px;
   margin: 0 auto;
@@ -273,28 +266,9 @@
   gap: 8px;
 }
 
-.specimen-scale-token {
-  font-size: 0.95rem;
-  font-weight: 700;
-  color: var(--text-main);
-}
-
-.specimen-scale-size {
-  font-size: 0.8rem;
-  font-family: monospace;
-  color: var(--text-muted);
-}
-
 .specimen-scale-specs {
   font-size: 0.78rem;
   color: var(--text-dim);
-}
-
-.specimen-scale-role {
-  font-size: 0.75rem;
-  color: var(--accent-primary);
-  font-weight: 500;
-  margin-top: 2px;
 }
 
 .specimen-copy-btn {

@@ -1,4 +1,3 @@
-import React from 'react';
 import { Droplet } from 'lucide-react';
 
 export interface IobGaugeProps {

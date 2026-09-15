@@ -1,4 +1,3 @@
-import React from 'react';
 import { remainingLabel } from '../../../lib/iob';
 import { IobGauge } from './IobGauge';
 import type { ContributingInjectionItem } from './useIobSummary';
