@@ -6,6 +6,10 @@ Owner is offline ~8 hours. This document locks scope for overnight coding and la
 
 Keep Halfstep a private, offline-capable pediatric MDI arithmetic double-checker. Expand toward a more native phone-app navigation model and clearer clinical previews, without claiming automated dosing advice or closed-loop control.
 
+## Design system
+
+Extract and document the existing Glyph system (typography tiers + theme tokens). Use Apple HIG, Material 3, and HorizonOS as **interaction** references. See `design-standards/MOBILE_HIG.md`.
+
 ## Overnight in scope (v0.2.x)
 
 1. **Polish** — Commit pending cleanup (unused Tailwind/clsx utilities removed), keep tests/typecheck/build green, push `v0.2.0` so cloud work can continue from GitHub.

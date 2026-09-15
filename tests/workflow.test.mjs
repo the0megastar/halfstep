@@ -96,3 +96,36 @@ test('dateUtils formats ISO strings into display headings and time', () => {
   const inputVal = localTimeInput(iso);
   assert.match(inputVal, /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/);
 });
+
+
+test('VALIDATE_AND_REVIEW routes large doses through max-dose warning', () => {
+  let state = workflowReducer(initialWorkflowState, {
+    type: 'START_CREATE',
+    suggestedDose: 5,
+  });
+  state = workflowReducer(state, {
+    type: 'UPDATE_FIELD',
+    field: 'caregiver',
+    value: 'Mom',
+  });
+  state = workflowReducer(state, { type: 'VALIDATE_AND_REVIEW', maxDoseWarningUnits: 5 });
+  assert.equal(state.view, 'max-dose-warn');
+  assert.equal(state.maxDoseAcknowledged, false);
+
+  state = workflowReducer(state, { type: 'ACK_MAX_DOSE' });
+  assert.equal(state.view, 'confirm');
+  assert.equal(state.maxDoseAcknowledged, true);
+
+  // Below threshold skips warning
+  state = workflowReducer(initialWorkflowState, {
+    type: 'START_CREATE',
+    suggestedDose: 4.5,
+  });
+  state = workflowReducer(state, {
+    type: 'UPDATE_FIELD',
+    field: 'caregiver',
+    value: 'Mom',
+  });
+  state = workflowReducer(state, { type: 'VALIDATE_AND_REVIEW', maxDoseWarningUnits: 5 });
+  assert.equal(state.view, 'confirm');
+});

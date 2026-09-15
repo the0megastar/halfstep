@@ -3,12 +3,12 @@ import type { ReactNode } from 'react';
 export interface AppShellProps {
   navActions?: ReactNode;
   children: ReactNode;
+  withBottomTabs?: boolean;
 }
 
-export function AppShell({ navActions, children }: AppShellProps) {
+export function AppShell({ navActions, children, withBottomTabs = false }: AppShellProps) {
   return (
-    <div className="site glyph">
-      {/* Top navigation bar */}
+    <div className={`site glyph${withBottomTabs ? ' has-bottom-tabs' : ''}`}>
       <header className="topbar" role="banner">
         <div className="topbar-inner">
           <div className="brand">
@@ -18,16 +18,11 @@ export function AppShell({ navActions, children }: AppShellProps) {
             </span>
           </div>
 
-          <div className="nav-actions">
-            {navActions}
-          </div>
+          <div className="nav-actions">{navActions}</div>
         </div>
       </header>
 
-      {/* Main content container */}
-      <main className="workspace">
-        {children}
-      </main>
+      <main className="workspace">{children}</main>
     </div>
   );
 }

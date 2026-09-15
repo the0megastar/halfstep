@@ -813,3 +813,42 @@
     scroll-behavior: auto !important;
   }
 }
+
+
+/* Estimated glucose after dose */
+.estimate-panel {
+  margin-top: 0.75rem;
+  padding: 0.85rem 1rem;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--surface-elevated, var(--bg-elevated, #f4f4f5)) 88%, transparent);
+  border: 1px solid color-mix(in srgb, var(--border, #d4d4d8) 80%, transparent);
+}
+.estimate-label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  margin-bottom: 0.35rem;
+}
+.estimate-value {
+  display: flex;
+  align-items: baseline;
+  gap: 0.35rem;
+  font-size: 1.5rem;
+  line-height: 1.2;
+}
+.estimate-unit {
+  font-size: 0.875rem;
+  opacity: 0.75;
+}
+.estimate-note {
+  margin: 0.45rem 0 0;
+  font-size: 0.75rem;
+  opacity: 0.75;
+  line-height: 1.35;
+}
+.history-warning-lead {
+  display: flex;
+  gap: 0.65rem;
+  align-items: flex-start;
+  margin: 0 0 0.75rem;
+  line-height: 1.4;
+}
