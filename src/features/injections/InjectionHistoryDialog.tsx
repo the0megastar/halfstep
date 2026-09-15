@@ -6,6 +6,8 @@ import { InjectionForm } from './InjectionForm';
 import { InjectionConfirmation } from './InjectionConfirmation';
 import { InjectionDetails } from './InjectionDetails';
 import { InjectionVoidConfirmation } from './InjectionVoidConfirmation';
+import { InjectionMaxDoseWarning } from './InjectionMaxDoseWarning';
+import { loadAppSettings } from '../../../lib/appSettings';
 import type { WorkflowState } from './useInjectionWorkflow';
 
 export interface InjectionHistoryDialogProps {
@@ -19,7 +21,8 @@ export interface InjectionHistoryDialogProps {
     updateField: (field: 'units' | 'time' | 'caregiver', value: string) => void;
     stepDose: (delta: number, fallbackDose?: number) => void;
     setTimeToNow: () => void;
-    validateAndReview: () => void;
+    validateAndReview: (maxDoseWarningUnits?: number) => void;
+    ackMaxDose: () => void;
     backToForm: () => void;
     viewDetail: (recordId: string) => void;
     promptVoid: () => void;
@@ -94,6 +97,8 @@ export function InjectionHistoryDialog({
     }
   };
 
+  const maxDoseThreshold = loadAppSettings().maxDoseWarningUnits;
+
   const getTitle = () => {
     switch (state.view) {
       case 'history':
@@ -102,10 +107,14 @@ export function InjectionHistoryDialog({
         return 'Injection Details';
       case 'void':
         return 'Void This Entry?';
+      case 'max-dose-warn':
+        return 'Large Dose Warning';
       case 'confirm':
         return 'Confirm Insulin Given';
       case 'form':
         return selectedRecord ? 'Edit Entry' : 'Record Insulin Given';
+      default:
+        return 'Injection History';
     }
   };
 
@@ -187,12 +196,21 @@ export function InjectionHistoryDialog({
           onSetTimeToNow={workflow.setTimeToNow}
           onSubmit={(e) => {
             e.preventDefault();
-            workflow.validateAndReview();
+            workflow.validateAndReview(maxDoseThreshold);
           }}
           onCancel={() => {
             clearErrors();
             workflow.backToHistory();
           }}
+        />
+      )}
+
+      {state.view === 'max-dose-warn' && (
+        <InjectionMaxDoseWarning
+          units={Number(state.units)}
+          threshold={maxDoseThreshold}
+          onAcknowledge={workflow.ackMaxDose}
+          onBack={workflow.backToForm}
         />
       )}
 

@@ -1,4 +1,4 @@
-import { forwardRef, useImperativeHandle, useState } from 'react';
+import { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
 import { History } from 'lucide-react';
 import { useInjectionRecords } from '../features/injections/useInjectionRecords';
 import { useInjectionWorkflow } from '../features/injections/useInjectionWorkflow';
@@ -17,11 +17,22 @@ export interface InjectionHistoryProps {
   isIobOpen?: boolean;
   onToggleIob?: () => void;
   onCloseIob?: () => void;
+  hideHistoryButton?: boolean;
+  forceOpen?: boolean;
+  onDialogClose?: () => void;
 }
 
 const InjectionHistory = forwardRef<InjectionHistoryHandle, InjectionHistoryProps>(
   function InjectionHistory(
-    { suggestedDose, isIobOpen: controlledIobOpen, onToggleIob, onCloseIob },
+    {
+      suggestedDose,
+      isIobOpen: controlledIobOpen,
+      onToggleIob,
+      onCloseIob,
+      hideHistoryButton = false,
+      forceOpen = false,
+      onDialogClose,
+    },
     ref
   ) {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -57,6 +68,19 @@ const InjectionHistory = forwardRef<InjectionHistoryHandle, InjectionHistoryProp
       recordDose,
     }));
 
+    useEffect(() => {
+      if (forceOpen && !isDialogOpen) {
+        openHistory();
+      }
+      // intentionally only react to forceOpen toggles
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [forceOpen]);
+
+    const closeDialog = () => {
+      setIsDialogOpen(false);
+      onDialogClose?.();
+    };
+
     return (
       <>
         <IobPopover
@@ -73,19 +97,21 @@ const InjectionHistory = forwardRef<InjectionHistoryHandle, InjectionHistoryProp
           uncertain={iobSummary.uncertain}
         />
 
-        <button
-          type="button"
-          className="nav-btn"
-          onClick={openHistory}
-          aria-label="Injection History"
-          title="Injection History"
-        >
-          <History size={19} />
-        </button>
+        {!hideHistoryButton && (
+          <button
+            type="button"
+            className="nav-btn"
+            onClick={openHistory}
+            aria-label="Injection History"
+            title="Injection History"
+          >
+            <History size={19} />
+          </button>
+        )}
 
         <InjectionHistoryDialog
           isOpen={isDialogOpen}
-          onClose={() => setIsDialogOpen(false)}
+          onClose={closeDialog}
           workflow={workflow}
           recordsState={recordsState}
           now={now}

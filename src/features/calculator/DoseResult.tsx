@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { ArrowUpRight } from 'lucide-react';
 import { displayUnits, type CalculationResult } from '../../../lib/dose';
+import { estimateGlucoseAfterDose, formatEstimatedGlucose } from '../../../lib/estimate';
 
 export interface DoseResultProps {
   result: CalculationResult;
@@ -11,6 +12,12 @@ export interface DoseResultProps {
 export function DoseResult({ result, onRecordDose, children }: DoseResultProps) {
   const isDoseAvailable = result.total !== null && result.rounding !== null;
   const canRecord = isDoseAvailable && !result.isLowGlucose && result.rounding!.rounded > 0;
+  const doseUnits = isDoseAvailable && !result.isLowGlucose ? result.rounding!.rounded : null;
+  const estimate = estimateGlucoseAfterDose({
+    glucose: result.glucose,
+    carbs: result.carbs,
+    doseUnits,
+  });
 
   const handleRecord = () => {
     if (canRecord && onRecordDose) {
@@ -45,7 +52,6 @@ export function DoseResult({ result, onRecordDose, children }: DoseResultProps) 
         </button>
       </div>
 
-      {/* Main Dose Display */}
       <div className="hero-dose-container">
         {result.isLowGlucose ? (
           <div className="dose-callout dose-low">
@@ -55,9 +61,7 @@ export function DoseResult({ result, onRecordDose, children }: DoseResultProps) 
         ) : isDoseAvailable ? (
           <div className="dose-callout">
             <div className="dose-number-row">
-              <span className="hero-dose-number">
-                {result.rounding!.rounded.toFixed(1)}
-              </span>
+              <span className="hero-dose-number">{result.rounding!.rounded.toFixed(1)}</span>
               <span className="hero-dose-unit">units</span>
             </div>
 
@@ -73,6 +77,23 @@ export function DoseResult({ result, onRecordDose, children }: DoseResultProps) 
             <div className="dose-sublabel">Enter glucose & carbs to calculate dose</div>
           </div>
         )}
+      </div>
+
+      <div className="estimate-panel" aria-live="polite">
+        <div className="estimate-label">Estimated glucose after this dose</div>
+        <div className="estimate-value">
+          {estimate.complete ? (
+            <>
+              <strong>{formatEstimatedGlucose(estimate.estimatedGlucose)}</strong>
+              <span className="estimate-unit">mg/dL</span>
+            </>
+          ) : (
+            <strong className="dim">—</strong>
+          )}
+        </div>
+        <p className="estimate-note">
+          Uses carb ratio and ISF only. Does not include active IOB, absorption timing, or exercise.
+        </p>
       </div>
 
       {children}

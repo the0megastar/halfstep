@@ -1,12 +1,15 @@
 import { useState, useEffect, useCallback } from 'react';
 
-export type AppView = 'calculator' | 'typography';
+export type AppView = 'calculator' | 'history' | 'settings' | 'typography';
 
 function getInitialView(): AppView {
   if (typeof window !== 'undefined') {
     try {
       const params = new URLSearchParams(window.location.search);
-      if (params.get('view') === 'typography') return 'typography';
+      const view = params.get('view');
+      if (view === 'typography') return 'typography';
+      if (view === 'history') return 'history';
+      if (view === 'settings') return 'settings';
     } catch {
       // ignore
     }
@@ -22,10 +25,10 @@ export function useAppView() {
     if (typeof window !== 'undefined') {
       try {
         const url = new URL(window.location.href);
-        if (nextView === 'typography') {
-          url.searchParams.set('view', 'typography');
-        } else {
+        if (nextView === 'calculator') {
           url.searchParams.delete('view');
+        } else {
+          url.searchParams.set('view', nextView);
         }
         window.history.pushState({}, '', url.toString());
       } catch {
@@ -38,7 +41,11 @@ export function useAppView() {
     const handlePopState = () => {
       try {
         const params = new URLSearchParams(window.location.search);
-        setView(params.get('view') === 'typography' ? 'typography' : 'calculator');
+        const view = params.get('view');
+        if (view === 'typography') setView('typography');
+        else if (view === 'history') setView('history');
+        else if (view === 'settings') setView('settings');
+        else setView('calculator');
       } catch {
         // ignore
       }

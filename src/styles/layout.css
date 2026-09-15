@@ -155,3 +155,92 @@
     font-size: 1rem;
   }
 }
+
+
+/* App shell with bottom tabs (mobile-first) */
+.site.glyph.has-bottom-tabs {
+  padding-bottom: calc(4.25rem + env(safe-area-inset-bottom, 0px));
+}
+.bottom-tab-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 40;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.25rem;
+  padding: 0.35rem 0.5rem calc(0.35rem + env(safe-area-inset-bottom, 0px));
+  background: color-mix(in srgb, var(--bg, #fff) 92%, transparent);
+  border-top: 1px solid color-mix(in srgb, var(--border, #d4d4d8) 85%, transparent);
+  backdrop-filter: blur(12px);
+}
+.bottom-tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.15rem;
+  min-height: 44px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  opacity: 0.72;
+  border-radius: 12px;
+  padding: 0.35rem 0.25rem;
+}
+.bottom-tab.is-selected {
+  opacity: 1;
+  font-weight: 600;
+  background: color-mix(in srgb, var(--accent, #2563eb) 12%, transparent);
+}
+.bottom-tab-label {
+  font-size: 0.6875rem;
+  letter-spacing: 0.01em;
+}
+.settings-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding-bottom: 1.5rem;
+}
+.settings-card {
+  padding: 1rem 1.1rem;
+}
+.settings-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin: 0.75rem 0 0.5rem;
+}
+.settings-inline-control {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.settings-inline-control input {
+  width: 5.5rem;
+  min-height: 44px;
+  padding: 0.5rem 0.65rem;
+  border-radius: 10px;
+  border: 1px solid var(--border, #d4d4d8);
+  background: transparent;
+  color: inherit;
+}
+.settings-row-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  width: 100%;
+  min-height: 44px;
+  margin-top: 0.5rem;
+  padding: 0.65rem 0.75rem;
+  border-radius: 12px;
+  border: 1px solid color-mix(in srgb, var(--border, #d4d4d8) 80%, transparent);
+  background: transparent;
+  color: inherit;
+  text-align: left;
+}
+.history-page-shell {
+  min-height: 60vh;
+}
