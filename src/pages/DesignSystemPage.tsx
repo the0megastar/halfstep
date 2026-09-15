@@ -1,4 +1,3 @@
-import React from 'react';
 import TypographySpecimen from '../components/TypographySpecimen';
 
 export interface DesignSystemPageProps {

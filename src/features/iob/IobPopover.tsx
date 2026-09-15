@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import { useRef, useEffect } from 'react';
 import { ArrowRight } from 'lucide-react';
 import { useDropdownBoundary } from '../../hooks/useDropdownBoundary';
 import { remainingLabel } from '../../../lib/iob';

@@ -1,4 +1,3 @@
-import React from 'react';
 import type { CalculationResult } from '../../../lib/dose';
 
 export interface ClinicalFormulaProps {

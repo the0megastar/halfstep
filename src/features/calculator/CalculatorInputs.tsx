@@ -1,4 +1,3 @@
-import React from 'react';
 import { Droplet, Utensils, RotateCcw } from 'lucide-react';
 
 export interface CalculatorInputsProps {

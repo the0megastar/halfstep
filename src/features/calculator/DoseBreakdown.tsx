@@ -1,4 +1,3 @@
-import React from 'react';
 import { Utensils, Droplet, CheckCircle2 } from 'lucide-react';
 import { displayUnits, type CalculationResult } from '../../../lib/dose';
 

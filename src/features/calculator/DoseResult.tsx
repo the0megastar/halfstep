@@ -1,4 +1,4 @@
-import React, { type ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { ArrowUpRight } from 'lucide-react';
 import { displayUnits, type CalculationResult } from '../../../lib/dose';
 
