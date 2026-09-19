@@ -5,6 +5,7 @@ const start = '2026-09-12T12:00:00Z';
 const now = Date.parse(start);
 test('linear IOB follows recorded time and reaches zero at three hours', () => {
   assert.equal(injectionProgress(start, 1.5, now).remainingUnits, 1.5);
+  assert.equal(injectionProgress(start, 1.5, now).endsAt, now + ACTION_DURATION_MS);
   assert.equal(injectionProgress(start, 1.5, now + 3600000).remainingUnits, 1);
   assert.equal(injectionProgress(start, 1.5, now + ACTION_DURATION_MS / 2).remainingUnits, .75);
   assert.equal(injectionProgress(start, 1.5, now + ACTION_DURATION_MS).remainingUnits, 0);

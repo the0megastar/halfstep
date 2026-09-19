@@ -6,6 +6,9 @@ import {
 } from '../src/features/injections/useInjectionWorkflow.ts';
 import {
   localTimeInput,
+  localDateInput,
+  localClockInput,
+  combineLocalDateAndClock,
   formatDateHeading,
   formatTimeShort,
 } from '../src/features/injections/dateUtils.ts';
@@ -25,7 +28,8 @@ test('START_CREATE initializes form with suggested dose and submissionId', () =>
   assert.equal(state.units, '2.5');
   assert.equal(state.selectedId, null);
   assert.ok(state.submissionId.length > 0);
-  assert.ok(state.time.length > 0);
+  assert.ok(state.date.length > 0);
+  assert.ok(state.clock.length > 0);
 });
 
 test('STEP_DOSE increments and decrements by 0.5 units with 0.5 floor', () => {
@@ -51,20 +55,17 @@ test('VALIDATE_AND_REVIEW advances to confirm on valid values or sets formError'
     type: 'START_CREATE',
     suggestedDose: 1.5,
   });
-  // Missing caregiver should fail
-  state = workflowReducer(state, { type: 'VALIDATE_AND_REVIEW' });
-  assert.equal(state.view, 'form');
-  assert.match(state.formError, /caregiver/i);
-
-  // Providing caregiver should succeed
-  state = workflowReducer(state, {
-    type: 'UPDATE_FIELD',
-    field: 'caregiver',
-    value: 'Dad',
-  });
+  // Fresh create has date/clock set — should advance
   state = workflowReducer(state, { type: 'VALIDATE_AND_REVIEW' });
   assert.equal(state.view, 'confirm');
   assert.equal(state.formError, null);
+
+  // Clearing date should fail
+  state = workflowReducer(state, { type: 'BACK_TO_FORM' });
+  state = workflowReducer(state, { type: 'UPDATE_FIELD', field: 'date', value: '' });
+  state = workflowReducer(state, { type: 'VALIDATE_AND_REVIEW' });
+  assert.equal(state.view, 'form');
+  assert.ok(state.formError);
 });
 
 test('Detail and Void confirmation workflow transitions', () => {
@@ -103,11 +104,6 @@ test('VALIDATE_AND_REVIEW routes large doses through max-dose warning', () => {
     type: 'START_CREATE',
     suggestedDose: 5,
   });
-  state = workflowReducer(state, {
-    type: 'UPDATE_FIELD',
-    field: 'caregiver',
-    value: 'Mom',
-  });
   state = workflowReducer(state, { type: 'VALIDATE_AND_REVIEW', maxDoseWarningUnits: 5 });
   assert.equal(state.view, 'max-dose-warn');
   assert.equal(state.maxDoseAcknowledged, false);
@@ -120,11 +116,6 @@ test('VALIDATE_AND_REVIEW routes large doses through max-dose warning', () => {
   state = workflowReducer(initialWorkflowState, {
     type: 'START_CREATE',
     suggestedDose: 4.5,
-  });
-  state = workflowReducer(state, {
-    type: 'UPDATE_FIELD',
-    field: 'caregiver',
-    value: 'Mom',
   });
   state = workflowReducer(state, { type: 'VALIDATE_AND_REVIEW', maxDoseWarningUnits: 5 });
   assert.equal(state.view, 'confirm');

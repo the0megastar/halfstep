@@ -1,11 +1,13 @@
-export const ACTION_DURATION_MS = 3 * 60 * 60 * 1000;
+import { ACTION_DURATION_MS } from './patient.ts';
+export { ACTION_DURATION_MS };
 
 export function injectionProgress(administeredAt: string, units: number, now: number) {
   const administered = Date.parse(administeredAt);
   if (!Number.isFinite(administered) || !Number.isFinite(units) || units <= 0 || administered > now) return null;
-  const remainingMs = Math.max(0, ACTION_DURATION_MS - (now - administered));
+  const endsAt = administered + ACTION_DURATION_MS;
+  const remainingMs = Math.max(0, endsAt - now);
   const fraction = remainingMs / ACTION_DURATION_MS;
-  return { remainingMs, fraction, remainingUnits: units * fraction };
+  return { endsAt, remainingMs, fraction, remainingUnits: units * fraction };
 }
 export function remainingLabel(ms: number): string {
   const minutes = Math.ceil(ms / 60000);

@@ -100,6 +100,12 @@
   cursor: wait;
 }
 
+/* History list CTA — primary for this tab, under page intro, before the list */
+.history-page .history-primary {
+  margin: 0 0 12px;
+}
+
+
 .btn-secondary {
   display: inline-flex;
   align-items: center;
@@ -240,17 +246,19 @@
   margin: 24px 0 0 0;
 }
 
-.history-list h3 {
-  font-size: 0.9rem;
+.history-day-heading {
   color: var(--text-muted);
   margin: 24px 0 8px;
+  font-weight: 600;
 }
 
 .history-row {
+  /* Dose column width: widest half-unit label under locked max (e.g. "0.5 U") */
+  --history-dose-col: 5.75ch;
   width: 100%;
   display: grid;
   text-align: left;
-  gap: 6px;
+  gap: 8px;
   padding: 14px;
   color: var(--text-main);
   background: var(--bg-card);
@@ -258,12 +266,131 @@
   border-radius: 6px;
   margin: 8px 0;
   font: inherit;
-  overflow-wrap: anywhere;
 }
 
-.history-row span {
+.history-row-primary {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+}
+
+.history-row-title {
+  color: var(--text-main);
+  font-weight: 600;
+  /* Fixed leading dose column so meta text lines up across rows (tabular list metric) */
+  flex: 0 0 var(--history-dose-col, 5.75ch);
+  width: var(--history-dose-col, 5.75ch);
+  min-width: var(--history-dose-col, 5.75ch);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.history-row-trailing {
+  color: var(--accent-primary);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.history-row-subtitle {
   color: var(--text-muted);
-  font-size: 0.9rem;
+}
+
+/* Compact rows: Complete and Voided (one fact line + status chip) */
+.history-row--voided,
+.history-row--complete {
+  padding: 10px 14px;
+  gap: 0;
+  min-height: 44px;
+}
+
+.history-row--voided {
+  opacity: 0.72;
+}
+
+.history-row-primary--single {
+  align-items: center;
+  gap: 10px;
+  min-height: 24px;
+}
+
+/* Complete + voided share the same type ramp; voided only dims color */
+.history-compact-facts {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
+  line-height: 1.25;
+}
+
+.history-compact-dose {
+  flex: 0 0 var(--history-dose-col, 5.75ch);
+  width: var(--history-dose-col, 5.75ch);
+  min-width: var(--history-dose-col, 5.75ch);
+  color: var(--text-main);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.25;
+  white-space: nowrap;
+}
+
+.history-compact-dose--muted {
+  color: var(--text-muted);
+}
+
+.history-compact-meta {
+  display: inline-flex;
+  flex-wrap: nowrap;
+  align-items: baseline;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text-muted);
+  line-height: 1.25;
+}
+
+.history-compact-value {
+  font-variant-numeric: tabular-nums;
+  color: var(--text-muted);
+}
+
+.history-compact-unit {
+  color: var(--text-dim);
+  font-weight: 400;
+}
+
+/* Larger middot with real side padding so it never kisses the left glyph (e.g. L in mg/dL) */
+.history-compact-sep {
+  display: inline-block;
+  margin: 0 0.45em;
+  color: var(--text-dim);
+  font-size: 1.15em;
+  font-weight: 700;
+  line-height: 1;
+  vertical-align: baseline;
+  transform: translateY(-0.02em);
+}
+
+.history-row--voided .history-compact-dose,
+.history-row--voided .history-compact-value,
+.history-row--voided .history-compact-unit,
+.history-row--voided .history-compact-sep {
+  color: var(--text-dim);
+}
+
+/* Same chip metrics so COMPLETE / VOIDED don't change row height */
+.history-row--complete .chip,
+.history-row--voided .chip {
+  font-size: 11px;
+  line-height: 1;
+  padding: 3px 7px;
+  min-height: 20px;
+  box-sizing: border-box;
 }
 
 .form-subtext {
@@ -332,6 +459,13 @@
   border-radius: 8px;
 }
 
+.log-form-card input {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+}
+
+
 .history-field small {
   color: var(--text-muted);
   font-size: 0.8rem;
@@ -383,6 +517,7 @@
   flex: 1;
   min-width: 0;
   height: 44px;
+  overflow: hidden;
 }
 
 .stepper-input {
@@ -391,7 +526,8 @@
   height: 44px !important;
   min-height: 44px !important;
   max-height: 44px !important;
-  padding: 0 44px !important;
+  /* Room for the in-field "units" label on the right — not for the +/- buttons */
+  padding: 0 3.5rem 0 0.75rem !important;
   line-height: 42px !important;
   font: inherit;
   font-size: 1.25rem !important;
@@ -408,13 +544,38 @@
 .stepper-unit {
   position: absolute;
   right: 12px;
-  font-size: 0.85rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.8rem;
   font-weight: 500;
   color: var(--text-muted);
   pointer-events: none;
+  z-index: 1;
+  white-space: nowrap;
 }
 
 /* Administration Date and Time (>= 16px on mobile to avoid zoom) */
+
+/* Glucose + Carbs share one confirm row */
+.confirm-row--split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 16px;
+  align-items: start;
+}
+.confirm-row--split .confirm-pair {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.confirm-row--split .confirm-pair dt {
+  margin: 0;
+}
+.confirm-row--split .confirm-pair dd {
+  margin: 0;
+}
+
 .history-datetime-input {
   appearance: none;
   -webkit-appearance: none;
@@ -487,15 +648,43 @@
 
 .injection-timing {
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
+  width: 100%;
 }
 
 .injection-timing progress {
-  width: 65px;
-  height: 8px;
+  width: 100%;
+  height: 18px;
   accent-color: var(--accent-primary);
+}
+
+/* Apple / Material: supporting captions under the track, leading-aligned stack */
+.injection-timing-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+
+.injection-remaining {
+  color: var(--text-muted);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.injection-until {
+  color: var(--text-dim);
+}
+
+.injection-timing-error {
+  color: var(--text-muted);
+}
+
+
+.history-row-complete-chip {
+  flex-shrink: 0;
 }
 
 @media (max-width: 520px) {
@@ -508,4 +697,283 @@
     padding: 20px;
     box-sizing: border-box;
   }
+}
+
+
+/* History as a tab root view (Apple/Material peer destination — not a dialog).
+   Same horizontal inset as Settings: inherit .workspace padding; do not center a
+   narrower column or the page title/intro will sit left of the cards. */
+.injection-history-panel--page {
+  color: var(--text-main);
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0 0 1.5rem;
+  box-sizing: border-box;
+}
+
+.injection-history-panel--page .injection-heading--page {
+  margin-bottom: 8px;
+}
+
+.injection-history-panel--page p {
+  margin: 12px 0;
+  line-height: 1.55;
+}
+
+.history-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding-bottom: 1.5rem;
+  width: 100%;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+
+/* Calculate-page log confirmation (fixed overlay; not page-flow) */
+.confirm-dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: max(16px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right))
+    max(16px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+  box-sizing: border-box;
+  background: var(--overlay-scrim, rgb(0 0 0 / 55%));
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.confirm-dialog {
+  width: min(360px, 100%);
+  max-height: min(90dvh, 100%);
+  overflow-y: auto;
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid var(--border-card);
+  background: var(--bg-surface);
+  color: var(--text-main);
+  box-shadow: 0 16px 48px rgb(0 0 0 / 28%);
+  box-sizing: border-box;
+}
+
+.confirm-dialog h2 {
+  margin: 0 0 8px;
+}
+
+.confirm-dialog p {
+  margin: 0 0 10px;
+  line-height: 1.5;
+}
+
+/* Two-action confirm: Cancel leading, Log trailing (Apple alert / Material dialog). */
+.confirm-dialog-actions {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+/* Keep two-action confirms in one row (Cancel | Log / Void) — including inside History sheets. */
+.confirm-dialog-actions .btn-primary,
+.confirm-dialog-actions .btn-ghost,
+.confirm-dialog-actions .btn-secondary,
+.confirm-dialog-actions .btn-destructive,
+.confirm-dialog-actions .btn-destructive-solid {
+  width: auto;
+  min-width: 72px;
+  height: 44px;
+  min-height: 44px;
+  padding: 0 16px;
+}
+
+.confirm-dialog-actions .btn-ghost {
+  color: var(--text-main);
+  font-weight: 600;
+}
+
+body.confirm-dialog-open {
+  overflow: hidden;
+}
+
+
+/* Compact review list inside Calculate log confirm + History detail sheet. */
+.confirm-dialog .confirm-review--dialog,
+.history-sheet .confirm-review--dialog {
+  margin: 0 0 10px;
+  /* Stroke-only group — no fill (keeps Apple-alert calm, restores visual bound). */
+  padding: 10px 12px;
+  background: transparent;
+  border: 1px solid var(--border-card);
+  border-radius: 10px;
+}
+
+.confirm-dialog .confirm-review--dialog .confirm-row,
+.history-sheet .confirm-review--dialog .confirm-row {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border-subtle, rgb(0 0 0 / 8%));
+}
+
+.confirm-dialog .confirm-review--dialog .confirm-row:last-child,
+.history-sheet .confirm-review--dialog .confirm-row:last-child {
+  border-bottom: 0;
+  padding-bottom: 2px;
+}
+
+.confirm-dialog .confirm-review--dialog .confirm-row:first-child,
+.history-sheet .confirm-review--dialog .confirm-row:first-child {
+  padding-top: 2px;
+}
+
+.confirm-dialog .confirm-review--dialog dt,
+.history-sheet .confirm-review--dialog dt {
+  margin: 0;
+  flex: 0 0 auto;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-align: left;
+}
+
+.confirm-dialog .confirm-review--dialog dd,
+.history-sheet .confirm-review--dialog dd {
+  margin: 0;
+  flex: 1 1 auto;
+  min-width: 0;
+  text-align: right;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-main);
+}
+
+.confirm-dialog .confirm-note,
+.history-sheet .confirm-note {
+  margin: 0 0 4px;
+  color: var(--text-muted);
+}
+
+/* History injection detail / void sheet over the list */
+.history-sheet-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: max(16px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right))
+    max(16px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+  box-sizing: border-box;
+  background: var(--overlay-scrim, rgb(0 0 0 / 55%));
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.history-sheet {
+  width: min(400px, 100%);
+  max-height: min(88dvh, 100%);
+  overflow-y: auto;
+  padding: 18px 18px 16px;
+  border-radius: 12px;
+  border: 1px solid var(--border-card);
+  background: var(--bg-surface);
+  color: var(--text-main);
+  box-shadow: 0 16px 48px rgb(0 0 0 / 28%);
+  box-sizing: border-box;
+}
+
+.history-sheet-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.history-sheet-header h2 {
+  margin: 0;
+}
+
+.history-sheet-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  margin: -8px -8px -8px 0;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--text-main);
+  cursor: pointer;
+}
+
+.history-sheet-close:hover {
+  background: var(--bg-surface-elevated);
+}
+
+.history-sheet-section {
+  margin: 16px 0 8px;
+}
+
+.history-sheet .history-audit {
+  margin: 0 0 8px;
+  padding-left: 1.15rem;
+  color: var(--text-muted);
+  font-size: 0.8125rem;
+  line-height: 1.45;
+}
+
+.history-sheet .history-audit li {
+  margin-bottom: 8px;
+}
+
+.history-sheet .history-audit-detail {
+  color: var(--text-dim, var(--text-muted));
+}
+
+.history-sheet-actions {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.history-sheet-actions .btn-secondary,
+.history-sheet-actions .btn-destructive,
+.history-sheet-actions .btn-ghost {
+  width: auto;
+  min-width: 72px;
+  height: 44px;
+  min-height: 44px;
+  padding: 0 16px;
+}
+
+body.history-sheet-open {
+  overflow: hidden;
 }

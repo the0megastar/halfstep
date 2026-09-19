@@ -1,26 +1,47 @@
 import { useReducer, useCallback } from 'react';
-import { generateUUID, validateInjection, type Injection, type InjectionValues } from '../../../lib/injections.ts';
-import { localTimeInput } from './dateUtils.ts';
+import {
+  generateUUID,
+  validateInjection,
+  type Injection,
+  type InjectionValues,
+} from '../../../lib/injections.ts';
+import { PATIENT } from '../../../lib/patient.ts';
+import {
+  localDateInput,
+  localClockInput,
+  combineLocalDateAndClock,
+} from './dateUtils.ts';
 
-export type WorkflowView = 'history' | 'form' | 'max-dose-warn' | 'confirm' | 'detail' | 'void';
+export type WorkflowView =
+  | 'history'
+  | 'form'
+  | 'max-dose-warn'
+  | 'confirm'
+  | 'detail'
+  | 'void';
 
 export interface WorkflowState {
   view: WorkflowView;
   selectedId: string | null;
   units: string;
-  time: string;
-  caregiver: string;
+  date: string;
+  clock: string;
+  glucose: string;
+  carbs: string;
   submissionId: string;
   formError: string | null;
-  /** True after user confirms an at/above-threshold dose for this submission. */
   maxDoseAcknowledged: boolean;
 }
 
 export type WorkflowAction =
   | { type: 'OPEN_HISTORY' }
-  | { type: 'START_CREATE'; suggestedDose?: number }
+  | { type: 'START_CREATE'; suggestedDose?: number; glucose?: string; carbs?: string }
   | { type: 'START_EDIT'; record: Injection }
-  | { type: 'UPDATE_FIELD'; field: 'units' | 'time' | 'caregiver'; value: string }
+  | {
+      type: 'UPDATE_FIELD';
+      field: 'units' | 'date' | 'clock' | 'glucose' | 'carbs';
+      value: string;
+    }
   | { type: 'STEP_DOSE'; delta: number; fallbackDose?: number }
   | { type: 'SET_TIME_NOW' }
   | { type: 'VALIDATE_AND_REVIEW'; maxDoseWarningUnits?: number }
@@ -36,70 +57,111 @@ export const initialWorkflowState: WorkflowState = {
   view: 'history',
   selectedId: null,
   units: '',
-  time: '',
-  caregiver: '',
+  date: '',
+  clock: '',
+  glucose: '',
+  carbs: '',
   submissionId: '',
   formError: null,
   maxDoseAcknowledged: false,
 };
 
+function clampDose(units: number): number {
+  const max = PATIENT.maxDoseUnits;
+  const stepped = Math.round(units * 2) / 2;
+  return Math.min(max, Math.max(0.5, stepped));
+}
+
+function valuesFromState(state: WorkflowState): InjectionValues {
+  const unitsNum = state.units.trim() === '' ? NaN : Number(state.units);
+  const combined = combineLocalDateAndClock(state.date, state.clock);
+  const parsedTime = Number.isFinite(new Date(combined).getTime())
+    ? new Date(combined).toISOString()
+    : '';
+  const glucoseRaw = state.glucose.trim();
+  const carbsRaw = state.carbs.trim();
+  const glucoseMgDl = glucoseRaw === '' ? null : Number(glucoseRaw);
+  const carbsGrams = carbsRaw === '' ? null : Number(carbsRaw);
+  return {
+    units: unitsNum,
+    administeredAt: parsedTime,
+    caregiver: '',
+    glucoseMgDl: glucoseMgDl !== null && Number.isFinite(glucoseMgDl) ? glucoseMgDl : null,
+    carbsGrams: carbsGrams !== null && Number.isFinite(carbsGrams) ? carbsGrams : null,
+  };
+}
+
 export function workflowReducer(state: WorkflowState, action: WorkflowAction): WorkflowState {
   switch (action.type) {
     case 'OPEN_HISTORY':
-      return {
-        ...state,
-        view: 'history',
-        selectedId: null,
-        formError: null,
-      };
+      return { ...state, view: 'history', selectedId: null, formError: null };
 
     case 'START_CREATE': {
       const dose =
         action.suggestedDose !== undefined && action.suggestedDose > 0
-          ? String(action.suggestedDose)
+          ? String(clampDose(action.suggestedDose))
           : '';
+      const nowIso = new Date().toISOString();
       return {
         ...state,
         view: 'form',
         selectedId: null,
         units: dose,
-        time: localTimeInput(),
-        caregiver: '',
+        date: localDateInput(nowIso),
+        clock: localClockInput(nowIso),
+        glucose: action.glucose ?? '',
+        carbs: action.carbs ?? '',
         submissionId: generateUUID(),
         formError: null,
         maxDoseAcknowledged: false,
       };
     }
 
-    case 'START_EDIT': {
+    case 'START_EDIT':
       return {
         ...state,
         view: 'form',
         selectedId: action.record.id,
         units: String(action.record.units),
-        time: localTimeInput(action.record.administeredAt),
-        caregiver: action.record.caregiver,
+        date: localDateInput(action.record.administeredAt),
+        clock: localClockInput(action.record.administeredAt),
+        glucose:
+          action.record.glucoseMgDl != null ? String(action.record.glucoseMgDl) : '',
+        carbs: action.record.carbsGrams != null ? String(action.record.carbsGrams) : '',
         submissionId: generateUUID(),
         formError: null,
         maxDoseAcknowledged: false,
       };
-    }
 
-    case 'UPDATE_FIELD':
+    case 'UPDATE_FIELD': {
+      let value = action.value;
+      if (action.field === 'units') {
+        const n = Number(value);
+        if (Number.isFinite(n) && n > PATIENT.maxDoseUnits) {
+          value = String(PATIENT.maxDoseUnits);
+        }
+      }
       return {
         ...state,
-        [action.field]: action.value,
+        [action.field]: value,
         formError: null,
-        maxDoseAcknowledged: action.field === 'units' ? false : state.maxDoseAcknowledged,
+        maxDoseAcknowledged:
+          action.field === 'units' ? false : state.maxDoseAcknowledged,
       };
+    }
 
     case 'STEP_DOSE': {
       const current = Number(state.units);
       if (!Number.isFinite(current) || current <= 0) {
-        const fallback = action.fallbackDose || 0.5;
-        return { ...state, units: String(fallback), formError: null, maxDoseAcknowledged: false };
+        const fallback = clampDose(action.fallbackDose || 0.5);
+        return {
+          ...state,
+          units: String(fallback),
+          formError: null,
+          maxDoseAcknowledged: false,
+        };
       }
-      const next = Math.max(0.5, Math.round((current + action.delta) * 2) / 2);
+      const next = clampDose(current + action.delta);
       return {
         ...state,
         units: Number(next.toFixed(1)).toString(),
@@ -108,23 +170,18 @@ export function workflowReducer(state: WorkflowState, action: WorkflowAction): W
       };
     }
 
-    case 'SET_TIME_NOW':
+    case 'SET_TIME_NOW': {
+      const nowIso = new Date().toISOString();
       return {
         ...state,
-        time: localTimeInput(),
+        date: localDateInput(nowIso),
+        clock: localClockInput(nowIso),
         formError: null,
       };
+    }
 
     case 'VALIDATE_AND_REVIEW': {
-      const unitsNum = state.units.trim() === '' ? NaN : Number(state.units);
-      const parsedTime = Number.isFinite(new Date(state.time).getTime())
-        ? new Date(state.time).toISOString()
-        : '';
-      const values: InjectionValues = {
-        units: unitsNum,
-        administeredAt: parsedTime,
-        caregiver: state.caregiver,
-      };
+      const values = valuesFromState(state);
       const error = validateInjection(values);
       if (error) {
         return { ...state, formError: error };
@@ -132,8 +189,8 @@ export function workflowReducer(state: WorkflowState, action: WorkflowAction): W
       const threshold = action.maxDoseWarningUnits;
       const needsWarn =
         Number.isFinite(threshold) &&
-        Number.isFinite(unitsNum) &&
-        unitsNum >= (threshold as number) &&
+        Number.isFinite(values.units) &&
+        values.units >= (threshold as number) &&
         !state.maxDoseAcknowledged;
       if (needsWarn) {
         return { ...state, view: 'max-dose-warn', formError: null };
@@ -186,15 +243,26 @@ export function useInjectionWorkflow() {
   const [state, dispatch] = useReducer(workflowReducer, initialWorkflowState);
 
   const openHistory = useCallback(() => dispatch({ type: 'OPEN_HISTORY' }), []);
-  const startCreate = useCallback((suggestedDose?: number) => {
-    dispatch({ type: 'START_CREATE', suggestedDose });
-  }, []);
+  const startCreate = useCallback(
+    (suggestedDose?: number, extras?: { glucose?: string; carbs?: string }) => {
+      dispatch({
+        type: 'START_CREATE',
+        suggestedDose,
+        glucose: extras?.glucose,
+        carbs: extras?.carbs,
+      });
+    },
+    [],
+  );
   const startEdit = useCallback((record: Injection) => {
     dispatch({ type: 'START_EDIT', record });
   }, []);
-  const updateField = useCallback((field: 'units' | 'time' | 'caregiver', value: string) => {
-    dispatch({ type: 'UPDATE_FIELD', field, value });
-  }, []);
+  const updateField = useCallback(
+    (field: 'units' | 'date' | 'clock' | 'glucose' | 'carbs', value: string) => {
+      dispatch({ type: 'UPDATE_FIELD', field, value });
+    },
+    [],
+  );
   const stepDose = useCallback((delta: number, fallbackDose?: number) => {
     dispatch({ type: 'STEP_DOSE', delta, fallbackDose });
   }, []);
@@ -204,23 +272,19 @@ export function useInjectionWorkflow() {
   }, []);
   const ackMaxDose = useCallback(() => dispatch({ type: 'ACK_MAX_DOSE' }), []);
   const backToForm = useCallback(() => dispatch({ type: 'BACK_TO_FORM' }), []);
-  const viewDetail = useCallback((recordId: string) => dispatch({ type: 'VIEW_DETAIL', recordId }), []);
+  const viewDetail = useCallback(
+    (recordId: string) => dispatch({ type: 'VIEW_DETAIL', recordId }),
+    [],
+  );
   const promptVoid = useCallback(() => dispatch({ type: 'PROMPT_VOID' }), []);
   const cancelVoid = useCallback(() => dispatch({ type: 'CANCEL_VOID' }), []);
   const backToHistory = useCallback(() => dispatch({ type: 'BACK_TO_HISTORY' }), []);
   const completeSave = useCallback(() => dispatch({ type: 'COMPLETE_SAVE' }), []);
 
-  const getFormValues = useCallback((): InjectionValues => {
-    const unitsNum = state.units.trim() === '' ? NaN : Number(state.units);
-    const parsedTime = Number.isFinite(new Date(state.time).getTime())
-      ? new Date(state.time).toISOString()
-      : '';
-    return {
-      units: unitsNum,
-      administeredAt: parsedTime,
-      caregiver: state.caregiver,
-    };
-  }, [state.units, state.time, state.caregiver]);
+  const getFormValues = useCallback(
+    (): InjectionValues => valuesFromState(state),
+    [state],
+  );
 
   return {
     state,

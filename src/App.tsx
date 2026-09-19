@@ -1,26 +1,25 @@
-import React, { Suspense, useEffect, useRef, useState } from 'react';
-import { Moon, Sun } from 'lucide-react';
+import React, { Suspense, useRef, useState } from 'react';
 import { useTheme } from './app/useTheme';
 import { useAppView } from './app/useAppView';
-import { useAppSettings } from './app/useAppSettings';
 import { AppShell } from './app/AppShell';
 import { BottomTabBar, isMainTab, type MainTab } from './app/BottomTabBar';
 import { useOverlayManager } from './hooks/useOverlayManager';
 import { CalculatorPage } from './pages/CalculatorPage';
 import { SettingsPage } from './pages/SettingsPage';
-import InjectionHistory, { type InjectionHistoryHandle } from './components/InjectionHistory';
+import { HistoryPage, type HistoryPageHandle } from './pages/HistoryPage';
+import InjectionHistory from './components/InjectionHistory';
 import type { CalculationResult } from '../lib/dose';
 
+/** Dev-only typography specimen; not linked from Settings in v0.2.0. */
 const DesignSystemPage = React.lazy(() => import('./pages/DesignSystemPage'));
 
 export default function App() {
-  const { colorMode, toggleColorMode } = useTheme();
+  const { colorMode, preference, setThemePreference, toggleColorMode } = useTheme();
   const { view, switchView } = useAppView();
-  const { settings, setMaxDoseWarningUnits } = useAppSettings();
   const overlayManager = useOverlayManager();
-  const injectionHistoryRef = useRef<InjectionHistoryHandle>(null);
+  const historyRef = useRef<HistoryPageHandle>(null);
   const [currentResult, setCurrentResult] = useState<CalculationResult | null>(null);
-  const [historyOpen, setHistoryOpen] = useState(false);
+  const [logEpoch, setLogEpoch] = useState(0);
 
   const suggestedDose =
     currentResult &&
@@ -30,15 +29,6 @@ export default function App() {
     currentResult.rounding.rounded > 0
       ? currentResult.rounding.rounded
       : undefined;
-
-  useEffect(() => {
-    if (view === 'history') {
-      injectionHistoryRef.current?.openHistory();
-      setHistoryOpen(true);
-    } else {
-      setHistoryOpen(false);
-    }
-  }, [view]);
 
   if (view === 'typography') {
     return (
@@ -55,66 +45,46 @@ export default function App() {
   const activeTab: MainTab = isMainTab(view) ? view : 'calculator';
 
   const navActions = (
-    <>
-      <InjectionHistory
-        ref={injectionHistoryRef}
-        suggestedDose={suggestedDose}
-        isIobOpen={overlayManager.isIobOpen}
-        onToggleIob={overlayManager.toggleIob}
-        onCloseIob={overlayManager.closeOverlay}
-        hideHistoryButton
-        forceOpen={historyOpen}
-        onDialogClose={() => {
-          setHistoryOpen(false);
-          if (view === 'history') switchView('calculator');
-        }}
-      />
-
-      <button
-        type="button"
-        className="theme-toggle-btn nav-btn"
-        onClick={toggleColorMode}
-        title={colorMode === 'light' ? 'Switch to dark mode' : 'Switch to light mode'}
-        aria-label={colorMode === 'light' ? 'Switch to dark mode' : 'Switch to light mode'}
-      >
-        {colorMode === 'light' ? (
-          <Moon size={19} className="moon-icon" />
-        ) : (
-          <Sun size={19} className="sun-icon" />
-        )}
-      </button>
-    </>
+    <InjectionHistory
+      key={logEpoch}
+      isIobOpen={overlayManager.isIobOpen}
+      onToggleIob={overlayManager.toggleIob}
+      onCloseIob={overlayManager.closeOverlay}
+      onOpenHistory={() => {
+        overlayManager.closeOverlay();
+        switchView('history');
+      }}
+    />
   );
 
   return (
-    <AppShell navActions={navActions} withBottomTabs>
+    <AppShell
+      navActions={navActions}
+      withBottomTabs
+      onBrandClick={() => {
+        overlayManager.closeOverlay();
+        switchView('calculator');
+      }}
+    >
       {activeTab === 'calculator' && (
         <CalculatorPage
-          onRecordDose={(dose) => injectionHistoryRef.current?.recordDose(dose)}
+          onDoseLogged={() => setLogEpoch((n) => n + 1)}
           onResultChange={setCurrentResult}
+        />
+      )}
+
+      {activeTab === 'history' && (
+        <HistoryPage
+          ref={historyRef}
+          suggestedDose={suggestedDose}
         />
       )}
 
       {activeTab === 'settings' && (
         <SettingsPage
-          settings={settings}
-          onMaxDoseChange={setMaxDoseWarningUnits}
-          colorMode={colorMode}
-          onToggleTheme={toggleColorMode}
-          onOpenTypography={() => switchView('typography')}
+          themePreference={preference}
+          onThemePreferenceChange={setThemePreference}
         />
-      )}
-
-      {activeTab === 'history' && (
-        <section className="history-page-shell" aria-label="Injection history">
-          <header className="page-heading">
-            <div className="heading-text">
-              <h1>History</h1>
-              <p className="eyebrow">RECORDED NOVOLOG</p>
-              <p className="intro">Review, correct, or void entries on this device.</p>
-            </div>
-          </header>
-        </section>
       )}
 
       <BottomTabBar

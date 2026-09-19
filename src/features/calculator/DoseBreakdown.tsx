@@ -1,87 +1,131 @@
+import type { ReactNode } from 'react';
 import { Utensils, Droplet, CheckCircle2 } from 'lucide-react';
-import { displayUnits, type CalculationResult } from '../../../lib/dose';
-
-function displayBreakdownUnits(value: number | null): string {
-  const formatted = displayUnits(value);
-  return value === null || formatted.startsWith('≈') ? formatted : `= ${formatted}`;
-}
+import { displayCompactUnits, type CalculationResult } from '../../../lib/dose';
+import { PATIENT } from '../../../lib/patient';
 
 export interface DoseBreakdownProps {
   result: CalculationResult;
 }
 
 export function DoseBreakdown({ result }: DoseBreakdownProps) {
+  const foodFormula =
+    result.carbs !== null ? (
+      <>
+        <span className="breakdown-formula-text formula-full text-copy-13">
+          {result.carbs}g ÷ {PATIENT.carbRatio}
+        </span>
+        <span className="breakdown-formula-text formula-compact text-copy-13">
+          {result.carbs}g ÷ {PATIENT.carbRatio}
+        </span>
+      </>
+    ) : (
+      <>
+        <span className="breakdown-formula-text formula-full text-copy-13 dim">Carbs ÷ {PATIENT.carbRatio}</span>
+        <span className="breakdown-formula-text formula-compact text-copy-13 dim">Carbs ÷ {PATIENT.carbRatio}</span>
+      </>
+    );
+
+  // Low / over-max: keep formulas for checking, but do not present unit amounts like a dose
+  const suppressPartUnits = result.isLowGlucose || result.exceedsMaxDose;
+
+  const foodValue = suppressPartUnits ? (
+    <span className="breakdown-value text-label-14 dim">—</span>
+  ) : result.carbs !== null ? (
+    <span className="breakdown-value text-label-14">{displayCompactUnits(result.food)}</span>
+  ) : (
+    <span className="breakdown-value text-label-14 dim">—</span>
+  );
+
+  let correctionFormula: ReactNode;
+  let correctionValue: ReactNode;
+
+  if (result.glucose === null) {
+    correctionFormula = (
+      <>
+        <span className="breakdown-formula-text formula-full text-copy-13 dim">(BG − 150) ÷ {PATIENT.isf}</span>
+        <span className="breakdown-formula-text formula-compact text-copy-13 dim">(BG−150) ÷ {PATIENT.isf}</span>
+      </>
+    );
+    correctionValue = <span className="breakdown-value text-label-14 dim">—</span>;
+  } else if (result.isLowGlucose) {
+    correctionFormula = (
+      <>
+        <span className="breakdown-formula-text formula-full text-copy-13 text-low">Low (&lt; 70)</span>
+        <span className="breakdown-formula-text formula-compact text-copy-13 text-low">Low</span>
+      </>
+    );
+    correctionValue = <span className="breakdown-value text-label-14 text-low">0u</span>;
+  } else if (result.belowTarget) {
+    correctionFormula = (
+      <>
+        <span className="breakdown-formula-text formula-full text-copy-13">Below target (&lt; 150)</span>
+        <span className="breakdown-formula-text formula-compact text-copy-13">No corr.</span>
+      </>
+    );
+    correctionValue = <span className="breakdown-value text-label-14">0u</span>;
+  } else {
+    const delta = result.glucose - 150;
+    correctionFormula = (
+      <>
+        <span className="breakdown-formula-text formula-full text-copy-13">
+          ({result.glucose} − 150) ÷ {PATIENT.isf}
+        </span>
+        <span className="breakdown-formula-text formula-compact text-copy-13">
+          {delta} ÷ {PATIENT.isf}
+        </span>
+      </>
+    );
+    correctionValue = (
+      <span className="breakdown-value text-label-14">{displayCompactUnits(result.correction)}</span>
+    );
+  }
+
+  if (result.exceedsMaxDose) {
+    correctionValue = <span className="breakdown-value text-label-14 dim">—</span>;
+  }
+
   return (
     <>
-      {/* Step-by-Step Breakdown Cards */}
-      <div className="breakdown-grid">
-        {/* Food Bolus Breakdown */}
-        <div className="breakdown-card">
-          <div className="breakdown-title">
-            <Utensils size={14} />
-            <span>Food Coverage</span>
+      <div className="breakdown-grid" role="list">
+        <div className="breakdown-card" role="listitem">
+          <div className="breakdown-row-top">
+            <div className="breakdown-title text-heading-14">
+              <Utensils size={14} aria-hidden="true" />
+              <span className="label-full">Food Coverage</span>
+              <span className="label-compact">Food</span>
+            </div>
+            {foodValue}
           </div>
-          <div className="breakdown-formula">
-            {result.carbs !== null ? (
-              <>
-                <span>{result.carbs}g &divide; 35</span>
-                <strong>{displayBreakdownUnits(result.food)} <small>u</small></strong>
-              </>
-            ) : (
-              <>
-                <span className="dim">Carbs &divide; 35</span>
-                <strong className="dim">—</strong>
-              </>
-            )}
-          </div>
-          <small className="breakdown-note">1 unit per 35 grams</small>
+          <div className="breakdown-row-bottom">{foodFormula}</div>
+          <p className="breakdown-note text-copy-13">1 unit per {PATIENT.carbRatio} grams</p>
         </div>
 
-        {/* Correction Bolus Breakdown */}
-        <div className="breakdown-card">
-          <div className="breakdown-title">
-            <Droplet size={14} />
-            <span>Correction Bolus</span>
+        <div className="breakdown-card" role="listitem">
+          <div className="breakdown-row-top">
+            <div className="breakdown-title text-heading-14">
+              <Droplet size={14} aria-hidden="true" />
+              <span className="label-full">Correction Bolus</span>
+              <span className="label-compact">Correction</span>
+            </div>
+            {correctionValue}
           </div>
-          <div className="breakdown-formula">
-            {result.glucose === null ? (
-              <>
-                <span className="dim">(BG &minus; 150) &divide; 135</span>
-                <strong className="dim">—</strong>
-              </>
-            ) : result.isLowGlucose ? (
-              <>
-                <span className="text-low">Low (&lt; 70)</span>
-                <strong className="text-low">= 0 <small>u</small></strong>
-              </>
-            ) : result.belowTarget ? (
-              <>
-                <span>Below target (&lt; 150)</span>
-                <strong>= 0 <small>u</small></strong>
-              </>
-            ) : (
-              <>
-                <span>({result.glucose} &minus; 150) &divide; 135</span>
-                <strong>{displayBreakdownUnits(result.correction)} <small>u</small></strong>
-              </>
-            )}
-          </div>
-          <small className="breakdown-note">
-            {result.belowTarget
-              ? 'No correction below 150'
-              : '1 unit drops glucose 135'}
-          </small>
+          <div className="breakdown-row-bottom">{correctionFormula}</div>
+          <p className="breakdown-note text-copy-13">
+            {result.belowTarget ? 'No correction below 150' : `1 unit drops glucose ${PATIENT.isf}`}
+          </p>
         </div>
       </div>
 
-      {/* Dynamic Conversational Explanation Sentence */}
-      <div className="teaching-box" aria-live="polite">
-        <div className="teaching-header">
-          <CheckCircle2 size={16} />
-          <span>How the math works</span>
+
+      {(result.glucose !== null || result.carbs !== null) && (
+        <div className="teaching-box" aria-live="polite">
+          <div className="teaching-header text-heading-14">
+            <CheckCircle2 size={16} aria-hidden="true" />
+            <span>How the Math Works</span>
+          </div>
+          <p className="teaching-sentence text-copy-13">{result.casualSentence}</p>
         </div>
-        <p className="teaching-sentence">{result.casualSentence}</p>
-      </div>
+      )}
     </>
   );
 }

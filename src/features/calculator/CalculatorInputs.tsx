@@ -25,13 +25,25 @@ export function CalculatorInputs({
     <section className="card-surface entry-panel" aria-labelledby="inputs-heading">
       <div className="card-header">
         <div>
-          <span className="step-tag">STEP 01</span>
-          <h2 id="inputs-heading">Enter the numbers</h2>
+          <span className="step-tag text-label-12">Step 1</span>
+          <h2 id="inputs-heading" className="text-heading-20">
+            Enter the numbers
+          </h2>
         </div>
+        {showClear && (
+          <button
+            type="button"
+            className="icon-badge-btn active"
+            onClick={onClear}
+            aria-label="Clear glucose and carbs"
+            title="Clear"
+          >
+            <RotateCcw size={18} />
+          </button>
+        )}
       </div>
 
       <div className="input-fields">
-        {/* Glucose Field */}
         <div className="field-group">
           <label htmlFor="input-glucose">
             <Droplet size={17} className="field-icon" />
@@ -58,7 +70,6 @@ export function CalculatorInputs({
           )}
         </div>
 
-        {/* Carbs Field */}
         <div className="field-group">
           <label htmlFor="input-carbs">
             <Utensils size={17} className="field-icon" />
@@ -87,25 +98,6 @@ export function CalculatorInputs({
             <p className="field-error">Enter zero or a positive number of grams.</p>
           )}
         </div>
-      </div>
-
-      <div className="entry-footer">
-        <div className="quick-help">
-          <p>
-            💡 <strong>Tip:</strong> Enter glucose &amp; carbs. Updates instantly.
-          </p>
-        </div>
-        {showClear && (
-          <button
-            type="button"
-            className="btn btn-clear"
-            onClick={onClear}
-            aria-label="Clear all inputs"
-          >
-            <RotateCcw size={14} />
-            <span>Clear</span>
-          </button>
-        )}
       </div>
     </section>
   );

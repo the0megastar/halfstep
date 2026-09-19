@@ -10,10 +10,11 @@ test('records actual administration separately from creation time', () => {
   assert.equal(record.createdAt, new Date(now).toISOString());
   assert.equal(record.events.length, 1);
 });
-test('rejects invalid doses, timestamps and missing caregiver', () => {
+test('rejects invalid doses and timestamps; caregiver is optional', () => {
   for (const units of [0, -1, NaN, Infinity]) assert.ok(validateInjection({ ...values, units }, now));
   for (const administeredAt of ['', 'bad', '2026-09-12T16:01:00Z']) assert.ok(validateInjection({ ...values, administeredAt }, now));
-  assert.ok(validateInjection({ ...values, caregiver: ' ' }, now));
+  assert.equal(validateInjection({ ...values, caregiver: ' ' }, now), null);
+  assert.equal(validateInjection({ ...values, caregiver: '' }, now), null);
   assert.equal(validateInjection(values, now), null);
 });
 test('corrections retain original details without mutating the original record', () => {
@@ -38,4 +39,9 @@ test('voiding retains the entry and prevents subsequent modification', () => {
 test('accepts half-unit doses and rejects other increments', () => {
   for (const units of [0.5, 1, 1.5, 2, 2.5]) assert.equal(validateInjection({ ...values, units }, now), null);
   for (const units of [0.1, 0.25, 0.75, 1.2, 1.51]) assert.match(validateInjection({ ...values, units }, now), /half-unit/);
+});
+
+test('rejects doses above the locked maximum', () => {
+  assert.match(validateInjection({ ...values, units: 5.5 }, now), /maximum/i);
+  assert.equal(validateInjection({ ...values, units: 5 }, now), null);
 });
