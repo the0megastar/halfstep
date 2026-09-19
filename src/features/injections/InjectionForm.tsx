@@ -1,5 +1,5 @@
 import React from 'react';
-import { Droplet, Calendar, Clock, Plus, Minus, Apple } from 'lucide-react';
+import { Droplet, Calendar, Plus, Minus, Apple } from 'lucide-react';
 import { PATIENT } from '../../../lib/patient';
 
 export interface InjectionFormProps {
@@ -95,44 +95,48 @@ export function InjectionForm({
           <p className="field-hint text-copy-13">Locked maximum {max} units.</p>
         </div>
 
-        <div className="log-form-row log-form-row--split">
-          <div className="log-form-pair">
-            <div className="history-field-header">
+        <div className="log-form-row">
+          <div className="history-field-header log-form-now-row">
+            <span className="history-field-label">
+              <Calendar size={16} className="field-icon" aria-hidden="true" />
+              <span>When given</span>
+            </span>
+            <button
+              type="button"
+              className="history-label-action"
+              onClick={onSetTimeToNow}
+              title="Set date and time to now"
+            >
+              Set to Now
+            </button>
+          </div>
+          <div className="log-form-row--split log-form-when">
+            <div className="log-form-pair">
               <label htmlFor="history-admin-date" className="history-field-label">
-                <Calendar size={16} className="field-icon" />
                 <span>Date</span>
               </label>
-              <button
-                type="button"
-                className="history-label-action"
-                onClick={onSetTimeToNow}
-                title="Set date and time to now"
-              >
-                Set to Now
-              </button>
+              <input
+                id="history-admin-date"
+                type="date"
+                required
+                value={date}
+                onChange={(e) => onDateChange(e.target.value)}
+                className="history-text-input history-date-input"
+              />
             </div>
-            <input
-              id="history-admin-date"
-              type="date"
-              required
-              value={date}
-              onChange={(e) => onDateChange(e.target.value)}
-              className="history-text-input"
-            />
-          </div>
-          <div className="log-form-pair">
-            <label htmlFor="history-admin-clock" className="history-field-label">
-              <Clock size={16} className="field-icon" />
-              <span>Time</span>
-            </label>
-            <input
-              id="history-admin-clock"
-              type="time"
-              required
-              value={clock}
-              onChange={(e) => onClockChange(e.target.value)}
-              className="history-text-input"
-            />
+            <div className="log-form-pair">
+              <label htmlFor="history-admin-clock" className="history-field-label">
+                <span>Time</span>
+              </label>
+              <input
+                id="history-admin-clock"
+                type="time"
+                required
+                value={clock}
+                onChange={(e) => onClockChange(e.target.value)}
+                className="history-text-input history-time-input"
+              />
+            </div>
           </div>
         </div>
 
