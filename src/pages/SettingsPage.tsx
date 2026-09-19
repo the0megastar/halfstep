@@ -1,104 +1,138 @@
-import { Lock, Moon, Sun, Type } from 'lucide-react';
-import { ROMAN } from '../../lib/dose';
-import { PROVISIONAL_MAX_DOSE_WARNING_UNITS } from '../../lib/appSettings';
-import type { AppSettings } from '../../lib/appSettings';
+import { Lock } from 'lucide-react';
+import { PATIENT } from '../../lib/patient';
+import type { ThemePreference } from '../app/useTheme';
+import { PageHeader } from '../components/ui/PageHeader';
 
 export interface SettingsPageProps {
-  settings: AppSettings;
-  onMaxDoseChange: (value: number | string) => void;
-  colorMode: 'light' | 'dark';
-  onToggleTheme: () => void;
-  onOpenTypography?: () => void;
+  themePreference: ThemePreference;
+  onThemePreferenceChange: (value: ThemePreference) => void;
 }
 
+const THEME_OPTIONS: { value: ThemePreference; label: string }[] = [
+  { value: 'light', label: 'Light' },
+  { value: 'dark', label: 'Dark' },
+  { value: 'system', label: 'Automatic' },
+];
+
 export function SettingsPage({
-  settings,
-  onMaxDoseChange,
-  colorMode,
-  onToggleTheme,
-  onOpenTypography,
+  themePreference,
+  onThemePreferenceChange,
 }: SettingsPageProps) {
+  const diaHours = Number(PATIENT.durationOfInsulinHours);
+  const diaLabel = diaHours === 1 ? '1 hour' : `${diaHours} hours`;
+
   return (
     <section className="settings-page" aria-labelledby="settings-heading">
-      <header className="page-heading">
-        <div className="heading-text">
-          <h1 id="settings-heading">Settings</h1>
-          <p className="eyebrow">APP & PRESCRIBED PARAMETERS</p>
-        </div>
-      </header>
+      <PageHeader
+        title="Settings"
+        titleId="settings-heading"
+        intro="Appearance and locked insulin parameters."
+      />
 
-      <div className="card-surface settings-card">
-        <div className="dropdown-header">
-          <div className="dropdown-header-main">
-            <span className="dropdown-title text-heading-16">Prescribed Settings</span>
-            <Lock size={15} className="dropdown-title-lock" aria-label="Locked to physician orders" />
+      <div className="card-surface settings-card settings-card--locked">
+        <div className="settings-card-header">
+          <span className="text-heading-16">Locked Insulin Parameters</span>
+          <Lock size={15} className="settings-lock" aria-label="Locked" />
+        </div>
+        <div className="settings-metric-list" role="list">
+          <div className="settings-metric-row" role="listitem">
+            <span className="settings-metric-name text-label-14">Name</span>
+            <span className="settings-metric-val text-label-14">{PATIENT.name}</span>
+          </div>
+          <div className="settings-metric-row" role="listitem">
+            <span className="settings-metric-name text-label-14">Insulin</span>
+            <span className="settings-metric-val text-label-14">{PATIENT.insulinName}</span>
+          </div>
+          <div className="settings-metric-row" role="listitem">
+            <span className="settings-metric-name text-label-14">Carb Ratio</span>
+            <span className="settings-metric-val text-label-14">1u : {PATIENT.carbRatio}g</span>
+          </div>
+          <div className="settings-metric-row" role="listitem">
+            <span className="settings-metric-name text-label-14">Sensitivity (ISF)</span>
+            <span className="settings-metric-val text-label-14">{PATIENT.isf} mg/dL</span>
+          </div>
+          <div className="settings-metric-row" role="listitem">
+            <span className="settings-metric-name text-label-14">Target Glucose</span>
+            <span className="settings-metric-val text-label-14">{PATIENT.targetGlucose} mg/dL</span>
+          </div>
+          <div className="settings-metric-row" role="listitem">
+            <span className="settings-metric-name text-label-14">Maximum Dose</span>
+            <span className="settings-metric-val text-label-14">{PATIENT.maxDoseUnits} units</span>
+          </div>
+          <div className="settings-metric-row" role="listitem">
+            <span className="settings-metric-name text-label-14">Insulin Duration</span>
+            <span className="settings-metric-val text-label-14">{diaLabel}</span>
+          </div>
+          <div className="settings-metric-row" role="listitem">
+            <span className="settings-metric-name text-label-14">Low Glucose Gate</span>
+            <span className="settings-metric-val text-label-14">
+              ≤ {PATIENT.lowGlucoseMgDl} mg/dL
+            </span>
+          </div>
+          <div className="settings-metric-row" role="listitem">
+            <span className="settings-metric-name text-label-14">Carb Check Gate</span>
+            <span className="settings-metric-val text-label-14">
+              &gt; {PATIENT.highCarbsGrams} g
+            </span>
           </div>
         </div>
-        <div className="dropdown-metric-list">
-          <div className="dropdown-metric-row">
-            <div className="dropdown-metric-text">
-              <span className="dropdown-metric-name text-label-14">Carb Ratio</span>
-              <span className="dropdown-metric-caption text-copy-13">1 unit per {ROMAN.ratio}g carbs</span>
-            </div>
-            <span className="dropdown-metric-val text-label-14">1 u : {ROMAN.ratio} g</span>
-          </div>
-          <div className="dropdown-metric-row">
-            <div className="dropdown-metric-text">
-              <span className="dropdown-metric-name text-label-14">Sensitivity (ISF)</span>
-              <span className="dropdown-metric-caption text-copy-13">1 unit drops {ROMAN.sensitivity} mg/dL</span>
-            </div>
-            <span className="dropdown-metric-val text-label-14">{ROMAN.sensitivity} mg/dL</span>
-          </div>
-          <div className="dropdown-metric-row">
-            <div className="dropdown-metric-text">
-              <span className="dropdown-metric-name text-label-14">Target Glucose</span>
-              <span className="dropdown-metric-caption text-copy-13">Correct if &ge; {ROMAN.target} mg/dL</span>
-            </div>
-            <span className="dropdown-metric-val text-label-14">{ROMAN.target} mg/dL</span>
-          </div>
+        <p className="settings-card-footer text-label-12">
+          <Lock size={12} aria-hidden="true" />
+          Locked
+        </p>
+      </div>
+
+      <div className="card-surface settings-card settings-card--teaching">
+        <h2 className="text-heading-16">How These Numbers Work</h2>
+        <div className="settings-teaching text-copy-13">
+          <p>
+            Carb ratio turns food grams into insulin. Sensitivity (ISF) turns how far glucose sits
+            above target into a correction.
+          </p>
+          <p>
+            The suggested dose is food coverage plus correction, then rounded to the nearest half
+            unit.
+          </p>
+          <p>
+            Insulin on board fades in a straight line over {diaLabel}. The maximum dose is a hard
+            ceiling for suggestions and logs.
+          </p>
+          <p>
+            At or below {PATIENT.lowGlucoseMgDl} mg/dL, Halfstep does not suggest insulin. Follow
+            your hypoglycemia plan.
+          </p>
+          <p>
+            Above {PATIENT.highCarbsGrams} g of carbs, Halfstep asks you to confirm the count. If
+            the half-unit math is above the locked maximum of {PATIENT.maxDoseUnits} units, Halfstep
+            does not suggest a dose.
+          </p>
+          <p className="settings-teaching-footnote">
+            These locked values come from the care plan baked into this build.
+          </p>
         </div>
-        <div className="dropdown-footer text-label-12">
-          <Lock size={12} className="dropdown-lock-icon" />
-          <span>Parameters are locked to physician orders</span>
+      </div>
+<div className="card-surface settings-card">
+        <h2 className="text-heading-16" id="appearance-heading">Appearance</h2>
+        <div
+          className="theme-segmented"
+          role="radiogroup"
+          aria-labelledby="appearance-heading"
+        >
+          {THEME_OPTIONS.map((opt) => (
+            <button
+              key={opt.value}
+              type="button"
+              role="radio"
+              aria-checked={themePreference === opt.value}
+              className={`theme-segment${themePreference === opt.value ? ' is-selected' : ''}`}
+              onClick={() => onThemePreferenceChange(opt.value)}
+            >
+              {opt.label}
+            </button>
+          ))}
         </div>
       </div>
 
-      <div className="card-surface settings-card">
-        <h2 className="text-heading-16">Dose safety</h2>
-        <label className="settings-field" htmlFor="max-dose-warning">
-          <span className="dropdown-metric-name text-label-14">Maximum dose warning</span>
-          <span className="dropdown-metric-caption text-copy-13">
-            Extra confirmation when a recorded dose is at or above this amount. Provisional default
-            is {PROVISIONAL_MAX_DOSE_WARNING_UNITS} units — confirm with the care plan.
-          </span>
-        </label>
-        <div className="settings-inline-control">
-          <input
-            id="max-dose-warning"
-            type="number"
-            inputMode="decimal"
-            min={0.5}
-            step={0.5}
-            value={settings.maxDoseWarningUnits}
-            onChange={(e) => onMaxDoseChange(e.target.value)}
-          />
-          <span>units</span>
-        </div>
-      </div>
-
-      <div className="card-surface settings-card">
-        <h2 className="text-heading-16">Appearance</h2>
-        <button type="button" className="settings-row-btn" onClick={onToggleTheme}>
-          {colorMode === 'light' ? <Moon size={18} /> : <Sun size={18} />}
-          <span>{colorMode === 'light' ? 'Switch to dark mode' : 'Switch to light mode'}</span>
-        </button>
-        {onOpenTypography && (
-          <button type="button" className="settings-row-btn" onClick={onOpenTypography}>
-            <Type size={18} />
-            <span>Typography specimen</span>
-          </button>
-        )}
-      </div>
-    </section>
+          </section>
   );
 }

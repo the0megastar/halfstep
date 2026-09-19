@@ -20,7 +20,7 @@ export function IobGauge({ fraction = 0 }: IobGaugeProps) {
           strokeDasharray={`${percentage} 100`}
         />
       </svg>
-      <Droplet size={17} />
+      <Droplet size={18} />
     </span>
   );
 }

@@ -1,7 +1,8 @@
 import { useRef, useEffect } from 'react';
-import { ArrowRight } from 'lucide-react';
+import { ClipboardList } from 'lucide-react';
 import { useDropdownBoundary } from '../../hooks/useDropdownBoundary';
 import { remainingLabel } from '../../../lib/iob';
+import { PATIENT } from '../../../lib/patient';
 import { IobBadge } from './IobBadge';
 import { formatTimeShort } from '../injections/dateUtils';
 import type { ContributingInjectionItem } from './useIobSummary';
@@ -73,24 +74,24 @@ export function IobPopover({
           style={panelStyle}
           className="iob-dropdown-panel"
           role="dialog"
-          aria-label="Active Insulin Details"
+          aria-label="Insulin on Board"
         >
           <div className="dropdown-header">
             <div className="dropdown-header-main">
-              <span className="dropdown-title text-heading-16">Active Insulin (IOB)</span>
+              <span className="dropdown-title text-heading-16">Insulin on Board (IOB)</span>
               <span
                 className={`chip text-label-12 ${
                   total > 0 && !uncertain ? 'chip-active' : 'chip-locked'
                 }`}
               >
-                {uncertain ? 'Uncertain' : total > 0 ? 'Active' : 'Complete'}
+                {uncertain ? 'Uncertain' : total > 0 ? 'On board' : 'Clear'}
               </span>
             </div>
-            <span className="dropdown-subtitle text-copy-13">Linear 3-Hour NovoLog Model</span>
+            <span className="dropdown-subtitle text-copy-13">{`Linear ${PATIENT.durationOfInsulinHours}-Hour ${PATIENT.insulinName} Model`}</span>
           </div>
 
           <div className="iob-summary-hero">
-            <span className="iob-hero-caption iob-hero-left text-label-13">Active Insulin</span>
+            <span className="iob-hero-caption iob-hero-left text-label-13">Insulin on Board</span>
             <div className="iob-hero-divider" aria-hidden="true" />
             <span className="iob-hero-caption iob-hero-right text-label-13">Time Remaining</span>
 
@@ -109,48 +110,55 @@ export function IobPopover({
 
           {activeContributing.length > 0 ? (
             <div className="iob-active-list">
-              <span className="iob-list-title text-heading-14">Contributing Injections</span>
+              <span className="iob-list-title text-heading-14">Contributing Doses</span>
               {activeContributing.map(({ record, item }) => (
                 <div key={record.id} className="iob-item-row">
-                  <div className="iob-item-info">
-                    <strong className="text-label-14">
-                      {record.units} U · {formatTimeShort(record.administeredAt)}
+                  <span className="iob-item-primary">
+                    <strong className="text-heading-14 iob-item-title">
+                      {record.units} U · {PATIENT.insulinName}
                     </strong>
-                    <span className="iob-item-caregiver text-copy-13">{record.caregiver}</span>
-                  </div>
-                  <div className="iob-item-timing">
-                    <span className="iob-item-remaining text-label-14">
+                    <span className="text-label-14 iob-item-remaining">
                       ~{item.remainingUnits.toFixed(2)} U
                     </span>
-                    <span className="iob-item-time-left text-label-12">
-                      {remainingLabel(item.remainingMs)} left
+                  </span>
+                  <span className="text-copy-13 iob-item-subtitle">
+                    {formatTimeShort(record.administeredAt)} · {record.caregiver}
+                  </span>
+                  <span className="iob-item-timing">
+                    <progress
+                      max="1"
+                      value={item.fraction}
+                      aria-label="Modeled time remaining"
+                    />
+                    <span className="iob-item-timing-copy">
+                      <span className="text-label-14 iob-item-time-left">
+                        {remainingLabel(item.remainingMs)} remaining
+                      </span>
+                      <span className="text-label-12 iob-item-until">
+                        Until {formatTimeShort(item.endsAt)}
+                      </span>
                     </span>
-                  </div>
+                  </span>
                 </div>
               ))}
             </div>
           ) : (
-            <p className="iob-empty-note text-copy-13">
-              No active NovoLog doses recorded in the last 3 hours.
-            </p>
+            <p className="iob-empty-note text-copy-13">{`No ${PATIENT.insulinName} doses recorded in the last ${PATIENT.durationOfInsulinHours} hours.`}</p>
           )}
 
-          <p className="iob-disclaimer text-copy-13">
-            Local device records only · Linear decay model. Missing injections are not factored in.
-            Biological effect may persist past 3 hours.
-          </p>
+          <p className="iob-disclaimer text-copy-13">{`Local device records only · Linear decay model. Missing doses are not factored in. Biological effect may persist past ${PATIENT.durationOfInsulinHours} hours. Duration is locked in Settings.`}</p>
 
           <div className="iob-dropdown-footer">
             <button
               type="button"
-              className="iob-view-history-btn text-button-14"
+              className="iob-history-nav-btn"
               onClick={() => {
                 onClose();
                 onOpenHistory();
               }}
             >
-              <span>View Injection History</span>
-              <ArrowRight size={14} />
+              <ClipboardList size={20} strokeWidth={1.75} aria-hidden="true" />
+              <span className="iob-history-nav-label text-label-12">History</span>
             </button>
           </div>
         </div>

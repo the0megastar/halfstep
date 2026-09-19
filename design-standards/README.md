@@ -11,6 +11,7 @@ Start here before adding or changing a feature. Keep the current app's visual id
 - [Typography](TYPOGRAPHY.md): existing scale; reconcile noted discrepancies before expanding it.
 - [Dropdowns](DROPDOWNS.md): established viewport geometry and panel anatomy.
 - [Section headers](SECTION_HEADERS.md): section hierarchy and spacing.
+- [Content & teaching voice](CONTENT.md): explain concepts (not the UI), reading level, unit wording, teaching-group structure.
 
 ## Recommended additions
 
@@ -19,7 +20,7 @@ Add documents when the corresponding shared behavior is implemented, not specula
 - `LAYOUT.md`: spacing scale, mobile layouts, safe areas, content widths, breakpoints and touch targets.
 - `COMPONENTS.md`: links to canonical components, props/variants, interaction and error states, and examples. Include buttons, fields, stepper, popover, modal, gauge and history row.
 - `ACCESSIBILITY.md`: keyboard/focus contracts, labels, contrast, zoom, reduced motion and screen-reader checks.
-- `CONTENT.md`: consistent units, dose precision, dates/timezones, estimated IOB wording, completed intervals, local-only and error messages.
+- `CONTENT.md`: **added** — teaching voice plus unit/approx contracts; expand later for dates/timezones and error strings.
 - `DECISIONS.md`: dated accepted decisions, rationale and superseded rules. Separate product choices from external guidance.
 - `examples/`: synthetic state fixtures and approved screenshots identified by viewport/theme/state. No real caregiver/patient records.
 

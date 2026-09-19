@@ -27,3 +27,6 @@ yarn-error.log*
 .idea/
 *.tsbuildinfo
 halfstep-v0.2.0.bundle
+
+# machine-local notes (not for remote)
+/local/

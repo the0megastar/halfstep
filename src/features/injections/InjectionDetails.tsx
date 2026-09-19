@@ -5,64 +5,98 @@ export interface InjectionDetailsProps {
   record: Injection;
   onEdit: () => void;
   onPromptVoid: () => void;
-  onBackToHistory: () => void;
+  onClose: () => void;
+}
+
+function eventLabel(action: string): string {
+  if (action === 'corrected') return 'Edited';
+  if (action === 'created') return 'Created';
+  if (action === 'voided') return 'Voided';
+  return action;
 }
 
 export function InjectionDetails({
   record,
   onEdit,
   onPromptVoid,
-  onBackToHistory,
+  onClose,
 }: InjectionDetailsProps) {
+  const glucoseLabel =
+    record.glucoseMgDl != null && Number.isFinite(record.glucoseMgDl)
+      ? `${record.glucoseMgDl} mg/dL`
+      : '—';
+  const carbsLabel =
+    record.carbsGrams != null && Number.isFinite(record.carbsGrams)
+      ? `${record.carbsGrams} g`
+      : '—';
+  const isActive = record.status === 'active';
+  // Summary already shows current dose/time; audit only earns space after a change.
+  const showAudit = record.events.some((event) => event.action !== 'created');
+
   return (
     <>
-      <p>
-        <strong>
-          {record.units} units · {record.insulin}
-        </strong>
-        <br />
-        {formatTimestamp(record.administeredAt)}
-        <br />
-        Caregiver: {record.caregiver}
-        <br />
-        Status: {record.status}
-      </p>
+      <header className="history-sheet-header">
+        <h2 id="injection-detail-title" className="text-heading-16">
+          Injection details
+        </h2>
+      </header>
 
-      <h3>Record History</h3>
-      <ol className="history-audit">
-        {record.events.map((event, index) => (
-          <li key={index}>
-            <strong>
-              {event.action === 'corrected'
-                ? 'Edited'
-                : event.action === 'created'
-                ? 'Created'
-                : event.action === 'voided'
-                ? 'Voided'
-                : event.action}
-            </strong>{' '}
-            · {formatTimestamp(event.at)}
-            <br />
-            {event.values.units} units · {formatTimestamp(event.values.administeredAt)} ·{' '}
-            {event.values.caregiver}
-          </li>
-        ))}
-      </ol>
+      <dl className="confirm-review confirm-review--dialog">
+        <div className="confirm-row">
+          <dt>Dose</dt>
+          <dd>
+            {record.units} units {record.insulin}
+            {!isActive ? ' · voided' : ''}
+          </dd>
+        </div>
+        <div className="confirm-row">
+          <dt>Time</dt>
+          <dd>{formatTimestamp(record.administeredAt)}</dd>
+        </div>
+        <div className="confirm-row">
+          <dt>Glucose</dt>
+          <dd>{glucoseLabel}</dd>
+        </div>
+        <div className="confirm-row">
+          <dt>Carbs</dt>
+          <dd>{carbsLabel}</dd>
+        </div>
+      </dl>
 
-      <div className="history-actions">
-        {record.status === 'active' && (
+      {showAudit && (
+        <>
+          <h3 className="history-sheet-section text-heading-14">Changes</h3>
+          <ol className="history-audit">
+            {record.events
+              .filter((event) => event.action !== 'created')
+              .map((event, index) => (
+                <li key={index}>
+                  <strong>{eventLabel(event.action)}</strong>
+                  <span className="history-audit-meta"> · {formatTimestamp(event.at)}</span>
+                  <br />
+                  <span className="history-audit-detail">
+                    {event.values.units} units · {formatTimestamp(event.values.administeredAt)}
+                  </span>
+                </li>
+              ))}
+          </ol>
+        </>
+      )}
+
+      <div className="history-sheet-actions">
+        <button type="button" className="btn-ghost" onClick={onClose}>
+          Close
+        </button>
+        {isActive && (
           <>
-            <button className="btn-secondary" type="button" onClick={onEdit}>
-              Edit Entry
+            <button type="button" className="btn-secondary" onClick={onEdit}>
+              Edit
             </button>
-            <button className="btn-destructive" type="button" onClick={onPromptVoid}>
-              Void Entry
+            <button type="button" className="btn-destructive" onClick={onPromptVoid}>
+              Void
             </button>
           </>
         )}
-        <button className="btn-ghost" type="button" onClick={onBackToHistory}>
-          Back to History
-        </button>
       </div>
     </>
   );

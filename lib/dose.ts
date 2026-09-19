@@ -1,15 +1,6 @@
-/**
- * Roman's Clinical Settings (Prescribed by his doctor).
- * Hardcoded and immutable to ensure patient safety.
- */
-export const ROMAN = Object.freeze({
-  ratio: 35,          // 1 unit of insulin per 35 grams of carbohydrates
-  sensitivity: 135,   // 1 unit of insulin lowers blood glucose by 135 mg/dL (ISF)
-  target: 150,        // Target blood glucose (mg/dL)
-  maxGlucose: 400,    // Glucose over 400 is unusually high; prompts double-check & ketone warning
-  lowGlucose: 70,     // Glucose under 70 is hypoglycemia; prompts no-dose alert
-  highCarbs: 100,     // Carbs over 100g prompts a casual sanity check
-});
+import { PATIENT, ROMAN } from './patient.ts';
+export { PATIENT, ROMAN };
+
 
 export type RoundingCategory = 'exact' | 'round-down' | 'round-half' | 'round-up';
 
@@ -41,7 +32,7 @@ export function calculateHalfStepRounding(total: number): RoundingInfo {
   const whole = Math.floor(total);
   const rawRemainder = total - whole;
   const remainder = Math.round(rawRemainder * 100) / 100;
-  const decimalText = rawRemainder.toFixed(3).substring(1); // e.g. ".486"
+  const decimalText = `.${rawRemainder.toFixed(2).split('.')[1]}`; // e.g. ".49"
 
   let rounded = whole;
   let ruleCategory: RoundingCategory = 'exact';
@@ -52,22 +43,22 @@ export function calculateHalfStepRounding(total: number): RoundingInfo {
     rounded = whole;
     ruleCategory = 'exact';
     ruleLabel = 'Exact whole unit';
-    explanation = `Exact match (${whole}u). No rounding needed.`;
+    explanation = `That total is already a whole unit (${whole}u), so no half-unit rounding is needed.`;
   } else if (remainder >= 0.05 && remainder < 0.35) {
     rounded = whole;
     ruleCategory = 'round-down';
     ruleLabel = 'Round down (.1–.3)';
-    explanation = `The decimal (${decimalText}) falls in the .1–.3 range, so round down to ${rounded.toFixed(1)} units.`;
+    explanation = `The leftover ${decimalText} is in the .1 to .3 range, so the dose rounds down to ${rounded.toFixed(1)} ${unitWord(rounded)}.`;
   } else if (remainder >= 0.35 && remainder < 0.75) {
     rounded = whole + 0.5;
     ruleCategory = 'round-half';
     ruleLabel = 'Round to half (.4–.7)';
-    explanation = `The decimal (${decimalText}) falls in the .4–.7 range, so round to the half-unit mark: ${rounded.toFixed(1)} units.`;
+    explanation = `The leftover ${decimalText} is in the .4 to .7 range, so the dose rounds to ${rounded.toFixed(1)} ${unitWord(rounded)}.`;
   } else {
     rounded = whole + 1.0;
     ruleCategory = 'round-up';
     ruleLabel = 'Round up (.8–.9)';
-    explanation = `The decimal (${decimalText}) falls in the .8–.9 range, so round up to ${rounded.toFixed(1)} units.`;
+    explanation = `The leftover ${decimalText} is in the .8 to .9 range, so the dose rounds up to ${rounded.toFixed(1)} ${unitWord(rounded)}.`;
   }
 
   return {
@@ -89,6 +80,40 @@ export function displayUnits(n: number | null, precision = 3): string {
   return `${isApprox ? '≈ ' : ''}${rounded.toLocaleString('en-US', { maximumFractionDigits: precision })}`;
 }
 
+/**
+ * Compact unit label for dense math cards (Food / Correction).
+ * No approximation marker; max 2 fraction digits; tight "u" suffix.
+ * Keeps list-row trailing values short so they do not wrap on phone.
+ */
+export function displayCompactUnits(n: number | null): string {
+  if (n === null || !Number.isFinite(n)) return '—';
+  const rounded = Math.round(n * 100) / 100;
+  const text = Number(rounded.toFixed(2)).toString();
+  return `${text}u`;
+}
+
+/** Plain unit amount for teaching copy — no ≈ marker (avoids “exact ≈ …” contradictions). */
+export function formatTeachingUnits(n: number | null, precision = 2): string {
+  if (n === null || !Number.isFinite(n)) return '—';
+  return Number(n.toFixed(precision)).toLocaleString('en-US', {
+    maximumFractionDigits: precision,
+  });
+}
+
+/** Singular for 0.5 and 1 (and their negatives); otherwise plural “units”. */
+export function unitWord(n: number | null): string {
+  if (n === null || !Number.isFinite(n)) return 'units';
+  const abs = Math.abs(n);
+  if (Math.abs(abs - 0.5) < 1e-9 || Math.abs(abs - 1) < 1e-9) return 'unit';
+  return 'units';
+}
+
+/** Amount + unit/units for teaching sentences. */
+export function formatTeachingAmount(n: number | null, precision = 2): string {
+  if (n === null || !Number.isFinite(n)) return '—';
+  return `${formatTeachingUnits(n, precision)} ${unitWord(n)}`;
+}
+
 export interface CalculationResult {
   glucose: number | null;
   carbs: number | null;
@@ -100,9 +125,18 @@ export interface CalculationResult {
   isLowGlucose: boolean;
   isHighGlucose: boolean;
   isHighCarbs: boolean;
+  /** True when half-unit rounded math is above locked max — no suggested dose. */
+  exceedsMaxDose: boolean;
   glucoseWarning: string | null;
   carbsWarning: string | null;
   casualSentence: string;
+}
+
+
+export function clampToMaxDose(units: number): number {
+  const max = PATIENT.maxDoseUnits;
+  if (!Number.isFinite(units) || units <= 0) return units;
+  return Math.min(units, max);
 }
 
 export function calculate(glucoseRaw: string, carbsRaw: string): CalculationResult {
@@ -114,13 +148,13 @@ export function calculate(glucoseRaw: string, carbsRaw: string): CalculationResu
   const isHighCarbs = carbs !== null && carbs > ROMAN.highCarbs;
 
   const glucoseWarning = isLowGlucose
-    ? `Hold on — blood sugar is ${glucose} mg/dL, which is under 70. I wouldn't dose on a low! Treat the low with fast-acting carbs first (like juice) and check Roman's school plan.`
+    ? `Glucose is ${glucose} mg/dL, under 70. Halfstep does not suggest insulin. Follow your hypoglycemia plan from your care team.`
     : isHighGlucose
-    ? `Whoa, double-check that glucose (${glucose} mg/dL). Over 400 is unusually high. If this is accurate, check for ketones and follow his school emergency plan.`
+    ? `Glucose is ${glucose} mg/dL, over 400. Confirm the reading and follow your care team plan for high glucose.`
     : null;
 
   const carbsWarning = isHighCarbs
-    ? `That's ${carbs}g of carbs (over 100g)! Are you sure about this count? Take a quick look at Roman's lunchbox or plate to double-check.`
+    ? `Carbs are ${carbs} g, above the ${PATIENT.highCarbsGrams} g check gate in this build. Confirm the carb count.`
     : null;
 
   const food = carbs === null ? null : carbs / ROMAN.ratio;
@@ -129,6 +163,7 @@ export function calculate(glucoseRaw: string, carbsRaw: string): CalculationResu
 
   let total: number | null = null;
   let rounding: RoundingInfo | null = null;
+  let exceedsMaxDose = false;
 
   if (isLowGlucose) {
     // Suppress dose recommendation on severe low
@@ -145,26 +180,39 @@ export function calculate(glucoseRaw: string, carbsRaw: string): CalculationResu
     rounding = calculateHalfStepRounding(total);
   }
 
-  // Generate dynamic conversational teaching sentence
+  // Over locked max: no suggested dose figure (hero / breakdown units blanked in UI)
+  if (rounding !== null && rounding.rounded > PATIENT.maxDoseUnits) {
+    exceedsMaxDose = true;
+  }
+
+  // How the Math Works: bridge live numbers to the idea
   let casualSentence = '';
   if (glucose === null && carbs === null) {
-    casualSentence = 'Enter Roman’s glucose reading and lunch carbs above. Halfstep will calculate the exact units, explain each step in plain English, and apply his half-unit rounding rule.';
+    casualSentence = '';
   } else if (isLowGlucose) {
-    casualSentence = `Blood sugar is ${glucose} mg/dL (under 70). Do not give insulin for a low reading. Give fast-acting carbs instead according to his school emergency plan.`;
+    casualSentence = `Glucose is ${glucose} mg/dL, under 70. Halfstep does not suggest insulin at this reading. Follow your hypoglycemia plan from your care team.`;
   } else if (glucose === null) {
-    casualSentence = `For ${carbs}g of carbs, Roman needs ${displayUnits(food)} units for food (${carbs} ÷ 35). Enter his current glucose to check if a correction is needed.`;
+    casualSentence = `Food coverage for ${carbs}g of carbs is ${formatTeachingAmount(food)} (${carbs} ÷ ${PATIENT.carbRatio}). Correction still needs a glucose reading.`;
   } else if (carbs === null) {
     if (belowTarget) {
-      casualSentence = `At ${glucose} mg/dL, Roman is below his 150 target, so no correction insulin is given. Enter his carbs to calculate his meal dose.`;
+      casualSentence = `At ${glucose} mg/dL, glucose is below the 150 target, so correction is 0. Food coverage still needs a carb count.`;
     } else {
-      casualSentence = `At ${glucose} mg/dL (${glucose - ROMAN.target} points over target), his high glucose correction is ${displayUnits(correction)} units. Enter his carbs to get the total dose.`;
+      const diff = glucose - ROMAN.target;
+      casualSentence = `At ${glucose} mg/dL (${diff} over the 150 target), correction is ${formatTeachingAmount(correction)} (${diff} ÷ 135). Food coverage still needs a carb count.`;
     }
-  } else if (belowTarget) {
-    casualSentence = `Roman is at ${glucose} mg/dL (below his 150 target), so he gets zero correction insulin. He only gets food coverage: ${displayUnits(food)} units for his ${carbs}g of carbs (${carbs} ÷ 35). ${rounding ? rounding.explanation : ''}`.trim();
+  } else if (exceedsMaxDose) {
+    casualSentence =
+      `The half-unit math is above the locked maximum of ${PATIENT.maxDoseUnits} units. Confirm the glucose and carb numbers. Halfstep does not log a dose over that maximum.`;
   } else if (total !== null && rounding !== null) {
     const dose = rounding.rounded.toFixed(1);
-    const diff = glucose - ROMAN.target;
-    casualSentence = `Roman gets ${dose} units. Here is the math: ${displayUnits(food)} units for food (${carbs}g ÷ 35) plus ${displayUnits(correction)} units for correction (${glucose} − 150 = ${diff}, then ${diff} ÷ 135). Exact total is ${displayUnits(total)} units. ${rounding.explanation}`;
+    if (belowTarget || correction === null) {
+      casualSentence =
+        `The dose is ${dose} ${unitWord(rounding.rounded)}. Food coverage is ${formatTeachingAmount(food)} from ${carbs}g ÷ ${PATIENT.carbRatio}. At ${glucose} mg/dL, glucose is below the 150 target, so correction is 0. That is ${formatTeachingAmount(total)} before half-unit rounding. ${rounding.explanation}`.trim();
+    } else {
+      const beforeRound = food! + correction!;
+      casualSentence =
+        `The dose is ${dose} ${unitWord(rounding.rounded)}. Food coverage is ${formatTeachingAmount(food)} from ${carbs}g ÷ ${PATIENT.carbRatio}. Correction is ${formatTeachingAmount(correction)} from (${glucose} − 150) ÷ 135. Those add to ${formatTeachingAmount(beforeRound)} before half-unit rounding. ${rounding.explanation}`.trim();
+    }
   }
 
   return {
@@ -178,6 +226,7 @@ export function calculate(glucoseRaw: string, carbsRaw: string): CalculationResu
     isLowGlucose,
     isHighGlucose,
     isHighCarbs,
+    exceedsMaxDose,
     glucoseWarning,
     carbsWarning,
     casualSentence,

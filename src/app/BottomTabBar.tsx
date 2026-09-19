@@ -1,11 +1,11 @@
-import { Calculator, History, Settings } from 'lucide-react';
+import { Calculator, ClipboardList, Settings } from 'lucide-react';
 import type { AppView } from './useAppView';
 
 export type MainTab = 'calculator' | 'history' | 'settings';
 
 const TABS: { id: MainTab; label: string; icon: typeof Calculator }[] = [
   { id: 'calculator', label: 'Calculate', icon: Calculator },
-  { id: 'history', label: 'History', icon: History },
+  { id: 'history', label: 'History', icon: ClipboardList },
   { id: 'settings', label: 'Settings', icon: Settings },
 ];
 
@@ -29,7 +29,7 @@ export function BottomTabBar({ active, onChange }: BottomTabBarProps) {
             onClick={() => onChange(id)}
           >
             <Icon size={22} strokeWidth={selected ? 2.25 : 1.75} aria-hidden="true" />
-            <span className="bottom-tab-label">{label}</span>
+            <span className="bottom-tab-label text-label-12">{label}</span>
           </button>
         );
       })}

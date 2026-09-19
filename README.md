@@ -1,83 +1,148 @@
 # Halfstep
 
-A fast, mobile-friendly pediatric MDI insulin arithmetic checker and math double-checker for Roman's caregivers and school nurses.
+A local-first pediatric MDI insulin **math helper** for caregivers and school nurses. Halfstep checks food coverage and correction arithmetic against locked parameters, rounds to half units, and can log doses on this device only.
 
-Built with a clean **Glyph** design system with full **Light and Dark mode** support, tailored typography, and step-by-step arithmetic breakdown.
-
----
-
-## Features
-
-- **Doctor-Prescribed Locked Parameters**:
-  - Carbohydrate Ratio: **1 unit per 35 grams**
-  - Insulin Sensitivity Factor (ISF): **135 mg/dL per unit**
-  - Target Blood Glucose: **150 mg/dL**
-  - Read-only parameters accessible via the Settings icon dropdown in the navigation bar.
-- **Side-by-Side Mobile Layout**:
-  - Glucose and Carbs inputs sit side-by-side on mobile screens for fast, single-screen dosing checks without unnecessary scrolling.
-- **Step-by-Step Mathematical Breakdown**:
-  - Displays the exact math formulas directly beneath the calculated dose:
-    - **Food Coverage**: $\frac{\text{Carbs}}{35}$
-    - **Correction Bolus**: $\frac{\text{Glucose} - 150}{135}$ (only when Glucose > 150 mg/dL)
-    - **Total Dose**: Food + Correction, rounded via Roman's half-unit protocol.
-- **Roman's Half-Unit Rounding Protocol**:
-  - Fractional remainder **.1 to .3**: round down to nearest whole unit
-  - Fractional remainder **.4 to .7**: round to half unit (**0.5u**)
-  - Fractional remainder **.8 to .9**: round up to next whole unit
-- **Clinical Safety Alerts**:
-  - **Hypoglycemia (< 70 mg/dL)**: Prompts immediate treatment with fast-acting carbs; suppresses insulin dose recommendation.
-  - **High Blood Glucose (> 400 mg/dL)**: Prompts double-checking meter reading and checking for ketones.
-  - **High Carb (> 100g)**: Prompts a double-check of food portions or lunch count.
-- **100% Private, Local & Offline-Capable**:
-  - No external CDN calls, analytics, or third-party web fonts (school firewall friendly).
-  - All calculations occur 100% client-side in the browser and function completely offline.
-- **Automated GitHub Pages Deployment**:
-  - Includes `.github/workflows/deploy.yml` to automatically test, build, and deploy on pushes to `main`.
+It is **not** a medical device, pump, CGM, or care-plan replacement. Always verify glucose and dosing decisions with your meter or CGM and your care team before acting.
 
 ---
 
-## Development & Build
+## What it does
 
-### Requirements
-- Node.js 20+ or 22+
+- **Calculate** — Enter glucose and carbs. Halfstep shows food coverage, correction (when above target), half-unit rounding, and safety gates (low glucose, high glucose, high carb count, over locked maximum).
+- **History** — Log insulin given on this device (IndexedDB). Edit or void entries; originals stay in the local history trail.
+- **IOB chip** — Linear insulin-on-board estimate from locally logged doses and the locked duration of insulin action.
+- **Settings** — Appearance (Light / Dark / Automatic) and a read-only view of locked insulin parameters. Numbers are not edited in the app; change them in `lib/patient.ts` and rebuild.
+- **Offline / school-firewall friendly** — No analytics CDNs, no third-party font hosts, no cloud sync of dose history.
 
-### Commands
+### Locked parameters (this build)
+
+Edit `lib/patient.ts` (then rebuild) to clone for another person. Current defaults:
+
+| Parameter | Value |
+|-----------|--------|
+| Name (display) | Roman |
+| Carb ratio | 1 unit : 45 g |
+| ISF | 135 mg/dL per unit |
+| Target glucose | 150 mg/dL |
+| Max suggested / logged dose | 5 units |
+| Duration of insulin action | 3 hours |
+| Insulin label | NovoLog |
+| Low-glucose gate | < 70 mg/dL (no suggested dose) |
+| High-glucose prompt | > 400 mg/dL |
+| High-carb check gate | > 100 g |
+
+Math overview: food = carbs ÷ ratio; correction = (glucose − target) ÷ ISF when glucose is above target; add them; round with the half-unit protocol. Low glucose suppresses a suggested dose.
+
+---
+
+## Requirements
+
+- Node.js **22** (CI uses 22; 20+ is usually fine locally)
+- npm (comes with Node)
+
+---
+
+## Local setup
 
 ```bash
-# Start local development server with instant HMR
+git clone https://github.com/the0megastar/halfstep.git
+cd halfstep
+npm ci
 npm run dev
+```
 
-# Run clinical arithmetic and rounding unit tests
-npm run test
+Then open the URL Vite prints (typically `http://localhost:5173`).
 
-# Build static bundle for GitHub Pages (outputs to dist/ with .nojekyll)
-npm run build
+Useful scripts:
 
-# Preview production build locally
-npm run preview
+```bash
+npm test          # unit + real-world QA matrix
+npm run typecheck
+npm run build     # static site → dist/ (adds .nojekyll for Pages)
+npm run preview   # serve the production build locally
+```
+
+To adapt for another person: edit `lib/patient.ts`, run tests, rebuild.
+
+---
+
+## Deploying with GitHub Pages
+
+This repo includes [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml). On every push to **`main`** (and on manual **workflow_dispatch**), Actions runs tests, builds, and deploys `dist/` to GitHub Pages.
+
+### One-time Pages setup (any repo that uses Actions)
+
+1. Repo **Settings → Pages**
+2. **Build and deployment → Source**: **GitHub Actions**
+3. Merge or push to `main` (or run the workflow manually under the Actions tab)
+
+After the first green deploy, the site URL is shown on the workflow run and under Settings → Pages (often `https://<user>.github.io/halfstep/`).
+
+`vite.config.ts` uses `base: './'` so the app works at a project Pages path.
+
+### Public GitHub repository
+
+- **GitHub Free** is enough for Actions + Pages on a **public** repo.
+- Anyone can clone the repo, read the source (including `lib/patient.ts`), and open the published site if they know the URL.
+- Use this only if you accept that the app source and baked-in parameters are public.
+
+### Private GitHub repository (paid)
+
+- Publishing Pages from a **private** repo generally requires a paid plan (**GitHub Pro**, **Team**, or **Enterprise**), not Free.
+- A private repo hides the **git history and source** from the public (people without access cannot browse or clone it).
+- **Important:** a normal GitHub Pages URL is still a **public website** unless you use an Enterprise product that supports private Pages / access control. Do not assume “private repo” means “private website.” Anyone with the link can usually load the app and download the JS bundle.
+
+If you need the live app reachable only by family or school staff, prefer a private host with auth (or local/LAN only), not a default public Pages URL.
+
+---
+
+## Safety and privacy caveats (read before you ship)
+
+Halfstep is a **static front-end**. There is no Halfstep server and no cloud dose database.
+
+### What can be visible if the repo or site is public
+
+- **Source on GitHub** (public repo, or anyone with private-repo access): patient display name, carb ratio, ISF, target, max dose, insulin label, and all app logic in `lib/patient.ts` and related files.
+- **Deployed site JS bundle**: the same locked parameters and formulas are compiled into client JavaScript. Browser DevTools or downloading `/assets/*.js` can reveal them even without git access.
+- **README and commits**: avoid pasting real school names, phone numbers, addresses, full medical record details, or other identifiers into docs or commit messages.
+
+### What stays on the device
+
+- **Dose history / IOB inputs** live in that browser’s **IndexedDB**. They are not uploaded by Halfstep.
+- Clearing site data, switching browsers or devices, or using private browsing loses or isolates that history.
+- Caregiver labels are local labels, not login accounts.
+
+### What Halfstep does not do
+
+- It does not replace clinical judgment, prescribed plans, or on-label device instructions.
+- It does not send SMS, email, or Nightscout/CGM data in this version.
+- It does not authenticate users or encrypt history beyond whatever the browser/OS already does.
+
+### Operational tips
+
+- Prefer a **private** repo if the clone contains a real child’s parameters.
+- Treat the Pages URL as **world-readable** unless you have confirmed private hosting.
+- School MDM may block installs; a bookmarkable HTTPS (or LAN) site is often easier than a store app.
+- Re-run `npm test` after any change to `lib/patient.ts`.
+
+---
+
+## Project layout (short)
+
+```
+lib/patient.ts     Locked cloneable parameters
+lib/dose.ts        Calculate math + teaching sentences
+src/pages/         Calculate, History, Settings
+tests/             Unit tests + real-world QA matrix
+.github/workflows/ Pages deploy (test → build → deploy)
+design-standards/  Content and HIG notes for UI work
+local/             Machine-local notes (gitignored; never push)
 ```
 
 ---
 
-## Deployment (GitHub Pages)
+## Releases and attribution
 
-This project is configured to deploy automatically via GitHub Actions:
+Keep commits attributed to the human author only. Do not add AI `Co-authored-by` lines, bot `Signed-off-by`, or “Generated by” trailers.
 
-1. Under repository **Settings > Pages**:
-   - Set **Build and deployment > Source** to **GitHub Actions**.
-2. Any push to the `main` branch will automatically run the test suite, build the Vite app, and publish the site to:
-   ```
-   https://the0megastar.github.io/halfstep/
-   ```
-
----
-
-## Safety Notice
-
-This tool is an arithmetic teaching aid and math double-checker. Always follow the physician-signed School Diabetes Medical Management Plan (DMMP) or 504 plan. Active insulin on board (IOB), exercise, illness, or ketones must be evaluated per doctor’s written orders.
-
-## Version 0.2.0: local injection history
-
-Open the history icon in the top navigation to record NovoLog actually administered. Review the dose, local administration time, and caregiver before confirming. Entries can be corrected or voided; original details remain in the record history.
-
-History is stored in this browser's IndexedDB. It is not shared or backed up, and clearing browser data removes it. Caregiver names are labels, not authenticated identities. Recording does not change calculator arithmetic. The navigation and history show three-hour countdowns and estimated IOB using a linear model based only on locally recorded NovoLog injections. Completed timers remain labeled in history. Caregiver synchronization, PIN authentication, and SMS are not included in this version.
+Deploy runs when `main` updates and the Pages workflow finishes green (Actions tab).

@@ -1,7 +1,7 @@
 /* ==========================================================================
    Dropdowns & Popovers Styles
    Reference: design-standards/DROPDOWNS.md
-   Includes Prescribed Settings Dropdown and Active Insulin (IOB) Dropdown.
+   Includes Prescribed Settings Dropdown and Insulin on Board (IOB) Dropdown.
    ========================================================================== */
 
 /* Keyframe Animations (Y-axis vertical only per standard) */
@@ -42,6 +42,20 @@
   color: var(--accent-primary);
   background: var(--accent-subtle);
   border: 1px solid var(--border-card);
+}
+
+/* Finished timer — quiet status chip (Apple trailing badge / Material tonal assistive) */
+.chip-complete {
+  color: var(--text-muted);
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-subtle);
+}
+
+.chip-voided {
+  color: var(--text-muted);
+  background: transparent;
+  border: 1px solid var(--border-subtle);
+  flex-shrink: 0;
 }
 
 .chip-active {
@@ -184,7 +198,8 @@
 .iob-badge-btn {
   background: transparent;
   border: none;
-  padding: 4px 8px;
+  /* Extra trailing pad so the chip breathes without a fake time column */
+  padding: 2px 12px 2px 6px;
   border-radius: 8px;
   cursor: pointer;
   color: var(--text-main);
@@ -196,11 +211,12 @@
 }
 
 .iob-badge-btn:hover {
-  background: var(--bg-surface-elevated, rgba(128, 128, 128, 0.08));
+  background: var(--bg-surface-elevated, rgba(127, 127, 127, 0.12));
 }
 
-.iob-badge-btn.active {
-  background: var(--bg-surface-elevated, rgba(128, 128, 128, 0.12));
+.iob-badge-btn.active,
+.iob-badge-btn.is-open {
+  background: var(--bg-surface-elevated, rgba(127, 127, 127, 0.16));
 }
 
 .iob-badge-btn:focus-visible {
@@ -208,41 +224,85 @@
   outline-offset: 2px;
 }
 
-.iob-nav-values {
+/* Large units left of the ring — read like a compact dose figure */
+.iob-nav-units {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 2px;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-main);
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.iob-nav-units-value {
+  font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.iob-nav-units-suffix {
+  font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+  letter-spacing: -0.02em;
+}
+
+.iob-nav-time-stack {
+  /* Hug the ring — left-aligned stack, no fixed column that floats the clock right */
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
   gap: 2px;
-  line-height: 1.15;
+  line-height: 1.2;
   white-space: nowrap;
-  text-align: left;
-  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
 }
 
-.iob-nav-units {
-  font-weight: 600;
-  color: var(--text-main);
-  font-variant-numeric: tabular-nums;
+.iob-nav-stack-title {
+  display: none;
 }
 
-.iob-nav-values small {
+/* Hierarchy: remaining = supporting primary; end clock = caption (Apple/Material list meta) */
+.iob-nav-remaining {
   display: block;
-  color: var(--text-muted);
+  color: var(--text-main);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.iob-nav-end {
+  display: block;
+  color: var(--text-dim, var(--text-muted));
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  /* Reserve second-line height when empty so the chip doesn’t jump */
+  min-height: 1.2em;
+}
+
+.iob-nav-end--empty {
+  visibility: hidden;
 }
 
 .iob-ring {
   position: relative;
   display: grid;
   place-items: center;
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   flex-shrink: 0;
 }
 
 .iob-ring > svg:first-child {
   position: absolute;
   inset: 0;
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   transform: rotate(-90deg);
   fill: none;
   stroke-width: 2;
@@ -364,42 +424,68 @@
 }
 
 .iob-item-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 8px 10px;
+  display: grid;
+  gap: 6px;
+  padding: 10px;
   background: var(--bg-base);
   border: 1px solid var(--border-subtle);
   border-radius: 6px;
 }
 
-.iob-item-info {
+.iob-item-primary {
   display: flex;
-  flex-direction: column;
-  gap: 2px;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
 }
 
-.iob-item-caregiver {
+.iob-item-title {
+  color: var(--text-main);
+  font-weight: 600;
+  min-width: 0;
+}
+
+.iob-item-subtitle {
   color: var(--text-muted);
 }
 
 .iob-item-timing {
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
+  align-items: stretch;
+  gap: 6px;
+  width: 100%;
+}
+
+.iob-item-timing progress {
+  width: 100%;
+  height: 18px;
+  accent-color: var(--accent-primary);
+}
+
+.iob-item-timing-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
   gap: 2px;
-  white-space: nowrap;
-  flex-shrink: 0;
 }
 
 .iob-item-remaining {
   font-weight: 600;
   color: var(--accent-primary);
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .iob-item-time-left {
-  color: var(--text-muted);
+  color: var(--text-main);
+  font-variant-numeric: tabular-nums;
+}
+
+.iob-item-until {
+  color: var(--text-dim);
 }
 
 .iob-empty-note {
@@ -418,21 +504,35 @@
   border-top: 1px solid var(--border-subtle);
 }
 
-.iob-view-history-btn {
+.iob-history-nav-btn {
   width: 100%;
-  display: flex;
+  display: inline-flex;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 8px;
+  min-height: 44px;
   padding: 8px 12px;
-  background: var(--bg-surface-elevated, rgba(128, 128, 128, 0.05));
-  border: 1px solid var(--border-card);
-  border-radius: 6px;
-  color: var(--text-main);
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--text-muted);
   cursor: pointer;
-  transition: background 0.15s ease;
+  transition: color 0.15s ease, background 0.15s ease;
 }
 
-.iob-view-history-btn:hover {
-  background: rgba(128, 128, 128, 0.12);
+.iob-history-nav-btn:hover {
+  color: var(--text-main);
+  background: var(--bg-surface-elevated, rgba(128, 128, 128, 0.08));
 }
+
+.iob-history-nav-btn:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
+.iob-history-nav-label {
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+

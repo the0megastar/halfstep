@@ -62,7 +62,7 @@ This catalog indexes Halfstep's canonical UI components, their contracts, varian
 
 ### `ClinicalFormula`
 - **File**: [`src/features/calculator/ClinicalFormula.tsx`](../src/features/calculator/ClinicalFormula.tsx)
-- **Role**: Mathematical notation display of clinical dose formula and 3-tier half-unit rounding guide (`.1–.3`, `.4–.7`, `.8–.9`) with active category indicator.
+- **Role**: Learn the Math teaching group: peer steps How the Dose Is Built (formula) and Half-Unit Rounding Guide (three-across rule cards), shared chrome, active rounding category indicator.
 
 ---
 

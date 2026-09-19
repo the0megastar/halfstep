@@ -45,6 +45,22 @@
   user-select: none;
 }
 
+.brand--button {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  border-radius: 8px;
+}
+
+.brand--button:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 3px;
+}
+
 .brand-mark {
   display: inline-grid;
   place-items: center;
@@ -157,10 +173,15 @@
 }
 
 
-/* App shell with bottom tabs (mobile-first) */
+/* App shell with bottom tabs (mobile-first).
+   Height target: ~49pt content + home-indicator safe area (Apple HIG tab bar),
+   not Material’s taller 80dp labeled nav. Touch target stays ≥44×44 via hit area. */
 .site.glyph.has-bottom-tabs {
-  padding-bottom: calc(4.25rem + env(safe-area-inset-bottom, 0px));
+  padding-bottom: calc(3.25rem + env(safe-area-inset-bottom, 0px));
 }
+/* Bottom tab bar — Apple-leaning on Glyph tokens.
+   Selected = --text-main + bold weight, no filled pill (not a button chrome).
+   Unselected = --text-muted. Never hard-code #fff (breaks dark mode). */
 .bottom-tab-bar {
   position: fixed;
   left: 0;
@@ -169,34 +190,100 @@
   z-index: 40;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 0.25rem;
-  padding: 0.35rem 0.5rem calc(0.35rem + env(safe-area-inset-bottom, 0px));
-  background: color-mix(in srgb, var(--bg, #fff) 92%, transparent);
-  border-top: 1px solid color-mix(in srgb, var(--border, #d4d4d8) 85%, transparent);
-  backdrop-filter: blur(12px);
+  gap: 0;
+  /* Content padding only; home indicator sits in safe-area, not extra empty chrome */
+  padding: 4px 0 env(safe-area-inset-bottom, 0px);
+  background-color: color-mix(in srgb, var(--bg-surface) 94%, transparent);
+  border-top: 1px solid var(--border-subtle);
+  color: var(--text-main);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
 }
 .bottom-tab {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.15rem;
-  min-height: 44px;
+  gap: 2px;
+  /* Visual row ~49px; min touch target still met by full grid cell */
+  min-height: 49px;
   border: 0;
   background: transparent;
-  color: inherit;
-  opacity: 0.72;
-  border-radius: 12px;
-  padding: 0.35rem 0.25rem;
+  color: var(--text-muted);
+  opacity: 1;
+  border-radius: 0;
+  padding: 4px 0;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  /* Kill iOS sticky “pressed” gray / highlight overlays */
+  -webkit-appearance: none;
+  appearance: none;
+}
+.bottom-tab svg {
+  color: currentColor;
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+}
+@media (pointer: coarse) {
+  .bottom-tab svg {
+    width: 24px;
+    height: 24px;
+  }
+}
+/* Hover only on real pointers — iOS/Android keep :hover after tap and flash a light overlay */
+@media (hover: hover) and (pointer: fine) {
+  .bottom-tab:hover {
+    color: var(--text-main);
+  }
+}
+.bottom-tab:active {
+  background: transparent;
+}
+.bottom-tab:focus:not(:focus-visible) {
+  outline: none;
+}
+.bottom-tab:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: -2px;
 }
 .bottom-tab.is-selected {
-  opacity: 1;
+  color: var(--text-main);
   font-weight: 600;
-  background: color-mix(in srgb, var(--accent, #2563eb) 12%, transparent);
+  background-color: transparent;
+}
+.bottom-tab.is-selected svg {
+  color: var(--text-main);
 }
 .bottom-tab-label {
-  font-size: 0.6875rem;
+  font-size: 10px;
+  line-height: 12px;
   letter-spacing: 0.01em;
+  font-weight: 400;
+}
+.bottom-tab.is-selected .bottom-tab-label {
+  font-weight: 600;
+}
+/* Laptop / large screens: keep the roomier bar that already felt right */
+@media (min-width: 768px) {
+  .site.glyph.has-bottom-tabs {
+    padding-bottom: calc(4.25rem + env(safe-area-inset-bottom, 0px));
+  }
+  .bottom-tab-bar {
+    gap: 0.25rem;
+    padding: 0.35rem 0.5rem calc(0.35rem + env(safe-area-inset-bottom, 0px));
+  }
+  .bottom-tab {
+    min-height: 48px;
+    border-radius: 12px;
+    padding: 0.35rem 0.25rem;
+    gap: 0.2rem;
+  }
+  .bottom-tab-label {
+    font-size: 12px;
+    line-height: 16px;
+  }
 }
 .settings-page {
   display: flex;
@@ -243,4 +330,304 @@
 }
 .history-page-shell {
   min-height: 60vh;
+}
+
+
+/* Appearance segmented control (Settings) */
+.theme-segmented {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+  padding: 4px;
+  margin: 0.5rem 0 0.75rem;
+  border-radius: 10px;
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-subtle);
+}
+.theme-segment {
+  border: 0;
+  background: transparent;
+  color: var(--text-muted);
+  min-height: 36px;
+  border-radius: 8px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.theme-segment.is-selected {
+  background: var(--bg-card);
+  color: var(--text-main);
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+}
+
+/* Prescribed settings condensed rows */
+.settings-card--prescribed,
+.settings-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+}
+.settings-metric-list {
+  display: flex;
+  flex-direction: column;
+}
+.settings-metric-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.settings-metric-row:last-child {
+  border-bottom: 0;
+}
+.settings-metric-name {
+  color: var(--text-main);
+}
+.settings-metric-val {
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.settings-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+.settings-card-footer {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  color: var(--text-dim);
+}
+.settings-field-help {
+  display: block;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+/* IOB chip after theme toggle removal */
+/* IOB chip layout lives in dropdowns.css (units | ring | time stack) */
+
+/* Log / clear circular header actions */
+.icon-badge-btn:disabled,
+.icon-badge-btn[aria-disabled='true'] {
+  opacity: 0.35;
+  color: var(--text-dim);
+  background: transparent;
+  border-color: var(--border-subtle);
+}
+.icon-badge-btn.active {
+  opacity: 1;
+  color: var(--text-main);
+  border-color: var(--border-highlight);
+}
+
+/* Confirm review list */
+.confirm-lead {
+  margin: 0 0 12px;
+  color: var(--text-muted);
+}
+.confirm-review {
+  margin: 0 0 16px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-subtle);
+}
+.confirm-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.confirm-row:last-child {
+  border-bottom: 0;
+}
+.confirm-row dt {
+  color: var(--text-muted);
+  font-size: 13px;
+}
+.confirm-row dd {
+  margin: 0;
+  color: var(--text-main);
+  font-weight: 600;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.confirm-note {
+  color: var(--text-muted);
+  margin: 0 0 12px;
+}
+
+.history-field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+/* Log entry form — grouped card like Confirm review */
+.log-form-card {
+  margin: 0 0 8px;
+  padding: 4px 14px 8px;
+  border-radius: 10px;
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-subtle);
+}
+.log-form-row {
+  display: grid;
+  gap: 8px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.log-form-row:last-child {
+  border-bottom: 0;
+}
+.log-form-row--split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 14px;
+  align-items: start;
+}
+.log-form-pair {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+.field-optional {
+  margin-left: 2px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  letter-spacing: 0;
+}
+
+/* Drop decorative entry footer when tip removed */
+.entry-panel .entry-footer:empty {
+  display: none;
+}
+
+.confirm-review {
+  padding: 8px 12px;
+}
+.confirm-row {
+  padding: 6px 0;
+}
+.confirm-row--split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.confirm-pair {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+  min-width: 0;
+}
+.confirm-pair dt {
+  color: var(--text-muted);
+  font-size: 13px;
+}
+.confirm-pair dd {
+  margin: 0;
+  color: var(--text-main);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+
+/* Settings teaching card — Apple Settings–style footnote spacing under a group */
+.settings-card--teaching {
+  padding: 1.15rem 1.15rem 1.25rem;
+}
+
+.settings-card--teaching > .text-heading-16 {
+  margin: 0 0 12px;
+}
+
+.settings-teaching {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-width: 34rem;
+}
+
+.settings-teaching p {
+  margin: 0;
+  line-height: 1.45;
+  color: var(--text-muted);
+}
+
+.settings-teaching-footnote {
+  margin-top: 4px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-subtle, rgb(0 0 0 / 8%));
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: var(--text-dim, var(--text-muted));
+}
+
+
+/* --------------------------------------------------------------------------
+   PageHeader — shared tab-root title + intro (Calculate / History / Settings)
+   Left edge = workspace gutter. Do not nest inside a narrower centered column.
+   -------------------------------------------------------------------------- */
+.page-header {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.page-header-text {
+  min-width: 0;
+}
+
+.page-header-title {
+  margin: 0;
+  font-size: clamp(2.25rem, 5vw, 3.6rem);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: var(--text-main);
+}
+
+.page-header-title .page-header-accent {
+  color: var(--accent-primary);
+}
+
+.page-header-intro {
+  margin: 10px 0 0;
+  font-weight: 500;
+  letter-spacing: -0.011em;
+  line-height: 1.4;
+  color: var(--text-muted);
+}
+
+/* Tab roots share the same vertical rhythm under the header */
+.calculator-page,
+.settings-page,
+.history-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.calculator-page {
+  padding-bottom: 1.5rem;
+}
+
+@media (max-width: 600px) {
+  .page-header-title {
+    font-size: 2.25rem;
+    letter-spacing: -0.02em;
+  }
 }
