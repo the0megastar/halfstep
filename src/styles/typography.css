@@ -1,0 +1,211 @@
+/* ==========================================================================
+   Halfstep 25-Tier Typography Scale
+   Reference: design-standards/TYPOGRAPHY.md
+   Base font: Manrope
+   ========================================================================== */
+
+/* Headings (font-weight: 600 SemiBold) */
+.text-heading-72 {
+  font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 72px;
+  line-height: 72px;
+  font-weight: 600;
+  letter-spacing: -4.32px;
+}
+.text-heading-64 {
+  font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 64px;
+  line-height: 64px;
+  font-weight: 600;
+  letter-spacing: -3.84px;
+}
+.text-heading-56 {
+  font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 56px;
+  line-height: 56px;
+  font-weight: 600;
+  letter-spacing: -3.36px;
+}
+.text-heading-48 {
+  font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 48px;
+  line-height: 56px;
+  font-weight: 600;
+  letter-spacing: -2.88px;
+}
+.text-heading-40 {
+  font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 40px;
+  line-height: 48px;
+  font-weight: 600;
+  letter-spacing: -2.4px;
+}
+.text-heading-32 {
+  font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 32px;
+  line-height: 40px;
+  font-weight: 600;
+  letter-spacing: -1.28px;
+}
+.text-heading-24 {
+  font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 24px;
+  line-height: 32px;
+  font-weight: 600;
+  letter-spacing: -0.96px;
+}
+.text-heading-20 {
+  font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 20px;
+  line-height: 26px;
+  font-weight: 600;
+  letter-spacing: -0.4px;
+}
+.text-heading-16 {
+  font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 600;
+  letter-spacing: -0.32px;
+}
+.text-heading-14 {
+  font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 600;
+  letter-spacing: -0.28px;
+}
+.text-heading-72 > strong,
+.text-heading-64 > strong,
+.text-heading-56 > strong,
+.text-heading-48 > strong,
+.text-heading-40 > strong,
+.text-heading-32 > strong,
+.text-heading-24 > strong,
+.text-heading-20 > strong,
+.text-heading-16 > strong,
+.text-heading-14 > strong {
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+/* Copy (multi-line body text, font-weight: 400 Regular) */
+.text-copy-24 {
+  font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 24px;
+  line-height: 36px;
+  font-weight: 400;
+}
+.text-copy-20 {
+  font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 20px;
+  line-height: 36px;
+  font-weight: 400;
+}
+.text-copy-18 {
+  font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 18px;
+  line-height: 28px;
+  font-weight: 400;
+}
+.text-copy-16 {
+  font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
+}
+.text-copy-14 {
+  font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 400;
+}
+.text-copy-13 {
+  font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 400;
+}
+.text-copy-24 > strong,
+.text-copy-20 > strong,
+.text-copy-18 > strong,
+.text-copy-16 > strong,
+.text-copy-14 > strong,
+.text-copy-13 > strong {
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+/* Labels (single-line UI, menus, captions, font-weight: 400 Regular) */
+.text-label-20 {
+  font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 20px;
+  line-height: 32px;
+  font-weight: 400;
+}
+.text-label-18 {
+  font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 18px;
+  line-height: 20px;
+  font-weight: 400;
+}
+.text-label-16 {
+  font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 16px;
+  line-height: 20px;
+  font-weight: 400;
+}
+.text-label-14 {
+  font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 400;
+}
+.text-label-13 {
+  font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 13px;
+  line-height: 16px;
+  font-weight: 400;
+}
+.text-label-12 {
+  font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 400;
+}
+.text-label-20 > strong,
+.text-label-18 > strong,
+.text-label-16 > strong,
+.text-label-14 > strong,
+.text-label-13 > strong,
+.text-label-12 > strong {
+  font-weight: 500;
+  color: var(--text-main);
+}
+
+/* Buttons (font-weight: 500 Medium) */
+.text-button-16 {
+  font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 16px;
+  line-height: 20px;
+  font-weight: 500;
+}
+.text-button-14 {
+  font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+}
+.text-button-12 {
+  font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+}
+
+/* Standard Section Header per SECTION_HEADERS.md */
+.section-header {
+  color: var(--text-main);
+  margin-top: 12px;
+  margin-bottom: 6px;
+}

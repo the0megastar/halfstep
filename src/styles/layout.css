@@ -1,0 +1,633 @@
+/* ==========================================================================
+   App Layout & Navigation Styles
+   ========================================================================== */
+
+/* Master Site Container */
+.site {
+  min-height: 100vh;
+  position: relative;
+  overflow-x: clip;
+  display: flex;
+  flex-direction: column;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+/* Top Navigation Bar */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  width: 100%;
+  padding-top: env(safe-area-inset-top, 0px);
+  background-color: var(--bg-base);
+  border-bottom: 1px solid var(--border-subtle);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.topbar-inner {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 16px max(24px, env(safe-area-inset-right, 0px)) 16px max(24px, env(safe-area-inset-left, 0px));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  user-select: none;
+}
+
+.brand--button {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  border-radius: 8px;
+}
+
+.brand--button:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 3px;
+}
+
+.brand-mark {
+  display: inline-grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  font-size: 1.25rem;
+  font-weight: 800;
+  flex-shrink: 0;
+  background-color: var(--accent-primary);
+  color: var(--bg-base);
+  border-radius: 5px;
+}
+
+.brand-name {
+  display: inline-flex;
+  align-items: baseline;
+  color: var(--text-main);
+}
+
+.brand-dot {
+  color: var(--accent-primary);
+}
+
+/* Nav Action Buttons & Touch Target Standards (>= 44px) */
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+}
+
+.nav-btn {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+  color: var(--text-main);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-card);
+  transition: all 0.15s ease;
+  position: relative;
+}
+
+/* Expanded invisible touch target for mobile */
+.nav-btn::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  min-width: 44px;
+  min-height: 44px;
+  width: 100%;
+  height: 100%;
+}
+
+.nav-btn:hover,
+.nav-btn.active {
+  color: var(--accent-primary);
+  border-color: var(--border-highlight);
+  background: var(--bg-surface-elevated, var(--bg-surface));
+}
+
+.nav-btn:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
+.theme-toggle-btn {
+  composes: nav-btn;
+}
+
+/* Workspace Container */
+.workspace {
+  flex: 1;
+  max-width: 1080px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 36px 24px 60px;
+  box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+  .topbar-inner {
+    padding: 12px 16px;
+  }
+  .workspace {
+    padding: 24px 16px 48px;
+  }
+}
+
+@media (max-width: 420px) {
+  .topbar-inner {
+    gap: 6px;
+  }
+  .nav-actions {
+    gap: 4px;
+  }
+  .brand {
+    font-size: 1.15rem;
+  }
+  .brand-mark {
+    width: 28px;
+    height: 28px;
+    font-size: 1rem;
+  }
+}
+
+
+/* App shell with bottom tabs (mobile-first).
+   Height target: ~49pt content + home-indicator safe area (Apple HIG tab bar),
+   not Material’s taller 80dp labeled nav. Touch target stays ≥44×44 via hit area. */
+.site.glyph.has-bottom-tabs {
+  padding-bottom: calc(3.25rem + env(safe-area-inset-bottom, 0px));
+}
+/* Bottom tab bar — Apple-leaning on Glyph tokens.
+   Selected = --text-main + bold weight, no filled pill (not a button chrome).
+   Unselected = --text-muted. Never hard-code #fff (breaks dark mode). */
+.bottom-tab-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 40;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  /* Content padding only; home indicator sits in safe-area, not extra empty chrome */
+  padding: 4px 0 env(safe-area-inset-bottom, 0px);
+  background-color: color-mix(in srgb, var(--bg-surface) 94%, transparent);
+  border-top: 1px solid var(--border-subtle);
+  color: var(--text-main);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+.bottom-tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  /* Visual row ~49px; min touch target still met by full grid cell */
+  min-height: 49px;
+  border: 0;
+  background: transparent;
+  color: var(--text-muted);
+  opacity: 1;
+  border-radius: 0;
+  padding: 4px 0;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  /* Kill iOS sticky “pressed” gray / highlight overlays */
+  -webkit-appearance: none;
+  appearance: none;
+}
+.bottom-tab svg {
+  color: currentColor;
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+}
+@media (pointer: coarse) {
+  .bottom-tab svg {
+    width: 24px;
+    height: 24px;
+  }
+}
+/* Hover only on real pointers — iOS/Android keep :hover after tap and flash a light overlay */
+@media (hover: hover) and (pointer: fine) {
+  .bottom-tab:hover {
+    color: var(--text-main);
+  }
+}
+.bottom-tab:active {
+  background: transparent;
+}
+.bottom-tab:focus:not(:focus-visible) {
+  outline: none;
+}
+.bottom-tab:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: -2px;
+}
+.bottom-tab.is-selected {
+  color: var(--text-main);
+  font-weight: 600;
+  background-color: transparent;
+}
+.bottom-tab.is-selected svg {
+  color: var(--text-main);
+}
+.bottom-tab-label {
+  font-size: 10px;
+  line-height: 12px;
+  letter-spacing: 0.01em;
+  font-weight: 400;
+}
+.bottom-tab.is-selected .bottom-tab-label {
+  font-weight: 600;
+}
+/* Laptop / large screens: keep the roomier bar that already felt right */
+@media (min-width: 768px) {
+  .site.glyph.has-bottom-tabs {
+    padding-bottom: calc(4.25rem + env(safe-area-inset-bottom, 0px));
+  }
+  .bottom-tab-bar {
+    gap: 0.25rem;
+    padding: 0.35rem 0.5rem calc(0.35rem + env(safe-area-inset-bottom, 0px));
+  }
+  .bottom-tab {
+    min-height: 48px;
+    border-radius: 12px;
+    padding: 0.35rem 0.25rem;
+    gap: 0.2rem;
+  }
+  .bottom-tab-label {
+    font-size: 12px;
+    line-height: 16px;
+  }
+}
+.settings-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding-bottom: 1.5rem;
+}
+.settings-card {
+  padding: 1rem 1.1rem;
+}
+.settings-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin: 0.75rem 0 0.5rem;
+}
+.settings-inline-control {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.settings-inline-control input {
+  width: 5.5rem;
+  min-height: 44px;
+  padding: 0.5rem 0.65rem;
+  border-radius: 10px;
+  border: 1px solid var(--border, #d4d4d8);
+  background: transparent;
+  color: inherit;
+}
+.settings-row-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  width: 100%;
+  min-height: 44px;
+  margin-top: 0.5rem;
+  padding: 0.65rem 0.75rem;
+  border-radius: 12px;
+  border: 1px solid color-mix(in srgb, var(--border, #d4d4d8) 80%, transparent);
+  background: transparent;
+  color: inherit;
+  text-align: left;
+}
+.history-page-shell {
+  min-height: 60vh;
+}
+
+
+/* Appearance segmented control (Settings) */
+.theme-segmented {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+  padding: 4px;
+  margin: 0.5rem 0 0.75rem;
+  border-radius: 10px;
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-subtle);
+}
+.theme-segment {
+  border: 0;
+  background: transparent;
+  color: var(--text-muted);
+  min-height: 36px;
+  border-radius: 8px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.theme-segment.is-selected {
+  background: var(--bg-card);
+  color: var(--text-main);
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+}
+
+/* Prescribed settings condensed rows */
+.settings-card--prescribed,
+.settings-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+}
+.settings-metric-list {
+  display: flex;
+  flex-direction: column;
+}
+.settings-metric-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.settings-metric-row:last-child {
+  border-bottom: 0;
+}
+.settings-metric-name {
+  color: var(--text-main);
+}
+.settings-metric-val {
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.settings-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+.settings-card-footer {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  color: var(--text-dim);
+}
+.settings-field-help {
+  display: block;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+/* IOB chip after theme toggle removal */
+/* IOB chip layout lives in dropdowns.css (units | ring | time stack) */
+
+/* Log / clear circular header actions */
+.icon-badge-btn:disabled,
+.icon-badge-btn[aria-disabled='true'] {
+  opacity: 0.35;
+  color: var(--text-dim);
+  background: transparent;
+  border-color: var(--border-subtle);
+}
+.icon-badge-btn.active {
+  opacity: 1;
+  color: var(--text-main);
+  border-color: var(--border-highlight);
+}
+
+/* Confirm review list */
+.confirm-lead {
+  margin: 0 0 12px;
+  color: var(--text-muted);
+}
+.confirm-review {
+  margin: 0 0 16px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-subtle);
+}
+.confirm-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.confirm-row:last-child {
+  border-bottom: 0;
+}
+.confirm-row dt {
+  color: var(--text-muted);
+  font-size: 13px;
+}
+.confirm-row dd {
+  margin: 0;
+  color: var(--text-main);
+  font-weight: 600;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.confirm-note {
+  color: var(--text-muted);
+  margin: 0 0 12px;
+}
+
+.history-field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+/* Log entry form — grouped card like Confirm review */
+.log-form-card {
+  margin: 0 0 8px;
+  padding: 4px 14px 8px;
+  border-radius: 10px;
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-subtle);
+}
+.log-form-row {
+  display: grid;
+  gap: 8px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.log-form-row:last-child {
+  border-bottom: 0;
+}
+.log-form-row--split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 14px;
+  align-items: start;
+}
+.log-form-pair {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+.field-optional {
+  margin-left: 2px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  letter-spacing: 0;
+}
+
+/* Drop decorative entry footer when tip removed */
+.entry-panel .entry-footer:empty {
+  display: none;
+}
+
+.confirm-review {
+  padding: 8px 12px;
+}
+.confirm-row {
+  padding: 6px 0;
+}
+.confirm-row--split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.confirm-pair {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+  min-width: 0;
+}
+.confirm-pair dt {
+  color: var(--text-muted);
+  font-size: 13px;
+}
+.confirm-pair dd {
+  margin: 0;
+  color: var(--text-main);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+
+/* Settings teaching card — Apple Settings–style footnote spacing under a group */
+.settings-card--teaching {
+  padding: 1.15rem 1.15rem 1.25rem;
+}
+
+.settings-card--teaching > .text-heading-16 {
+  margin: 0 0 12px;
+}
+
+.settings-teaching {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-width: 34rem;
+}
+
+.settings-teaching p {
+  margin: 0;
+  line-height: 1.45;
+  color: var(--text-muted);
+}
+
+.settings-teaching-footnote {
+  margin-top: 4px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-subtle, rgb(0 0 0 / 8%));
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: var(--text-dim, var(--text-muted));
+}
+
+
+/* --------------------------------------------------------------------------
+   PageHeader — shared tab-root title + intro (Calculate / History / Settings)
+   Left edge = workspace gutter. Do not nest inside a narrower centered column.
+   -------------------------------------------------------------------------- */
+.page-header {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.page-header-text {
+  min-width: 0;
+}
+
+.page-header-title {
+  margin: 0;
+  font-size: clamp(2.25rem, 5vw, 3.6rem);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: var(--text-main);
+}
+
+.page-header-title .page-header-accent {
+  color: var(--accent-primary);
+}
+
+.page-header-intro {
+  margin: 10px 0 0;
+  font-weight: 500;
+  letter-spacing: -0.011em;
+  line-height: 1.4;
+  color: var(--text-muted);
+}
+
+/* Tab roots share the same vertical rhythm under the header */
+.calculator-page,
+.settings-page,
+.history-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.calculator-page {
+  padding-bottom: 1.5rem;
+}
+
+@media (max-width: 600px) {
+  .page-header-title {
+    font-size: 2.25rem;
+    letter-spacing: -0.02em;
+  }
+}
