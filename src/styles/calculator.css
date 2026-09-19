@@ -1,0 +1,1127 @@
+/* ==========================================================================
+   Calculator Feature Styles
+   Includes Page Heading, Alerts, Calculator Grid, Inputs, Dose Display,
+   Breakdown, Teaching Box, Formula, Rounding Guide, and Disclaimers.
+   ========================================================================== */
+
+/* Page Heading — prefer .page-header (PageHeader component). Alias kept for safety. */
+.page-heading {
+  margin-bottom: 0;
+}
+.page-heading .intro {
+  /* intro spacing owned by .page-header-intro */
+}
+
+.heading-text h1 {
+  font-size: clamp(2.4rem, 5vw, 3.6rem);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+  color: var(--text-main);
+  margin-bottom: 2px;
+}
+
+.heading-text h1 span {
+  color: var(--accent-primary);
+}
+
+.eyebrow {
+  color: var(--accent-primary);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.intro {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  line-height: 1.45;
+  letter-spacing: -0.01em;
+  margin-top: 8px;
+}
+
+.heading-text h1.text-heading-32,
+.heading-text h1#settings-heading,
+.page-heading .heading-text > h1 {
+  margin-bottom: 0;
+}
+
+/* Clinical Alert Banners */
+/* Stacked clinical banners: tight between peers, 24px only under the group */
+.alert-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.alert-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px 18px;
+  border-radius: 12px;
+  margin-bottom: 0;
+  animation: slide-down 0.25s ease-out;
+}
+
+.alert-banner > svg {
+  /* Material 3 banner leading icon = 24dp; Apple inline SF Symbol ~20–24pt */
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+@keyframes slide-down {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.alert-banner h4 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.alert-banner p {
+  font-size: 0.85rem;
+  line-height: 1.45;
+}
+
+.alert-critical {
+  background-color: rgba(220, 50, 50, 0.12);
+  border: 1px solid rgba(220, 50, 50, 0.35);
+  color: #d32f2f;
+}
+[data-theme="dark"] .alert-critical {
+  background-color: rgba(235, 60, 60, 0.15);
+  border-color: rgba(235, 60, 60, 0.4);
+  color: #ff9999;
+}
+[data-theme="dark"] .alert-critical h4 { color: #ffcccc; }
+.alert-critical svg { color: #e53935; flex-shrink: 0; margin-top: 2px; }
+
+.alert-warning {
+  background-color: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  color: #b45309;
+}
+[data-theme="dark"] .alert-warning {
+  background-color: rgba(255, 170, 0, 0.15);
+  border-color: rgba(255, 170, 0, 0.4);
+  color: #ffe082;
+}
+[data-theme="dark"] .alert-warning h4 { color: #fff3c4; }
+.alert-warning svg { color: #f59e0b; flex-shrink: 0; margin-top: 2px; }
+
+.alert-caution {
+  background-color: rgba(100, 116, 139, 0.12);
+  border: 1px solid rgba(100, 116, 139, 0.3);
+  color: #475569;
+}
+[data-theme="dark"] .alert-caution {
+  background-color: rgba(148, 163, 184, 0.14);
+  border-color: rgba(148, 163, 184, 0.28);
+  color: #cbd5e1;
+}
+[data-theme="dark"] .alert-caution h4 { color: #f1f5f9; }
+.alert-caution svg { color: #64748b; flex-shrink: 0; margin-top: 2px; }
+
+/* Calculator Grid Layout */
+.calculator-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  align-items: stretch;
+  margin-bottom: 24px;
+}
+
+.card-surface {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-card);
+  border-radius: var(--card-radius);
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 22px;
+}
+
+.step-tag {
+  display: inline-block;
+  font-weight: 600;
+  letter-spacing: normal;
+  text-transform: none;
+  color: var(--accent-primary);
+  margin-bottom: 4px;
+}
+
+.card-header h2 {
+  font-size: 1.35rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--text-main);
+}
+
+/* Input Fields */
+.input-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.field-group label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: var(--text-main);
+}
+
+.field-icon {
+  color: var(--accent-primary);
+}
+
+.label-compact,
+.unit-compact {
+  display: none;
+}
+
+.input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background-color: var(--bg-base);
+  border: 1px solid var(--border-card);
+  border-radius: 5px;
+  transition: border-color 0.15s ease, outline 0.15s ease;
+}
+
+.input-container:focus-within {
+  border-color: var(--accent-primary);
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 1px;
+}
+
+.input-container.has-error {
+  border-color: var(--danger);
+}
+
+.input-container input {
+  width: 100%;
+  height: 68px;
+  background: transparent;
+  border: none;
+  padding: 12px 85px 12px 18px;
+  font-size: 2rem;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  outline: none;
+  color: var(--text-main);
+}
+
+.input-container input::placeholder {
+  color: var(--text-dim);
+  opacity: 0.5;
+  font-weight: 400;
+  font-size: 1.4rem;
+}
+
+.unit-pill {
+  position: absolute;
+  right: 18px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.field-error {
+  font-size: 0.8rem;
+  color: #e53935;
+  margin-top: 6px;
+}
+
+.entry-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.quick-help {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.btn-clear {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-card);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-clear:hover {
+  color: var(--accent-primary);
+  border-color: var(--accent-primary);
+}
+
+.btn-clear:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 3px;
+}
+
+/* Result Panel & Hero Dose Display */
+.result-panel {
+  container-type: inline-size;
+  min-width: 0;
+  background-color: #272b26 !important;
+  border-color: #555e50 !important;
+  color: #f7f6ee !important;
+  /* Uniform Step 02 stack: header → dose → estimate → Food/Correction → teaching */
+  gap: 12px;
+}
+
+.result-panel > .card-header,
+.result-panel > .hero-dose-container,
+.result-panel > .estimate-panel,
+.result-panel > .breakdown-grid {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.result-panel .card-header h2 {
+  color: #f7f6ee !important;
+}
+
+.result-panel .step-tag {
+  color: #deac8c !important;
+}
+
+.icon-badge,
+.icon-badge-btn {
+  display: inline-grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  padding: 0;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-sizing: border-box;
+  color: #deac8c;
+  background: rgba(222, 172, 140, 0.12);
+  border: 1px solid rgba(222, 172, 140, 0.25);
+  cursor: not-allowed;
+}
+
+.icon-badge-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.icon-badge-btn.active {
+  background-color: var(--accent-primary) !important;
+  border-color: var(--accent-primary) !important;
+  color: var(--btn-primary-text, #ffffff) !important;
+  cursor: pointer;
+  opacity: 1;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.icon-badge-btn.active:hover {
+  background-color: var(--accent-hover) !important;
+  border-color: var(--accent-hover) !important;
+  transform: translateY(-1px) scale(1.08);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+}
+
+.icon-badge-btn.active:active {
+  transform: translateY(0) scale(0.96);
+}
+
+.icon-badge-btn:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
+.hero-dose-container {
+  margin-bottom: 0;
+}
+
+.dose-callout {
+  display: flex;
+  flex-direction: column;
+}
+
+.dose-callout:not(.is-empty):not(.dose-low) {
+  background-color: #3c4439 !important;
+  border: 1px solid #555e50 !important;
+  border-radius: 6px;
+  padding: 16px 18px;
+}
+
+.dose-number-row {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.hero-dose-number {
+  font-size: clamp(3.2rem, 5.5vw, 4.6rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.05em;
+  font-variant-numeric: tabular-nums;
+  color: #f7f6ee !important;
+}
+
+.hero-dose-unit {
+  font-size: 1.4rem;
+  font-weight: 500;
+  color: #c3cbbb !important;
+}
+
+.dose-callout.is-empty .hero-dose-number {
+  color: var(--text-dim);
+}
+
+.dose-callout.dose-low .hero-dose-number {
+  color: #e53935 !important;
+  font-size: clamp(2.4rem, 4vw, 3.2rem);
+}
+
+.dose-sublabel {
+  font-size: 0.9rem;
+  color: #bec5b7;
+  margin-top: 6px;
+}
+
+.dose-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.exact-text {
+  font-size: 0.85rem;
+  color: #bec5b7 !important;
+}
+
+.exact-text strong {
+  color: #f7f6ee !important;
+}
+
+/* Step-by-Step Breakdown Cards
+   Hierarchy: title (heading-14) + trailing value (label-14) / formula (copy-13)
+   Pattern aligns with Apple HIG list rows: primary leading, value trailing, secondary below. */
+.breakdown-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.breakdown-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 16px 16px 14px;
+  text-align: left;
+  min-width: 0;
+  overflow: hidden;
+  background-color: #3c4439 !important;
+  border: 1px solid #555e50 !important;
+  color: #f7f6ee !important;
+  border-radius: 5px;
+}
+
+.breakdown-row-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-width: 0;
+  flex-wrap: nowrap;
+}
+
+.breakdown-row-bottom {
+  min-width: 0;
+  /* Apple list subtitle: align with title text, not the leading icon */
+  padding-left: calc(14px + 6px);
+}
+
+.breakdown-title {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  min-width: 0;
+  flex: 1 1 auto;
+  color: #f7f6ee !important;
+  white-space: nowrap;
+}
+
+.breakdown-title .label-full {
+  display: inline;
+}
+
+.breakdown-title .label-compact {
+  display: none;
+}
+
+.breakdown-formula-text.formula-compact {
+  display: none;
+}
+
+.breakdown-formula-text.formula-full {
+  display: block;
+}
+
+.breakdown-title svg {
+  color: #deac8c !important;
+  flex-shrink: 0;
+}
+
+.breakdown-formula-text {
+  color: #bec5b7 !important;
+  font-variant-numeric: tabular-nums;
+}
+
+.breakdown-formula-text.dim,
+.breakdown-value.dim {
+  color: #838d7b !important;
+}
+
+.breakdown-value {
+  flex-shrink: 0;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  color: #f7f6ee !important;
+}
+
+.breakdown-unit {
+  font-weight: 500;
+  color: #c3cbbb !important;
+}
+
+.breakdown-note {
+  display: block;
+  margin: 6px 0 0;
+  color: #c3cbbb !important;
+}
+
+/* Teaching Box — always expanded; body matches Learn the Math intro (copy-13) */
+.teaching-box {
+  padding: 16px 18px;
+  background-color: #3c4439 !important;
+  border: 1px solid #555e50 !important;
+  border-radius: 5px;
+}
+
+.teaching-header {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0 0 8px;
+  color: #f7f6ee !important;
+  text-transform: none;
+  letter-spacing: -0.28px;
+}
+
+.teaching-header svg {
+  color: #deac8c !important;
+  flex-shrink: 0;
+}
+
+.teaching-sentence {
+  margin: 0;
+  color: #e4e7df !important;
+  max-width: 42rem;
+}
+
+/* Math teaching group — peer steps: formula + rounding */
+.math-teaching-group {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px 24px;
+  margin-bottom: 24px;
+  border-radius: var(--card-radius);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-card);
+}
+
+.math-teaching-intro {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.math-teaching-intro h2 {
+  margin: 0;
+  color: var(--text-main);
+}
+
+.math-teaching-intro p {
+  margin: 0;
+  color: var(--text-muted);
+}
+
+.math-teaching-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.math-teaching-step {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+
+.math-teaching-step-title {
+  margin: 0;
+  color: var(--text-main);
+}
+
+.latex-formula-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: var(--card-radius);
+  padding: 20px 24px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 12px;
+}
+
+.latex-math {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-family: 'STIX Two Math', 'Cambria Math', 'KaTeX_Math', 'Times New Roman', Georgia, serif;
+  color: var(--text-main);
+  user-select: none;
+}
+
+.math-var {
+  font-style: italic;
+  font-weight: 600;
+  font-size: 1.25rem;
+  letter-spacing: 0.02em;
+}
+
+.math-op {
+  font-family: 'Manrope', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: var(--accent-primary);
+  padding: 0 4px;
+}
+
+.math-fraction {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  vertical-align: middle;
+  padding: 0 2px;
+}
+
+.math-num {
+  font-style: italic;
+  padding: 0 10px 3px;
+  border-bottom: 1.5px solid var(--text-main);
+  width: 100%;
+  text-align: center;
+  font-size: 1.05rem;
+  white-space: nowrap;
+}
+
+.math-den {
+  padding: 3px 10px 0;
+  width: 100%;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  font-family: 'Manrope', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.math-annotation {
+  color: var(--text-muted);
+  font-family: 'Manrope', sans-serif;
+  margin: 0;
+}
+
+/* Rounding cards inside teaching group (peer step content) */
+.math-teaching-step .ref-rules {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  align-items: stretch;
+}
+
+.math-teaching-step .ref-item {
+  display: grid;
+  grid-template-rows: auto auto 1fr;
+  align-content: start;
+  gap: 4px;
+  padding: 12px 14px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: 5px;
+  transition: all 0.2s;
+  min-width: 0;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.math-teaching-step .ref-item.is-active {
+  background-color: var(--accent-subtle);
+  border-color: var(--border-highlight);
+}
+
+.math-teaching-step .ref-tag {
+  display: inline-block;
+  font-weight: 700;
+  color: var(--accent-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.math-teaching-step .ref-action {
+  color: var(--text-main);
+  font-weight: 600;
+  min-width: 0;
+}
+
+.math-teaching-step .ref-desc {
+  margin: 0;
+  color: var(--text-muted);
+  line-height: 1.4;
+  font-variant-numeric: tabular-nums;
+}
+
+.math-teaching-step .ref-desc--example {
+  display: none;
+}
+
+@media (min-width: 601px) {
+  .math-teaching-step .ref-desc--example {
+    display: block;
+  }
+}
+
+@media (max-width: 600px) {
+  .math-teaching-group {
+    padding: 16px 14px;
+    gap: 14px;
+  }
+
+  .math-teaching-steps {
+    gap: 16px;
+  }
+
+  .math-teaching-step .ref-rules {
+    gap: 8px;
+  }
+
+  .math-teaching-step .ref-item {
+    padding: 10px 8px;
+    gap: 3px;
+    grid-template-rows: auto auto;
+  }
+
+  .latex-formula-card {
+    padding: 16px 12px 14px;
+  }
+}
+
+/* Footer Disclaimer */
+.footer-disclaimer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  line-height: 1.6;
+  padding-top: 8px;
+}
+
+.footer-disclaimer strong {
+  color: var(--text-muted);
+}
+
+/* Responsive Overrides */
+@media (max-width: 900px) {
+  .calculator-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .page-heading {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+  }
+
+  .heading-text h1 {
+    font-size: 2.25rem;
+    margin-bottom: 1px;
+  }
+
+  .eyebrow {
+    margin-bottom: 4px;
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+  }
+
+  .intro {
+    font-size: clamp(0.74rem, 2.85vw, 0.92rem);
+    line-height: 1.35;
+  }
+
+  /* Page intros wrap via shared PageHeader — do not ellipsis the Calculate subtitle */
+
+  .label-full,
+  .unit-full {
+    display: none;
+  }
+
+  .label-compact,
+  .unit-compact {
+    display: inline;
+  }
+
+  .card-surface {
+    padding: 16px 14px;
+  }
+
+  /* Mobile side-by-side inputs */
+  .input-fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .field-group label {
+    font-size: 0.8rem;
+    gap: 5px;
+    margin-bottom: 5px;
+  }
+
+  .input-container input {
+    height: 52px;
+    font-size: 1.45rem;
+    padding: 8px 36px 8px 12px;
+  }
+
+  .input-container input::placeholder {
+    font-size: 1.15rem;
+  }
+
+  .unit-pill {
+    right: 10px;
+    font-size: 0.75rem;
+  }
+
+  .field-error {
+    font-size: 0.72rem;
+    margin-top: 4px;
+    line-height: 1.25;
+  }
+
+  .quick-help {
+    font-size: 0.76rem;
+    line-height: 1.4;
+  }
+
+  .breakdown-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+
+  .breakdown-card {
+    padding: 18px 16px;
+  }
+
+  .latex-formula-card {
+    padding: 14px 12px 12px;
+    gap: 10px;
+  }
+
+  .latex-math {
+    gap: 6px;
+    flex-wrap: nowrap;
+  }
+
+  .math-var {
+    font-size: 1.05rem;
+  }
+
+  .math-op {
+    font-size: 1.1rem;
+    padding: 0 2px;
+  }
+
+  .math-fraction {
+    padding: 0 1px;
+  }
+
+  .math-num,
+  .math-den {
+    font-size: 0.92rem;
+    padding: 0 6px;
+  }
+
+  .math-annotation {
+    font-size: 0.72rem;
+  }
+
+  /* Phone density: compact but ≥12px floor (typography hard rule).
+     Apple-style list row: title + trailing value, formula as secondary line. */
+  .result-panel {
+    padding: 14px 12px;
+  }
+
+  .result-panel .card-header {
+    margin-bottom: 0;
+  }
+
+  .result-panel .card-header h2,
+  .result-panel .text-heading-24 {
+    font-size: 20px;
+    line-height: 26px;
+    letter-spacing: -0.4px;
+  }
+
+  .hero-dose-container {
+    margin-bottom: 0;
+  }
+
+  .dose-callout:not(.is-empty):not(.dose-low) {
+    padding: 12px 14px;
+  }
+
+  .hero-dose-number {
+    font-size: clamp(2.4rem, 11vw, 3.2rem);
+  }
+
+  .estimate-panel {
+    margin-top: 0;
+    margin-bottom: 0;
+    padding: 12px 14px;
+    border-radius: 5px;
+  }
+
+  .estimate-main {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+  }
+
+  .estimate-label {
+    margin: 0;
+    max-width: none;
+    white-space: normal;
+  }
+
+  .estimate-value {
+    font-size: 1.35rem;
+  }
+
+  .estimate-note {
+    margin-top: 6px;
+  }
+
+  /* Side-by-side math cards: short titles + compact formulas so primary row never wraps */
+  .breakdown-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+
+  .breakdown-card {
+    padding: 10px 10px;
+    gap: 2px;
+  }
+
+  .breakdown-row-top {
+    flex-wrap: nowrap;
+    gap: 6px;
+  }
+
+  .breakdown-title {
+    gap: 4px;
+  }
+
+  .breakdown-title .label-full {
+    display: none;
+  }
+
+  .breakdown-title .label-compact {
+    display: inline;
+  }
+
+  .breakdown-title svg {
+    width: 12px;
+    height: 12px;
+  }
+
+  .breakdown-formula-text.formula-full {
+    display: none;
+  }
+
+  .breakdown-row-bottom {
+    padding-left: calc(12px + 4px);
+  }
+
+  .breakdown-formula-text.formula-compact {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .breakdown-value {
+    font-size: 13px;
+    line-height: 16px;
+  }
+
+  .breakdown-note {
+    display: none;
+  }
+
+  .teaching-box {
+    padding: 12px 14px;
+  }
+
+  .teaching-header {
+    margin-bottom: 6px;
+  }
+
+}
+
+@container (max-width: 319px) {
+  .breakdown-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+
+/* Estimated glucose after dose */
+.estimate-panel {
+  margin-top: 0;
+  margin-bottom: 0;
+  padding: 16px 18px;
+  border-radius: 6px;
+  background-color: #3c4439 !important;
+  border: 1px solid #555e50 !important;
+  color: #f7f6ee !important;
+}
+.estimate-main {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+.estimate-label {
+  margin: 0;
+  color: #deac8c !important;
+}
+.estimate-value {
+  display: flex;
+  align-items: baseline;
+  gap: 0.35rem;
+  font-size: 1.5rem;
+  line-height: 1.2;
+  color: #f7f6ee !important;
+}
+.estimate-value strong {
+  color: #f7f6ee !important;
+}
+.estimate-value .dim {
+  color: #bec5b7 !important;
+}
+.estimate-unit {
+  font-size: 0.875rem;
+  color: #c3cbbb !important;
+}
+.estimate-note {
+  margin: 0.45rem 0 0;
+  font-size: 0.75rem;
+  line-height: 1.35;
+  color: #bec5b7 !important;
+}
+
+
+.history-warning-lead {
+  display: flex;
+  gap: 0.65rem;
+  align-items: flex-start;
+  margin: 0 0 0.75rem;
+  line-height: 1.4;
+}
+
+
+/* Page intro (History / Settings) — semi-bold, clearer gap under title */
+.page-heading .intro {
+  margin-top: 10px;
+  font-weight: 500;
+  letter-spacing: -0.011em;
+  line-height: 1.4;
+}
+.page-heading .heading-text > h1.text-heading-32,
+.page-heading .heading-text > h1#settings-heading {
+  margin-bottom: 0;
+  letter-spacing: -0.02em;
+}
+
+.dose-max-note {
+  margin: 8px 0 0;
+  color: var(--text-muted);
+}
+
+
