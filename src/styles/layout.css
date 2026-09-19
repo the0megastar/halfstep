@@ -631,3 +631,42 @@
     letter-spacing: -0.02em;
   }
 }
+
+
+/* Record dose: date/time — full-width "Set to Now", stack on narrow phones */
+.log-form-now-row {
+  margin-bottom: 4px;
+}
+.log-form-when {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.log-form-when .history-text-input {
+  min-width: 0;
+  max-width: 100%;
+}
+/* iOS Safari often paints wide native date/time values; keep them inside the cell */
+.log-form-when .history-date-input,
+.log-form-when .history-time-input {
+  overflow: hidden;
+}
+.log-form-when .history-date-input::-webkit-date-and-time-value,
+.log-form-when .history-time-input::-webkit-date-and-time-value {
+  text-align: left;
+  margin: 0;
+}
+@media (max-width: 420px) {
+  .log-form-row--split,
+  .log-form-when {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Hide bottom tabs while the soft keyboard is up (body.keyboard-open from BottomTabBar) */
+body.keyboard-open .bottom-tab-bar {
+  display: none;
+}
+body.keyboard-open .site.glyph.has-bottom-tabs {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
