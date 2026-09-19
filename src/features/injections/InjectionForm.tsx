@@ -110,7 +110,7 @@ export function InjectionForm({
               Set to Now
             </button>
           </div>
-          <div className="log-form-row--split log-form-when">
+          <div className="log-form-when">
             <div className="log-form-pair">
               <label htmlFor="history-admin-date" className="history-field-label">
                 <span>Date</span>
