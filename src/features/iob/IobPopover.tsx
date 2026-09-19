@@ -103,7 +103,7 @@ export function IobPopover({
             </div>
             <div className="iob-hero-stat iob-hero-right">
               <span className="iob-hero-timer-val text-heading-20">
-                {latest ? remainingLabel(latest.remainingMs) : 'None'}
+                {latest && latest.remainingMs > 0 ? remainingLabel(latest.remainingMs) : '—'}
               </span>
             </div>
           </div>
