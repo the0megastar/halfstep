@@ -1,0 +1,538 @@
+/* ==========================================================================
+   Dropdowns & Popovers Styles
+   Reference: design-standards/DROPDOWNS.md
+   Includes Prescribed Settings Dropdown and Insulin on Board (IOB) Dropdown.
+   ========================================================================== */
+
+/* Keyframe Animations (Y-axis vertical only per standard) */
+@keyframes dropdownFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes iobDropdownFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Status Chips */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.chip-locked {
+  color: var(--accent-primary);
+  background: var(--accent-subtle);
+  border: 1px solid var(--border-card);
+}
+
+/* Finished timer — quiet status chip (Apple trailing badge / Material tonal assistive) */
+.chip-complete {
+  color: var(--text-muted);
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-subtle);
+}
+
+.chip-voided {
+  color: var(--text-muted);
+  background: transparent;
+  border: 1px solid var(--border-subtle);
+  flex-shrink: 0;
+}
+
+.chip-active {
+  color: #2e7d32;
+  background: rgba(46, 125, 50, 0.12);
+  border: 1px solid rgba(46, 125, 50, 0.25);
+}
+
+[data-theme="dark"] .chip-active {
+  color: #81c784;
+  background: rgba(129, 199, 132, 0.15);
+  border-color: rgba(129, 199, 132, 0.3);
+}
+
+/* Shared Dropdown Header Anatomy */
+.dropdown-header {
+  padding-bottom: 10px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.dropdown-header-main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 3px;
+}
+
+.dropdown-header-main:last-child {
+  margin-bottom: 0;
+}
+
+.dropdown-title {
+  color: var(--text-main);
+}
+
+.dropdown-title-lock {
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.dropdown-subtitle {
+  color: var(--text-muted);
+}
+
+/* --------------------------------------------------------------------------
+   Settings Popover
+   -------------------------------------------------------------------------- */
+.settings-dropdown-wrapper {
+  position: relative;
+}
+
+.settings-dropdown-panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: auto;
+  width: 330px;
+  max-width: calc(100vw - 24px);
+  max-height: calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 100px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  box-sizing: border-box;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-card);
+  border-radius: 8px;
+  padding: 14px 16px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.22);
+  z-index: 1000;
+  text-align: left;
+  animation: dropdownFadeIn 0.18s ease forwards;
+}
+
+.dropdown-metric-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.dropdown-metric-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 10px;
+  background: var(--bg-surface-elevated, rgba(128, 128, 128, 0.04));
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+}
+
+.dropdown-metric-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.dropdown-metric-name {
+  color: var(--text-main);
+}
+
+.dropdown-metric-caption {
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dropdown-metric-val {
+  color: var(--accent-primary);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+}
+
+/* Footer standard: center-aligned with lock icon */
+.dropdown-footer {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 6px;
+  color: var(--text-dim);
+}
+
+.dropdown-lock-icon {
+  flex-shrink: 0;
+  color: var(--text-muted);
+}
+
+/* --------------------------------------------------------------------------
+   IOB Popover & Complication
+   -------------------------------------------------------------------------- */
+.iob-dropdown-wrapper {
+  position: relative;
+}
+
+.iob-badge-btn {
+  background: transparent;
+  border: none;
+  /* Extra trailing pad so the chip breathes without a fake time column */
+  padding: 2px 12px 2px 6px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: var(--text-main);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: background 0.15s ease, opacity 0.15s ease;
+  line-height: 1;
+}
+
+.iob-badge-btn:hover {
+  background: var(--bg-surface-elevated, rgba(127, 127, 127, 0.12));
+}
+
+.iob-badge-btn.active,
+.iob-badge-btn.is-open {
+  background: var(--bg-surface-elevated, rgba(127, 127, 127, 0.16));
+}
+
+.iob-badge-btn:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
+/* Large units left of the ring — read like a compact dose figure */
+.iob-nav-units {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 2px;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-main);
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.iob-nav-units-value {
+  font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.iob-nav-units-suffix {
+  font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+  letter-spacing: -0.02em;
+}
+
+.iob-nav-time-stack {
+  /* Hug the ring — left-aligned stack, no fixed column that floats the clock right */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 2px;
+  line-height: 1.2;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.iob-nav-stack-title {
+  display: none;
+}
+
+/* Hierarchy: remaining = supporting primary; end clock = caption (Apple/Material list meta) */
+.iob-nav-remaining {
+  display: block;
+  color: var(--text-main);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.iob-nav-end {
+  display: block;
+  color: var(--text-dim, var(--text-muted));
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  /* Reserve second-line height when empty so the chip doesn’t jump */
+  min-height: 1.2em;
+}
+
+.iob-nav-end--empty {
+  visibility: hidden;
+}
+
+.iob-ring {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+}
+
+.iob-ring > svg:first-child {
+  position: absolute;
+  inset: 0;
+  width: 36px;
+  height: 36px;
+  transform: rotate(-90deg);
+  fill: none;
+  stroke-width: 2;
+}
+
+.iob-track {
+  stroke: var(--border-highlight);
+  opacity: 0.3;
+}
+
+.iob-fill {
+  stroke: var(--accent-primary);
+}
+
+.iob-dropdown-panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  width: 336px;
+  max-width: calc(100vw - 24px);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-card);
+  border-radius: 8px;
+  padding: 14px 16px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.22);
+  z-index: 1000;
+  text-align: left;
+  animation: iobDropdownFadeIn 0.18s ease forwards;
+  box-sizing: border-box;
+}
+
+.iob-summary-hero {
+  display: grid;
+  grid-template-columns: 1fr 1px 1fr;
+  grid-template-rows: auto auto;
+  row-gap: 6px;
+  align-items: center;
+  padding: 14px 16px;
+  background: var(--bg-surface-elevated, rgba(128, 128, 128, 0.04));
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  margin-bottom: 12px;
+  box-sizing: border-box;
+}
+
+.iob-hero-caption {
+  font-weight: 500;
+  color: var(--text-muted);
+  margin: 0;
+  white-space: nowrap;
+  text-align: center;
+}
+
+.iob-hero-caption.iob-hero-left {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.iob-hero-caption.iob-hero-right {
+  grid-column: 3;
+  grid-row: 1;
+}
+
+.iob-hero-divider {
+  grid-column: 2;
+  grid-row: 1 / -1;
+  width: 1px;
+  height: 100%;
+  min-height: 38px;
+  background: var(--border-subtle);
+  justify-self: center;
+  align-self: center;
+}
+
+.iob-hero-stat {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 4px;
+  white-space: nowrap;
+  margin: 0;
+}
+
+.iob-hero-stat.iob-hero-left {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.iob-hero-stat.iob-hero-right {
+  grid-column: 3;
+  grid-row: 2;
+}
+
+.iob-hero-value {
+  color: var(--accent-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.iob-hero-unit {
+  color: var(--accent-primary);
+}
+
+.iob-hero-timer-val {
+  color: var(--text-main);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.iob-active-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.iob-list-title {
+  color: var(--text-main);
+  margin-bottom: 6px;
+}
+
+.iob-item-row {
+  display: grid;
+  gap: 6px;
+  padding: 10px;
+  background: var(--bg-base);
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+}
+
+.iob-item-primary {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+}
+
+.iob-item-title {
+  color: var(--text-main);
+  font-weight: 600;
+  min-width: 0;
+}
+
+.iob-item-subtitle {
+  color: var(--text-muted);
+}
+
+.iob-item-timing {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
+  width: 100%;
+}
+
+.iob-item-timing progress {
+  width: 100%;
+  height: 18px;
+  accent-color: var(--accent-primary);
+}
+
+.iob-item-timing-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+
+.iob-item-remaining {
+  font-weight: 600;
+  color: var(--accent-primary);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.iob-item-time-left {
+  color: var(--text-main);
+  font-variant-numeric: tabular-nums;
+}
+
+.iob-item-until {
+  color: var(--text-dim);
+}
+
+.iob-empty-note {
+  color: var(--text-muted);
+  padding: 8px 0;
+  margin: 0;
+}
+
+.iob-disclaimer {
+  color: var(--text-dim);
+  margin: 8px 0 12px 0;
+}
+
+.iob-dropdown-footer {
+  padding-top: 10px;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.iob-history-nav-btn {
+  width: 100%;
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: color 0.15s ease, background 0.15s ease;
+}
+
+.iob-history-nav-btn:hover {
+  color: var(--text-main);
+  background: var(--bg-surface-elevated, rgba(128, 128, 128, 0.08));
+}
+
+.iob-history-nav-btn:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
+.iob-history-nav-label {
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+

@@ -1,0 +1,98 @@
+/* ==========================================================================
+   Halfstep Design Tokens
+   Source: design-standards/COLORS.md and active Glyph theme definitions
+   Inherited at :root and html[data-theme] to ensure top-layer dialogs inherit tokens.
+   ========================================================================== */
+
+:root,
+[data-theme="light"],
+.site.glyph {
+  --bg-base: #f8f7f3;
+  --bg-surface: #fffefa;
+  --bg-surface-elevated: #eeede7;
+  --bg-card: #fffefa;
+  --bg-glass: #f8f7f3;
+  --border-subtle: #e2e2d9;
+  --border-card: #deded5;
+  --border-highlight: #a5917d;
+
+  --text-main: #252723;
+  --text-muted: #62645b;
+  --text-dim: #6b6d62;
+
+  --accent-primary: #a54727;
+  --accent-hover: #84371c;
+  --accent-subtle: #f2e5da;
+
+  --card-radius: 6px;
+  --panel-result-bg: #e8eadf;
+  --panel-result-border: #a4aa98;
+  --panel-result-text: #252723;
+  --dose-num-color: #247345;
+  --dose-stage-bg: #dfe4d5;
+  --dose-stage-border: #b8c0ad;
+
+  --btn-primary-text: #ffffff;
+  --danger: #c62828;
+  --danger-hover: #b71c1c;
+  --danger-subtle: #fde8e8;
+  --danger-border: #f8b4b4;
+  --danger-text: #c62828;
+
+  /* Semantic UI Tokens */
+  --focus-ring: rgba(165, 71, 39, 0.4);
+  --overlay-scrim: rgba(0, 0, 0, 0.4);
+  --timer-track: rgba(0, 0, 0, 0.08);
+  --timer-progress: var(--accent-primary);
+  --safe-margin: 12px;
+
+  font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background-color: var(--bg-base);
+  color: var(--text-main);
+}
+
+[data-theme="dark"],
+[data-theme="dark"] .site.glyph {
+  --bg-base: #20211f;
+  --bg-surface: #292a27;
+  --bg-surface-elevated: #32332f;
+  --bg-card: #292a27;
+  --bg-glass: #20211f;
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-card: rgba(255, 255, 255, 0.1);
+  --border-highlight: #9b7864;
+
+  --text-main: #f5f3ed;
+  --text-muted: #bcbdb3;
+  --text-dim: #aaa99e;
+
+  --accent-primary: #efaa87;
+  --accent-hover: #f4bea2;
+  --accent-subtle: #3c3028;
+
+  --card-radius: 6px;
+  --panel-result-bg: #272b26;
+  --panel-result-border: #555e50;
+  --panel-result-text: #f7f6ee;
+  --dose-num-color: #2ec27e;
+  --dose-stage-bg: #3c4439;
+  --dose-stage-border: #555e50;
+
+  --btn-primary-text: #20211f;
+  --danger: #ef5350;
+  --danger-hover: #f44336;
+  --danger-subtle: rgba(239, 83, 80, 0.15);
+  --danger-border: rgba(239, 83, 80, 0.4);
+  --danger-text: #ef5350;
+
+  /* Semantic UI Tokens */
+  --focus-ring: rgba(239, 170, 135, 0.4);
+  --overlay-scrim: rgba(0, 0, 0, 0.65);
+  --timer-track: rgba(255, 255, 255, 0.1);
+  --timer-progress: var(--accent-primary);
+  --safe-margin: 12px;
+
+  font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background-color: var(--bg-base);
+  color: var(--text-main);
+}
