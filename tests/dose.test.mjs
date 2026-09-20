@@ -2,8 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { calculate, parseDecimal, displayUnits, displayCompactUnits, formatTeachingUnits, formatTeachingAmount, unitWord, calculateHalfStepRounding } from '../lib/dose.ts';
 
-test('90 g at 285 mg/dL gives 2 food + 1 correction = 3 units (1:45 CR)', () => {
-  const r = calculate('285', '90');
+test('70 g at 285 mg/dL gives 2 food + 1 correction = 3 units (1:35 CR)', () => {
+  const r = calculate('285', '70');
   assert.equal(r.food, 2);
   assert.equal(r.correction, 1);
   assert.equal(r.total, 3);
@@ -11,7 +11,7 @@ test('90 g at 285 mg/dL gives 2 food + 1 correction = 3 units (1:45 CR)', () => 
 });
 
 test('at target (150 mg/dL) there is no correction', () => {
-  const r = calculate('150', '45');
+  const r = calculate('150', '35');
   assert.equal(r.food, 1);
   assert.equal(r.correction, 0);
   assert.equal(r.total, 1);
@@ -26,7 +26,7 @@ test('zero carbs is valid and preserves correction', () => {
 });
 
 test('below target (between 70 and 149) suppresses correction and retains food math', () => {
-  const r = calculate('100', '45');
+  const r = calculate('100', '35');
   assert.equal(r.correction, null);
   assert.equal(r.food, 1);
   assert.equal(r.total, 1);

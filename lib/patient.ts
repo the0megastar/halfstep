@@ -7,7 +7,7 @@ export const PATIENT = Object.freeze({
   /** Display name on the Calculate page */
   name: 'Roman',
   /** Grams of carbohydrate covered by 1 unit of insulin */
-  carbRatio: 45,
+  carbRatio: 35,
   /** mg/dL glucose drop expected from 1 unit of insulin (ISF) */
   isf: 135,
   /** Target glucose for correction math (mg/dL) */

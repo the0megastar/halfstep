@@ -12,9 +12,9 @@ test('correction-only example: 235 mg/dL, 0g, 1U ISF135 -> 100', () => {
 });
 
 test('food + matching insulin trends toward target-ish math', () => {
-  // 90g / 45 = 2U food; glucose at target 150 with 2U and 90g:
+  // 70g / 35 = 2U food; glucose at target 150 with 2U and 70g:
   // rise = 2*135=270, drop=270, estimate = 150
-  const r = estimateGlucoseAfterDose({ glucose: 150, carbs: 90, doseUnits: 2 });
+  const r = estimateGlucoseAfterDose({ glucose: 150, carbs: 70, doseUnits: 2 });
   assert.equal(r.estimatedGlucose, 150);
 });
 

@@ -8,7 +8,7 @@
  * Precedent: when glucose is low, no suggested dose wins over everything
  * else (carb warn may still show; over-max does not flag without a dose).
  *
- * CR 1:45 · ISF 135 · target 150 · max 5 U · low < 70 · high BG > 400 · carb gate 100 g
+ * CR 1:35 · ISF 135 · target 150 · max 5 U · low < 70 · high BG > 400 · carb gate 100 g
  */
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -16,7 +16,7 @@ import { calculate } from '../lib/dose.ts';
 import { PATIENT } from '../lib/patient.ts';
 
 test('locked patient params match the QA build', () => {
-  assert.equal(PATIENT.carbRatio, 45);
+  assert.equal(PATIENT.carbRatio, 35);
   assert.equal(PATIENT.isf, 135);
   assert.equal(PATIENT.targetGlucose, 150);
   assert.equal(PATIENT.maxDoseUnits, 5);
@@ -25,8 +25,8 @@ test('locked patient params match the QA build', () => {
   assert.equal(PATIENT.highCarbsGrams, 100);
 });
 
-const FOOD_50 = 50 / 45;
-const FOOD_1000 = 1000 / 45;
+const FOOD_50 = 50 / 35;
+const FOOD_1000 = 1000 / 35;
 const CORR_250 = (250 - 150) / 135;
 const CORR_401 = (401 - 150) / 135;
 
@@ -95,28 +95,28 @@ const caregiverMatrix = [
     },
   },
   {
-    name: 'BG 70, carbs 50 → below target, food only → 1.0 U',
+    name: 'BG 70, carbs 50 → below target, food only → 1.5 U',
     glucose: '70',
     carbs: '50',
     expect: {
       food: FOOD_50,
       correction: null,
       total: FOOD_50,
-      rounded: 1,
+      rounded: 1.5,
       belowTarget: true,
       isHighCarbs: false,
       exceedsMaxDose: false,
     },
   },
   {
-    name: 'BG 70, carbs 1000 → below target, carb warn, over max (22 U)',
+    name: 'BG 70, carbs 1000 → below target, carb warn, over max (28.5 U)',
     glucose: '70',
     carbs: '1000',
     expect: {
       food: FOOD_1000,
       correction: null,
       total: FOOD_1000,
-      rounded: 22,
+      rounded: 28.5,
       belowTarget: true,
       isHighCarbs: true,
       exceedsMaxDose: true,
@@ -140,28 +140,28 @@ const caregiverMatrix = [
     },
   },
   {
-    name: 'BG 150, carbs 50 → at target, food only (corr 0) → 1.0 U',
+    name: 'BG 150, carbs 50 → at target, food only (corr 0) → 1.5 U',
     glucose: '150',
     carbs: '50',
     expect: {
       food: FOOD_50,
       correction: 0,
       total: FOOD_50,
-      rounded: 1,
+      rounded: 1.5,
       belowTarget: false,
       isHighCarbs: false,
       exceedsMaxDose: false,
     },
   },
   {
-    name: 'BG 150, carbs 1000 → at target, carb warn, over max (22 U)',
+    name: 'BG 150, carbs 1000 → at target, carb warn, over max (28.5 U)',
     glucose: '150',
     carbs: '1000',
     expect: {
       food: FOOD_1000,
       correction: 0,
       total: FOOD_1000,
-      rounded: 22,
+      rounded: 28.5,
       belowTarget: false,
       isHighCarbs: true,
       exceedsMaxDose: true,
@@ -198,14 +198,14 @@ const caregiverMatrix = [
     },
   },
   {
-    name: 'BG 250, carbs 1000 → food + correction, carb warn, over max (23 U)',
+    name: 'BG 250, carbs 1000 → food + correction, carb warn, over max (29 U)',
     glucose: '250',
     carbs: '1000',
     expect: {
       food: FOOD_1000,
       correction: CORR_250,
       total: FOOD_1000 + CORR_250,
-      rounded: 23,
+      rounded: 29,
       isHighCarbs: true,
       exceedsMaxDose: true,
     },
@@ -241,14 +241,14 @@ const caregiverMatrix = [
     },
   },
   {
-    name: 'BG 401, carbs 1000 → high-BG + carb warn, over max (24 U)',
+    name: 'BG 401, carbs 1000 → high-BG + carb warn, over max (30.5 U)',
     glucose: '401',
     carbs: '1000',
     expect: {
       food: FOOD_1000,
       correction: CORR_401,
       total: FOOD_1000 + CORR_401,
-      rounded: 24,
+      rounded: 30.5,
       isHighGlucose: true,
       isHighCarbs: true,
       exceedsMaxDose: true,
