@@ -139,7 +139,11 @@ export function clampToMaxDose(units: number): number {
   return Math.min(units, max);
 }
 
-export function calculate(glucoseRaw: string, carbsRaw: string): CalculationResult {
+export function calculate(
+  glucoseRaw: string,
+  carbsRaw: string,
+  carbRatio: number = PATIENT.carbRatio
+): CalculationResult {
   const glucose = parseDecimal(glucoseRaw, false);
   const carbs = parseDecimal(carbsRaw);
 
@@ -157,7 +161,7 @@ export function calculate(glucoseRaw: string, carbsRaw: string): CalculationResu
     ? `Carbs are ${carbs} g, above the ${PATIENT.highCarbsGrams} g check gate in this build. Confirm the carb count.`
     : null;
 
-  const food = carbs === null ? null : carbs / ROMAN.ratio;
+  const food = carbs === null ? null : carbs / carbRatio;
   const belowTarget = glucose !== null && glucose < ROMAN.target;
   const correction = glucose === null || belowTarget ? null : (glucose - ROMAN.target) / ROMAN.sensitivity;
 
@@ -192,7 +196,7 @@ export function calculate(glucoseRaw: string, carbsRaw: string): CalculationResu
   } else if (isLowGlucose) {
     casualSentence = `Glucose is ${glucose} mg/dL, under 70. Halfstep does not suggest insulin at this reading. Follow your hypoglycemia plan from your care team.`;
   } else if (glucose === null) {
-    casualSentence = `Food coverage for ${carbs}g of carbs is ${formatTeachingAmount(food)} (${carbs} ÷ ${PATIENT.carbRatio}). Correction still needs a glucose reading.`;
+    casualSentence = `Food coverage for ${carbs}g of carbs is ${formatTeachingAmount(food)} (${carbs} ÷ ${carbRatio}). Correction still needs a glucose reading.`;
   } else if (carbs === null) {
     if (belowTarget) {
       casualSentence = `At ${glucose} mg/dL, glucose is below the 150 target, so correction is 0. Food coverage still needs a carb count.`;
@@ -207,11 +211,11 @@ export function calculate(glucoseRaw: string, carbsRaw: string): CalculationResu
     const dose = rounding.rounded.toFixed(1);
     if (belowTarget || correction === null) {
       casualSentence =
-        `The dose is ${dose} ${unitWord(rounding.rounded)}. Food coverage is ${formatTeachingAmount(food)} from ${carbs}g ÷ ${PATIENT.carbRatio}. At ${glucose} mg/dL, glucose is below the 150 target, so correction is 0. That is ${formatTeachingAmount(total)} before half-unit rounding. ${rounding.explanation}`.trim();
+        `The dose is ${dose} ${unitWord(rounding.rounded)}. Food coverage is ${formatTeachingAmount(food)} from ${carbs}g ÷ ${carbRatio}. At ${glucose} mg/dL, glucose is below the 150 target, so correction is 0. That is ${formatTeachingAmount(total)} before half-unit rounding. ${rounding.explanation}`.trim();
     } else {
       const beforeRound = food! + correction!;
       casualSentence =
-        `The dose is ${dose} ${unitWord(rounding.rounded)}. Food coverage is ${formatTeachingAmount(food)} from ${carbs}g ÷ ${PATIENT.carbRatio}. Correction is ${formatTeachingAmount(correction)} from (${glucose} − 150) ÷ 135. Those add to ${formatTeachingAmount(beforeRound)} before half-unit rounding. ${rounding.explanation}`.trim();
+        `The dose is ${dose} ${unitWord(rounding.rounded)}. Food coverage is ${formatTeachingAmount(food)} from ${carbs}g ÷ ${carbRatio}. Correction is ${formatTeachingAmount(correction)} from (${glucose} − 150) ÷ 135. Those add to ${formatTeachingAmount(beforeRound)} before half-unit rounding. ${rounding.explanation}`.trim();
     }
   }
 

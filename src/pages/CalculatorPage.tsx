@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { AlertCircle, AlertTriangle, Info } from 'lucide-react';
 import { calculate, type CalculationResult } from '../../lib/dose';
-import { PATIENT } from '../../lib/patient';
+import { PATIENT, CARB_RATIO_MAP, type CarbRatioContext } from '../../lib/patient';
 import { createInjection, generateUUID } from '../../lib/injections';
 import { saveInjection } from '../../lib/storage';
 import { CalculatorInputs } from '../features/calculator/CalculatorInputs';
@@ -19,12 +19,14 @@ export interface CalculatorPageProps {
 export function CalculatorPage({ onDoseLogged, onResultChange }: CalculatorPageProps) {
   const [glucose, setGlucose] = useState('');
   const [carbs, setCarbs] = useState('');
+  const [carbRatioContext, setCarbRatioContext] = useState<CarbRatioContext>('school');
   const [pendingDose, setPendingDose] = useState<number | null>(null);
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
   const [justLogged, setJustLogged] = useState(false);
 
-  const result: CalculationResult = calculate(glucose, carbs);
+  const activeCarbRatio = CARB_RATIO_MAP[carbRatioContext];
+  const result: CalculationResult = calculate(glucose, carbs, activeCarbRatio);
   const glucoseError = glucose.trim() !== '' && result.glucose === null;
   const carbsError = carbs.trim() !== '' && result.carbs === null;
 
@@ -170,14 +172,16 @@ export function CalculatorPage({ onDoseLogged, onResultChange }: CalculatorPageP
           onClear={handleClear}
           glucoseError={glucoseError}
           carbsError={carbsError}
+          carbRatioContext={carbRatioContext}
+          onCarbRatioContextChange={setCarbRatioContext}
         />
 
         <DoseResult result={result} onRecordDose={requestRecord}>
-          <DoseBreakdown result={result} />
+          <DoseBreakdown result={result} carbRatio={activeCarbRatio} />
         </DoseResult>
       </div>
 
-      <ClinicalFormula result={result} />
+      <ClinicalFormula result={result} carbRatio={activeCarbRatio} />
 
       <footer className="footer-disclaimer">
         <p>

@@ -1,5 +1,5 @@
 import { Lock } from 'lucide-react';
-import { PATIENT } from '../../lib/patient';
+import { PATIENT, CARB_RATIO_MAP } from '../../lib/patient';
 import type { ThemePreference } from '../app/useTheme';
 import { PageHeader } from '../components/ui/PageHeader';
 
@@ -44,8 +44,16 @@ export function SettingsPage({
             <span className="settings-metric-val text-label-14">{PATIENT.insulinName}</span>
           </div>
           <div className="settings-metric-row" role="listitem">
-            <span className="settings-metric-name text-label-14">Carb Ratio</span>
-            <span className="settings-metric-val text-label-14">1u : {PATIENT.carbRatio}g</span>
+            <span className="settings-metric-name text-label-14">Carb Ratio (Breakfast)</span>
+            <span className="settings-metric-val text-label-14">1u : {CARB_RATIO_MAP.breakfast}g</span>
+          </div>
+          <div className="settings-metric-row" role="listitem">
+            <span className="settings-metric-name text-label-14">Carb Ratio (School)</span>
+            <span className="settings-metric-val text-label-14">1u : {CARB_RATIO_MAP.school}g</span>
+          </div>
+          <div className="settings-metric-row" role="listitem">
+            <span className="settings-metric-name text-label-14">Carb Ratio (Dinner)</span>
+            <span className="settings-metric-val text-label-14">1u : {CARB_RATIO_MAP.dinner}g</span>
           </div>
           <div className="settings-metric-row" role="listitem">
             <span className="settings-metric-name text-label-14">Sensitivity (ISF)</span>
@@ -86,7 +94,8 @@ export function SettingsPage({
         <h2 className="text-heading-16">How These Numbers Work</h2>
         <div className="settings-teaching text-copy-13">
           <p>
-            Carb ratio turns food grams into insulin. Sensitivity (ISF) turns how far glucose sits
+            Carb ratio turns food grams into insulin. The ratio varies by meal context (Breakfast,
+            School, or Dinner) to match how insulin needs change across the day. Sensitivity (ISF) turns how far glucose sits
             above target into a correction.
           </p>
           <p>

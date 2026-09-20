@@ -1,4 +1,5 @@
 import { Droplet, Utensils, RotateCcw } from 'lucide-react';
+import { CARB_RATIO_MAP, type CarbRatioContext } from '../../../lib/patient';
 
 export interface CalculatorInputsProps {
   glucose: string;
@@ -8,7 +9,15 @@ export interface CalculatorInputsProps {
   onClear: () => void;
   glucoseError: boolean;
   carbsError: boolean;
+  carbRatioContext: CarbRatioContext;
+  onCarbRatioContextChange: (context: CarbRatioContext) => void;
 }
+
+const CARB_RATIO_OPTIONS: { value: CarbRatioContext; label: string }[] = [
+  { value: 'breakfast', label: 'Breakfast' },
+  { value: 'school', label: 'School' },
+  { value: 'dinner', label: 'Dinner' },
+];
 
 export function CalculatorInputs({
   glucose,
@@ -18,6 +27,8 @@ export function CalculatorInputs({
   onClear,
   glucoseError,
   carbsError,
+  carbRatioContext,
+  onCarbRatioContextChange,
 }: CalculatorInputsProps) {
   const showClear = glucose !== '' || carbs !== '';
 
@@ -97,6 +108,25 @@ export function CalculatorInputs({
           {carbsError && (
             <p className="field-error">Enter zero or a positive number of grams.</p>
           )}
+        </div>
+
+        <div
+          className="carb-ratio-segmented"
+          role="radiogroup"
+          aria-label="Carb ratio context"
+        >
+          {CARB_RATIO_OPTIONS.map((opt) => (
+            <button
+              key={opt.value}
+              type="button"
+              role="radio"
+              aria-checked={carbRatioContext === opt.value}
+              className={`carb-ratio-segment${carbRatioContext === opt.value ? ' is-selected' : ''}`}
+              onClick={() => onCarbRatioContextChange(opt.value)}
+            >
+              {opt.label}
+            </button>
+          ))}
         </div>
       </div>
     </section>

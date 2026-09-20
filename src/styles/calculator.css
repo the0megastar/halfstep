@@ -254,6 +254,43 @@
   margin-top: 6px;
 }
 
+/* Carb ratio segmented control (inside Calculator inputs) */
+.carb-ratio-segmented {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+  padding: 4px;
+  margin-top: 20px;
+  border-radius: 10px;
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-subtle);
+}
+
+.carb-ratio-segment {
+  border: 0;
+  background: transparent;
+  color: var(--text-muted);
+  min-height: 44px;
+  border-radius: 8px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.carb-ratio-segment.is-selected {
+  background: var(--bg-card);
+  color: var(--text-main);
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+}
+
+.carb-ratio-segment:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
 .entry-footer {
   display: flex;
   align-items: center;
@@ -832,6 +869,18 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 10px;
+  }
+
+  /* Carb ratio segmented control spans full width on mobile */
+  .carb-ratio-segmented {
+    grid-column: 1 / -1;
+    margin-top: 16px;
+    min-height: 40px;
+  }
+
+  .carb-ratio-segment {
+    min-height: 40px;
+    font-size: 12px;
   }
 
   .field-group label {
