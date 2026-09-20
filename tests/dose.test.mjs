@@ -10,6 +10,14 @@ test('70 g at 285 mg/dL gives 2 food + 1 correction = 3 units (1:35 CR)', () => 
   assert.equal(r.rounding?.rounded, 3);
 });
 
+test('90 g at 285 mg/dL with school carb ratio (1:45) gives 2 food + 1 correction = 3 units', () => {
+  const r = calculate('285', '90', 45);
+  assert.equal(r.food, 2);
+  assert.equal(r.correction, 1);
+  assert.equal(r.total, 3);
+  assert.equal(r.rounding?.rounded, 3);
+});
+
 test('at target (150 mg/dL) there is no correction', () => {
   const r = calculate('150', '35');
   assert.equal(r.food, 1);

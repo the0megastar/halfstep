@@ -3,11 +3,15 @@
  * Edit this file (then rebuild) to adapt the app for another person.
  * Values here are the Locked insulin parameters shown in Settings.
  */
+export type CarbRatioContext = 'home' | 'school';
+
 export const PATIENT = Object.freeze({
   /** Display name on the Calculate page */
   name: 'Roman',
-  /** Grams of carbohydrate covered by 1 unit of insulin */
+  /** Grams of carbohydrate covered by 1 unit of insulin at home (default) */
   carbRatio: 35,
+  /** Grams of carbohydrate covered by 1 unit of insulin at school */
+  schoolCarbRatio: 45,
   /** mg/dL glucose drop expected from 1 unit of insulin (ISF) */
   isf: 135,
   /** Target glucose for correction math (mg/dL) */
@@ -27,6 +31,11 @@ export const PATIENT = Object.freeze({
 });
 
 export type PatientConfig = typeof PATIENT;
+
+export const CARB_RATIOS: Record<CarbRatioContext, number> = Object.freeze({
+  home: PATIENT.carbRatio,
+  school: PATIENT.schoolCarbRatio,
+});
 
 export const ACTION_DURATION_MS = PATIENT.durationOfInsulinHours * 60 * 60 * 1000;
 

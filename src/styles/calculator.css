@@ -283,6 +283,45 @@
   transition: all 0.15s ease;
 }
 
+/* Carb Ratio Segmented Control (Calculator) */
+.carb-ratio-segmented {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 4px;
+  padding: 4px;
+  margin-top: 10px;
+  border-radius: 10px;
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-subtle);
+}
+
+.carb-ratio-segment {
+  border: 0;
+  background: transparent;
+  color: var(--text-muted);
+  min-height: 38px;
+  border-radius: 8px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.carb-ratio-segment:hover:not(.is-selected) {
+  color: var(--text-main);
+}
+
+.carb-ratio-segment.is-selected {
+  background: var(--bg-card);
+  color: var(--text-main);
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+}
+
 .btn-clear:hover {
   color: var(--accent-primary);
   border-color: var(--accent-primary);

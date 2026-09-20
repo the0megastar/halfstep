@@ -8,9 +8,10 @@ export interface DoseResultProps {
   result: CalculationResult;
   onRecordDose?: (dose: number) => void;
   children?: ReactNode;
+  carbRatio?: number;
 }
 
-export function DoseResult({ result, onRecordDose, children }: DoseResultProps) {
+export function DoseResult({ result, onRecordDose, children, carbRatio }: DoseResultProps) {
   const isDoseAvailable =
     result.total !== null && result.rounding !== null && !result.exceedsMaxDose;
   const canRecord =
@@ -23,6 +24,7 @@ export function DoseResult({ result, onRecordDose, children }: DoseResultProps) 
     glucose: result.glucose,
     carbs: result.carbs,
     doseUnits,
+    carbRatio,
   });
 
   const handleRecord = () => {

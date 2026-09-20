@@ -5,23 +5,24 @@ import { PATIENT } from '../../../lib/patient';
 
 export interface DoseBreakdownProps {
   result: CalculationResult;
+  carbRatio?: number;
 }
 
-export function DoseBreakdown({ result }: DoseBreakdownProps) {
+export function DoseBreakdown({ result, carbRatio = PATIENT.carbRatio }: DoseBreakdownProps) {
   const foodFormula =
     result.carbs !== null ? (
       <>
         <span className="breakdown-formula-text formula-full text-copy-13">
-          {result.carbs}g ÷ {PATIENT.carbRatio}
+          {result.carbs}g ÷ {carbRatio}
         </span>
         <span className="breakdown-formula-text formula-compact text-copy-13">
-          {result.carbs}g ÷ {PATIENT.carbRatio}
+          {result.carbs}g ÷ {carbRatio}
         </span>
       </>
     ) : (
       <>
-        <span className="breakdown-formula-text formula-full text-copy-13 dim">Carbs ÷ {PATIENT.carbRatio}</span>
-        <span className="breakdown-formula-text formula-compact text-copy-13 dim">Carbs ÷ {PATIENT.carbRatio}</span>
+        <span className="breakdown-formula-text formula-full text-copy-13 dim">Carbs ÷ {carbRatio}</span>
+        <span className="breakdown-formula-text formula-compact text-copy-13 dim">Carbs ÷ {carbRatio}</span>
       </>
     );
 
@@ -97,7 +98,7 @@ export function DoseBreakdown({ result }: DoseBreakdownProps) {
             {foodValue}
           </div>
           <div className="breakdown-row-bottom">{foodFormula}</div>
-          <p className="breakdown-note text-copy-13">1 unit per {PATIENT.carbRatio} grams</p>
+          <p className="breakdown-note text-copy-13">1 unit per {carbRatio} grams</p>
         </div>
 
         <div className="breakdown-card" role="listitem">

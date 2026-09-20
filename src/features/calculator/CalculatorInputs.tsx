@@ -1,4 +1,5 @@
 import { Droplet, Utensils, RotateCcw } from 'lucide-react';
+import { PATIENT, type CarbRatioContext } from '../../../lib/patient';
 
 export interface CalculatorInputsProps {
   glucose: string;
@@ -8,6 +9,8 @@ export interface CalculatorInputsProps {
   onClear: () => void;
   glucoseError: boolean;
   carbsError: boolean;
+  carbRatioContext: CarbRatioContext;
+  onCarbRatioContextChange: (context: CarbRatioContext) => void;
 }
 
 export function CalculatorInputs({
@@ -18,6 +21,8 @@ export function CalculatorInputs({
   onClear,
   glucoseError,
   carbsError,
+  carbRatioContext,
+  onCarbRatioContextChange,
 }: CalculatorInputsProps) {
   const showClear = glucose !== '' || carbs !== '';
 
@@ -97,6 +102,31 @@ export function CalculatorInputs({
           {carbsError && (
             <p className="field-error">Enter zero or a positive number of grams.</p>
           )}
+
+          <div
+            className="carb-ratio-segmented"
+            role="radiogroup"
+            aria-label="Carb ratio context"
+          >
+            <button
+              type="button"
+              role="radio"
+              aria-checked={carbRatioContext === 'home'}
+              className={`carb-ratio-segment${carbRatioContext === 'home' ? ' is-selected' : ''}`}
+              onClick={() => onCarbRatioContextChange('home')}
+            >
+              Home · 1:{PATIENT.carbRatio}
+            </button>
+            <button
+              type="button"
+              role="radio"
+              aria-checked={carbRatioContext === 'school'}
+              className={`carb-ratio-segment${carbRatioContext === 'school' ? ' is-selected' : ''}`}
+              onClick={() => onCarbRatioContextChange('school')}
+            >
+              School · 1:{PATIENT.schoolCarbRatio}
+            </button>
+          </div>
         </div>
       </div>
     </section>

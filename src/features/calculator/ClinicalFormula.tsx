@@ -3,9 +3,10 @@ import { PATIENT } from '../../../lib/patient';
 
 export interface ClinicalFormulaProps {
   result: CalculationResult;
+  carbRatio?: number;
 }
 
-export function ClinicalFormula({ result }: ClinicalFormulaProps) {
+export function ClinicalFormula({ result, carbRatio = PATIENT.carbRatio }: ClinicalFormulaProps) {
   return (
     <section className="math-teaching-group" aria-label="Dose math teaching">
       <div className="math-teaching-intro">
@@ -28,14 +29,14 @@ export function ClinicalFormula({ result }: ClinicalFormulaProps) {
             <div
               className="latex-math"
               role="math"
-              aria-label={`Dose equals Carbs over ${PATIENT.carbRatio} plus Glucose minus 150 over ${PATIENT.isf}`}
+              aria-label={`Dose equals Carbs over ${carbRatio} plus Glucose minus 150 over ${PATIENT.isf}`}
             >
               <span className="math-var">Dose</span>
               <span className="math-op">=</span>
 
               <div className="math-fraction">
                 <span className="math-num">Carbs</span>
-                <span className="math-den">{PATIENT.carbRatio}</span>
+                <span className="math-den">{carbRatio}</span>
               </div>
 
               <span className="math-op">+</span>

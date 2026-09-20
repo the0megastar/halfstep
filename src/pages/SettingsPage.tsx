@@ -44,8 +44,12 @@ export function SettingsPage({
             <span className="settings-metric-val text-label-14">{PATIENT.insulinName}</span>
           </div>
           <div className="settings-metric-row" role="listitem">
-            <span className="settings-metric-name text-label-14">Carb Ratio</span>
+            <span className="settings-metric-name text-label-14">Carb Ratio (Home)</span>
             <span className="settings-metric-val text-label-14">1u : {PATIENT.carbRatio}g</span>
+          </div>
+          <div className="settings-metric-row" role="listitem">
+            <span className="settings-metric-name text-label-14">Carb Ratio (School)</span>
+            <span className="settings-metric-val text-label-14">1u : {PATIENT.schoolCarbRatio}g</span>
           </div>
           <div className="settings-metric-row" role="listitem">
             <span className="settings-metric-name text-label-14">Sensitivity (ISF)</span>
@@ -86,7 +90,8 @@ export function SettingsPage({
         <h2 className="text-heading-16">How These Numbers Work</h2>
         <div className="settings-teaching text-copy-13">
           <p>
-            Carb ratio turns food grams into insulin. Sensitivity (ISF) turns how far glucose sits
+            Carb ratio turns food grams into insulin. The ratio adjusts between Home (1:{PATIENT.carbRatio}) and
+            School (1:{PATIENT.schoolCarbRatio}) to match insulin needs across the day. Sensitivity (ISF) turns how far glucose sits
             above target into a correction.
           </p>
           <p>
