@@ -482,11 +482,31 @@
 .log-form-row {
   display: grid;
   gap: 8px;
-  padding: 14px 0;
+  padding: 12px 0;
   border-bottom: 1px solid var(--border-subtle);
 }
 .log-form-row:last-child {
   border-bottom: 0;
+}
+/* Dose hint: tight to the stepper, centered under it — same quiet density as other card chrome */
+.log-form-row--dose {
+  gap: 6px;
+}
+.log-form-row--dose .field-hint {
+  margin: 0;
+  padding: 0;
+  text-align: left;
+  color: var(--text-muted);
+  line-height: 1.35;
+}
+/* Shared label-row height across Dose / Date|Time / Glucose|Carbs */
+.log-form-card .history-field-header {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 44px;
+  position: relative;
+  box-sizing: border-box;
 }
 .log-form-row--split {
   display: grid;
@@ -634,35 +654,45 @@
 
 
 
-/* Record dose: When given — always stack date above time on phones;
-   native iOS/Android date/time controls are too wide for a 50/50 split. */
-.log-form-now-row {
-  margin-bottom: 4px;
-}
+/* Record dose: When given — Date | Time side by side (same idea as Glucose|Carbs).
+   min-width:0 + full-width inputs keep native pickers from overflowing the half. */
 .log-form-when {
   margin: 0;
   padding: 0;
   border: 0;
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 12px;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 12px 14px;
 }
 .log-form-when .log-form-pair {
   min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 .log-form-when .history-text-input,
 .log-form-when .history-date-input,
 .log-form-when .history-time-input {
-  min-width: 0;
-  max-width: 100%;
-  width: 100%;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  width: 100% !important;
   box-sizing: border-box;
   /* ≥16px avoids iOS focus zoom, which also fights layout */
   font-size: 16px !important;
   line-height: normal !important;
   display: block;
+  position: relative;
   -webkit-appearance: none;
   appearance: none;
+}
+/* Native time/date controls shrink-wrap unless the inner edit fills the box */
+.log-form-when .history-date-input::-webkit-datetime-edit,
+.log-form-when .history-time-input::-webkit-datetime-edit {
+  width: 100%;
+  min-width: 0;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
 }
 .log-form-when .history-date-input::-webkit-date-and-time-value,
 .log-form-when .history-time-input::-webkit-date-and-time-value {
@@ -671,16 +701,51 @@
   padding-inline: 0;
   min-height: 42px;
   line-height: 42px;
+  width: 100%;
 }
-/* Side-by-side only on comfortable widths (tablet+) */
-@media (min-width: 560px) {
-  .log-form-when {
-    grid-template-columns: 1fr 1fr;
-    gap: 12px 14px;
-  }
+.log-form-when .history-date-input::-webkit-calendar-picker-indicator,
+.log-form-when .history-time-input::-webkit-calendar-picker-indicator {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1.25rem;
+  height: 1.25rem;
+  margin: 0;
+  padding: 0;
+  cursor: pointer;
 }
+/* Set to Now is position:absolute so its width never widens the Time column
+   or wraps the label row (that was wrecking the card). Label height is shared
+   via .log-form-card .history-field-header. */
+.log-form-when .log-form-pair--time .history-field-header {
+  /* room for absolute Set to Now — label never collides */
+  padding-right: 5.75rem;
+}
+.log-form-when .log-form-now-action {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 0;
+  min-height: 44px;
+  padding: 0 2px 0 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  white-space: nowrap;
+  z-index: 1;
+}
+/* Set to Now: no hover fill — quiet text action only */
+.log-form-when .log-form-now-action:hover,
+.log-form-when .history-label-action.log-form-now-action:hover {
+  background: none;
+  background-color: transparent;
+  color: var(--accent-primary);
+}
+
 @media (max-width: 559px) {
-  .log-form-row--split {
+  /* Keep Glucose|Carbs on one row; other --split rows may stack. */
+  .log-form-row--split:not(.log-form-row--metrics) {
     grid-template-columns: 1fr;
   }
 }
@@ -692,3 +757,43 @@ body.keyboard-open .bottom-tab-bar {
 body.keyboard-open .site.glyph.has-bottom-tabs {
   padding-bottom: env(safe-area-inset-bottom, 0px);
 }
+
+
+/* Record sheet: one nav bar — same circular chrome as Step 1 Clear (icon-badge-btn), X to dismiss */
+.log-form-toolbar {
+  display: grid;
+  grid-template-columns: 44px 1fr 44px;
+  align-items: center;
+  gap: 4px;
+  margin: 0 0 16px;
+  min-height: 44px;
+}
+.log-form-close {
+  justify-self: start;
+  /* chrome/shadow come from .icon-badge-btn.active (shared with Enter the numbers Clear) */
+}
+.log-form-title {
+  margin: 0;
+  text-align: center;
+  font-size: 1.0625rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+}
+.log-form-toolbar-end {
+  justify-self: end;
+}
+.history-actions--bar {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+  margin-top: 20px;
+  padding: 12px 0 max(8px, env(safe-area-inset-bottom, 0px));
+}
+.history-actions--bar .btn-primary,
+.history-actions--bar .btn-ghost {
+  min-height: 44px;
+}
+

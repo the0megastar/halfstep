@@ -140,12 +140,23 @@ export function InjectionHistoryPanel({
         </header>
       )}
 
-      {variant === 'page' && !isRootList && state.view !== 'detail' && state.view !== 'void' && (
+      {variant === 'page' &&
+        !isRootList &&
+        state.view !== 'detail' &&
+        state.view !== 'void' &&
+        state.view !== 'form' &&
+        state.view !== 'confirm' &&
+        state.view !== 'max-dose-warn' && (
         <header className="injection-heading injection-heading--page">
           <h2 id="injection-title" className="text-heading-16">
             {title}
           </h2>
         </header>
+      )}
+      {variant === 'page' && state.view === 'form' && (
+        <span id="injection-title" className="sr-only">
+          {title}
+        </span>
       )}
 
       {variant === 'page' && isRootList && (
