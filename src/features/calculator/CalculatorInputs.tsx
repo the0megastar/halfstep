@@ -1,5 +1,5 @@
 import { Droplet, Utensils, RotateCcw } from 'lucide-react';
-import { PATIENT, type CarbRatioContext } from '../../../lib/patient';
+import { type CarbRatioContext } from '../../../lib/patient';
 
 export interface CalculatorInputsProps {
   glucose: string;
@@ -115,7 +115,7 @@ export function CalculatorInputs({
               className={`carb-ratio-segment${carbRatioContext === 'home' ? ' is-selected' : ''}`}
               onClick={() => onCarbRatioContextChange('home')}
             >
-              Home · 1:{PATIENT.carbRatio}
+              Home
             </button>
             <button
               type="button"
@@ -124,7 +124,7 @@ export function CalculatorInputs({
               className={`carb-ratio-segment${carbRatioContext === 'school' ? ' is-selected' : ''}`}
               onClick={() => onCarbRatioContextChange('school')}
             >
-              School · 1:{PATIENT.schoolCarbRatio}
+              School
             </button>
           </div>
         </div>

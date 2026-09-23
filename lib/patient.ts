@@ -11,7 +11,7 @@ export const PATIENT = Object.freeze({
   /** Grams of carbohydrate covered by 1 unit of insulin at home (default) */
   carbRatio: 35,
   /** Grams of carbohydrate covered by 1 unit of insulin at school */
-  schoolCarbRatio: 45,
+  schoolCarbRatio: 55,
   /** mg/dL glucose drop expected from 1 unit of insulin (ISF) */
   isf: 135,
   /** Target glucose for correction math (mg/dL) */

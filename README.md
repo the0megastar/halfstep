@@ -21,7 +21,7 @@ Edit `lib/patient.ts` (then rebuild) to clone for another person. Current defaul
 | Parameter | Value |
 |-----------|--------|
 | Name (display) | Roman |
-| Carb ratio | 1 unit : 45 g |
+| Carb ratio | 1 unit : 35 g (Home) / 55 g (School) |
 | ISF | 135 mg/dL per unit |
 | Target glucose | 150 mg/dL |
 | Max suggested / logged dose | 5 units |

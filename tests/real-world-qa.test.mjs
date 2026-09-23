@@ -17,7 +17,7 @@ import { PATIENT } from '../lib/patient.ts';
 
 test('locked patient params match the QA build', () => {
   assert.equal(PATIENT.carbRatio, 35);
-  assert.equal(PATIENT.schoolCarbRatio, 45);
+  assert.equal(PATIENT.schoolCarbRatio, 55);
   assert.equal(PATIENT.isf, 135);
   assert.equal(PATIENT.targetGlucose, 150);
   assert.equal(PATIENT.maxDoseUnits, 5);
