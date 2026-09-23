@@ -209,9 +209,14 @@ export function calculate(
       `The half-unit math is above the locked maximum of ${PATIENT.maxDoseUnits} units. Confirm the glucose and carb numbers. Halfstep does not log a dose over that maximum.`;
   } else if (total !== null && rounding !== null) {
     const dose = rounding.rounded.toFixed(1);
+    const hasFood = carbs !== null && carbs > 0;
     if (belowTarget || correction === null) {
       casualSentence =
         `The dose is ${dose} ${unitWord(rounding.rounded)}. Food coverage is ${formatTeachingAmount(food)} from ${carbs}g ÷ ${carbRatio}. At ${glucose} mg/dL, glucose is below the 150 target, so correction is 0. That is ${formatTeachingAmount(total)} before half-unit rounding. ${rounding.explanation}`.trim();
+    } else if (!hasFood) {
+      // Correction-only (0 g carbs): skip a useless “food coverage is 0 from 0g ÷ …” line
+      casualSentence =
+        `The dose is ${dose} ${unitWord(rounding.rounded)}. Correction is ${formatTeachingAmount(correction)} from (${glucose} − 150) ÷ 135. That is ${formatTeachingAmount(total)} before half-unit rounding. ${rounding.explanation}`.trim();
     } else {
       const beforeRound = food! + correction!;
       casualSentence =
