@@ -1,5 +1,5 @@
 import React from 'react';
-import { Droplet, Calendar, Plus, Minus, Apple } from 'lucide-react';
+import { Droplet, Calendar, Clock, Plus, Minus, Apple, Syringe, X } from 'lucide-react';
 import { PATIENT } from '../../../lib/patient';
 
 export interface InjectionFormProps {
@@ -42,17 +42,28 @@ export function InjectionForm({
 
   return (
     <form className="log-form" onSubmit={onSubmit}>
-      <p className="form-subtext">
-        {PATIENT.insulinName} · Enter the amount actually given. A calculation does not record an
-        injection.
-      </p>
+      <div className="log-form-toolbar">
+        <button
+          type="button"
+          className="icon-badge-btn active log-form-close"
+          onClick={onCancel}
+          aria-label="Close"
+          title="Close"
+        >
+          <X size={18} strokeWidth={2.25} aria-hidden="true" />
+        </button>
+        <h2 className="log-form-title text-heading-16">Record Insulin Given</h2>
+        <span className="log-form-toolbar-end" aria-hidden="true" />
+      </div>
 
       <div className="log-form-card">
-        <div className="log-form-row">
-          <label htmlFor="history-dose-units" className="history-field-label">
-            <Droplet size={16} className="field-icon" />
-            <span>Actual Dose</span>
-          </label>
+        <div className="log-form-row log-form-row--dose">
+          <div className="history-field-header">
+            <label htmlFor="history-dose-units" className="history-field-label">
+              <Syringe size={16} className="field-icon" />
+              <span>Dose</span>
+            </label>
+          </div>
           <div className="dose-stepper">
             <button
               type="button"
@@ -92,29 +103,18 @@ export function InjectionForm({
               <Plus size={18} />
             </button>
           </div>
-          <p className="field-hint text-copy-13">Locked maximum {max} units.</p>
+          <p className="field-hint text-copy-14">Locked maximum {max} units.</p>
         </div>
 
         <div className="log-form-row">
-          <div className="history-field-header log-form-now-row">
-            <span className="history-field-label">
-              <Calendar size={16} className="field-icon" aria-hidden="true" />
-              <span>When given</span>
-            </span>
-            <button
-              type="button"
-              className="history-label-action"
-              onClick={onSetTimeToNow}
-              title="Set date and time to now"
-            >
-              Set to Now
-            </button>
-          </div>
           <div className="log-form-when">
             <div className="log-form-pair">
-              <label htmlFor="history-admin-date" className="history-field-label">
-                <span>Date</span>
-              </label>
+              <div className="history-field-header">
+                <label htmlFor="history-admin-date" className="history-field-label">
+                  <Calendar size={16} className="field-icon" aria-hidden="true" />
+                  <span>Date</span>
+                </label>
+              </div>
               <input
                 id="history-admin-date"
                 type="date"
@@ -124,10 +124,21 @@ export function InjectionForm({
                 className="history-text-input history-date-input"
               />
             </div>
-            <div className="log-form-pair">
-              <label htmlFor="history-admin-clock" className="history-field-label">
-                <span>Time</span>
-              </label>
+            <div className="log-form-pair log-form-pair--time">
+              <div className="history-field-header">
+                <label htmlFor="history-admin-clock" className="history-field-label">
+                  <Clock size={16} className="field-icon" aria-hidden="true" />
+                  <span>Time</span>
+                </label>
+                <button
+                  type="button"
+                  className="history-label-action log-form-now-action"
+                  onClick={onSetTimeToNow}
+                  title="Set date and time to now"
+                >
+                  Set to Now
+                </button>
+              </div>
               <input
                 id="history-admin-clock"
                 type="time"
@@ -140,13 +151,15 @@ export function InjectionForm({
           </div>
         </div>
 
-        <div className="log-form-row log-form-row--split">
+        <div className="log-form-row log-form-row--split log-form-row--metrics">
           <div className="log-form-pair">
-            <label htmlFor="history-glucose" className="history-field-label">
-              <Droplet size={16} className="field-icon" />
-              <span>Glucose</span>
-              <span className="field-optional">Optional</span>
-            </label>
+            <div className="history-field-header">
+              <label htmlFor="history-glucose" className="history-field-label">
+                <Droplet size={16} className="field-icon" />
+                <span>Glucose</span>
+                <span className="field-optional">Optional</span>
+              </label>
+            </div>
             <input
               id="history-glucose"
               type="number"
@@ -159,11 +172,13 @@ export function InjectionForm({
             />
           </div>
           <div className="log-form-pair">
-            <label htmlFor="history-carbs" className="history-field-label">
-              <Apple size={16} className="field-icon" />
-              <span>Carbs</span>
-              <span className="field-optional">Optional</span>
-            </label>
+            <div className="history-field-header">
+              <label htmlFor="history-carbs" className="history-field-label">
+                <Apple size={16} className="field-icon" />
+                <span>Carbs</span>
+                <span className="field-optional">Optional</span>
+              </label>
+            </div>
             <input
               id="history-carbs"
               type="number"
@@ -178,12 +193,12 @@ export function InjectionForm({
         </div>
       </div>
 
-      <div className="history-actions">
-        <button className="btn-primary" type="submit">
-          Review Entry
-        </button>
+      <div className="history-actions history-actions--bar">
         <button className="btn-ghost" type="button" onClick={onCancel}>
           Cancel
+        </button>
+        <button className="btn-primary" type="submit">
+          Review Entry
         </button>
       </div>
     </form>
