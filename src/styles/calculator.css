@@ -1177,14 +1177,14 @@
 }
 .estimate-label {
   margin: 0;
-  color: #c3cbbb !important;
+  color: #deac8c !important;
   font-size: 0.875rem;
 }
 .estimate-value {
   display: flex;
   align-items: baseline;
   gap: 0.35rem;
-  font-size: 1.35rem;
+  font-size: 1.5rem;
   line-height: 1.2;
   color: #f7f6ee !important;
 }
@@ -1195,12 +1195,12 @@
   color: #bec5b7 !important;
 }
 .estimate-unit {
-  font-size: 0.75rem;
+  font-size: 0.875rem;
   color: #c3cbbb !important;
 }
 .estimate-note {
   margin: 0.45rem 0 0;
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   line-height: 1.35;
   color: #bec5b7 !important;
 }
