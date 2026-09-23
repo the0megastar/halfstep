@@ -5,18 +5,9 @@ import { PATIENT } from '../../../lib/patient';
 export interface InjectionConfirmationProps {
   values: InjectionValues;
   isEditing: boolean;
-  saving: boolean;
-  onConfirm: () => void;
-  onBack: () => void;
 }
 
-export function InjectionConfirmation({
-  values,
-  isEditing,
-  saving,
-  onConfirm,
-  onBack,
-}: InjectionConfirmationProps) {
+export function InjectionConfirmation({ values, isEditing }: InjectionConfirmationProps) {
   const glucoseLabel =
     values.glucoseMgDl != null && Number.isFinite(values.glucoseMgDl)
       ? `${values.glucoseMgDl} mg/dL`
@@ -29,7 +20,7 @@ export function InjectionConfirmation({
   return (
     <>
       <p className="confirm-lead text-copy-14">Review this entry before saving.</p>
-      <dl className="confirm-review">
+      <dl className="confirm-review confirm-review--dialog">
         <div className="confirm-row">
           <dt>Dose</dt>
           <dd>
@@ -56,14 +47,6 @@ export function InjectionConfirmation({
           This edit keeps the original entry in the audit history.
         </p>
       )}
-      <div className="history-actions">
-        <button className="btn-primary" disabled={saving} onClick={onConfirm}>
-          {saving ? 'Saving…' : 'Save'}
-        </button>
-        <button className="btn-ghost" disabled={saving} onClick={onBack}>
-          Back
-        </button>
-      </div>
     </>
   );
 }

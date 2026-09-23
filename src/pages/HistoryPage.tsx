@@ -82,7 +82,10 @@ export const HistoryPage = forwardRef<HistoryPageHandle, HistoryPageProps>(
       <section className="history-page" aria-label="Injection history">
         {(workflow.state.view === 'history' ||
           workflow.state.view === 'detail' ||
-          workflow.state.view === 'void') && (
+          workflow.state.view === 'void' ||
+          workflow.state.view === 'form' ||
+          workflow.state.view === 'max-dose-warn' ||
+          workflow.state.view === 'confirm') && (
           <PageHeader
             title="History"
             intro="Local only. Entries stay on this device."

@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { loadInjections, saveInjection } from '../../../lib/storage';
 import type { Injection } from '../../../lib/injections';
+import { pushSealedStoreAfterLocalChange } from '../sealed/sealedBridge';
 
 const BROADCAST_CHANNEL_NAME = 'halfstep-injections';
 
@@ -65,6 +66,11 @@ export function useInjectionRecords() {
           // broadcast failure ignored
         }
       }
+
+      // Household sealed sync (no-op unless linked + unlocked + cloud sync on)
+      void pushSealedStoreAfterLocalChange().catch(() => {
+        // Local save already succeeded; cloud retry is Refresh / next save.
+      });
     } catch (e) {
       setSaveError((e as Error).message || 'Failed to save injection.');
       throw e;

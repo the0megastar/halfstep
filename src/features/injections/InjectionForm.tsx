@@ -1,5 +1,5 @@
 import React from 'react';
-import { Droplet, Calendar, Clock, Plus, Minus, Apple, Syringe, X } from 'lucide-react';
+import { Droplet, Calendar, Clock, Plus, Minus, Apple, Syringe } from 'lucide-react';
 import { PATIENT } from '../../../lib/patient';
 
 export interface InjectionFormProps {
@@ -42,20 +42,6 @@ export function InjectionForm({
 
   return (
     <form className="log-form" onSubmit={onSubmit}>
-      <div className="log-form-toolbar">
-        <button
-          type="button"
-          className="icon-badge-btn active log-form-close"
-          onClick={onCancel}
-          aria-label="Close"
-          title="Close"
-        >
-          <X size={18} strokeWidth={2.25} aria-hidden="true" />
-        </button>
-        <h2 className="log-form-title text-heading-16">Record Insulin Given</h2>
-        <span className="log-form-toolbar-end" aria-hidden="true" />
-      </div>
-
       <div className="log-form-card">
         <div className="log-form-row log-form-row--dose">
           <div className="history-field-header">
@@ -193,12 +179,12 @@ export function InjectionForm({
         </div>
       </div>
 
-      <div className="history-actions history-actions--bar">
-        <button className="btn-ghost" type="button" onClick={onCancel}>
-          Cancel
-        </button>
+      <div className="history-actions">
         <button className="btn-primary" type="submit">
           Review Entry
+        </button>
+        <button className="btn-ghost" type="button" onClick={onCancel}>
+          Cancel
         </button>
       </div>
     </form>

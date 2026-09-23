@@ -37,3 +37,18 @@ export async function saveInjection(record: Injection, expectedRevision?: number
     tx.onabort = () => { db.close(); reject(new Error(failure)); };
   });
 }
+
+export async function replaceAllInjections(records: Injection[]): Promise<void> {
+  const db = await openDatabase();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction('injections', 'readwrite');
+    const store = tx.objectStore('injections');
+    store.clear();
+    for (const record of records) {
+      store.put(record);
+    }
+    tx.oncomplete = () => { db.close(); resolve(); };
+    tx.onabort = () => { db.close(); reject(new Error('Could not replace local history.')); };
+  });
+}
+

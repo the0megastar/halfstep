@@ -1,7 +1,10 @@
-import { Lock } from 'lucide-react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { Lock, Unlock } from 'lucide-react';
 import { PATIENT } from '../../lib/patient';
 import type { ThemePreference } from '../app/useTheme';
 import { PageHeader } from '../components/ui/PageHeader';
+import { PassphraseSheet } from '../features/sealed/PassphraseSheet';
+import { isPassphraseSaved } from '../features/sealed/sealedPassphrase';
 
 export interface SettingsPageProps {
   themePreference: ThemePreference;
@@ -14,12 +17,42 @@ const THEME_OPTIONS: { value: ThemePreference; label: string }[] = [
   { value: 'system', label: 'Automatic' },
 ];
 
+const LONG_PRESS_MS = 550;
+
 export function SettingsPage({
   themePreference,
   onThemePreferenceChange,
 }: SettingsPageProps) {
   const diaHours = Number(PATIENT.durationOfInsulinHours);
   const diaLabel = diaHours === 1 ? '1 hour' : `${diaHours} hours`;
+
+  const [sheetOpen, setSheetOpen] = useState(false);
+  const [passphraseSaved, setPassphraseSaved] = useState(false);
+  const longPressTimer = useRef<number | null>(null);
+  const longPressFired = useRef(false);
+
+  useEffect(() => {
+    setPassphraseSaved(isPassphraseSaved());
+  }, []);
+
+  const clearLongPress = useCallback(() => {
+    if (longPressTimer.current != null) {
+      window.clearTimeout(longPressTimer.current);
+      longPressTimer.current = null;
+    }
+  }, []);
+
+  const startLongPress = useCallback(() => {
+    longPressFired.current = false;
+    clearLongPress();
+    longPressTimer.current = window.setTimeout(() => {
+      longPressFired.current = true;
+      longPressTimer.current = null;
+      setSheetOpen(true);
+    }, LONG_PRESS_MS);
+  }, [clearLongPress]);
+
+  useEffect(() => () => clearLongPress(), [clearLongPress]);
 
   return (
     <section className="settings-page" aria-labelledby="settings-heading">
@@ -28,6 +61,30 @@ export function SettingsPage({
         titleId="settings-heading"
         intro="Appearance and locked insulin parameters."
       />
+
+      <div className="card-surface settings-card">
+        <h2 className="text-heading-16" id="appearance-heading">
+          Appearance
+        </h2>
+        <div
+          className="theme-segmented"
+          role="radiogroup"
+          aria-labelledby="appearance-heading"
+        >
+          {THEME_OPTIONS.map((opt) => (
+            <button
+              key={opt.value}
+              type="button"
+              role="radio"
+              aria-checked={themePreference === opt.value}
+              className={`theme-segment${themePreference === opt.value ? ' is-selected' : ''}`}
+              onClick={() => onThemePreferenceChange(opt.value)}
+            >
+              {opt.label}
+            </button>
+          ))}
+        </div>
+      </div>
 
       <div className="card-surface settings-card settings-card--locked">
         <div className="settings-card-header">
@@ -116,28 +173,37 @@ export function SettingsPage({
           </p>
         </div>
       </div>
-<div className="card-surface settings-card">
-        <h2 className="text-heading-16" id="appearance-heading">Appearance</h2>
-        <div
-          className="theme-segmented"
-          role="radiogroup"
-          aria-labelledby="appearance-heading"
+
+      <div className="settings-sealed-foot">
+        <button
+          type="button"
+          className="settings-sealed-lock"
+          aria-label="Passphrase"
+          onPointerDown={startLongPress}
+          onPointerUp={clearLongPress}
+          onPointerLeave={clearLongPress}
+          onPointerCancel={clearLongPress}
+          onClick={(event) => {
+            if (longPressFired.current) {
+              event.preventDefault();
+              longPressFired.current = false;
+            }
+          }}
+          onContextMenu={(event) => event.preventDefault()}
         >
-          {THEME_OPTIONS.map((opt) => (
-            <button
-              key={opt.value}
-              type="button"
-              role="radio"
-              aria-checked={themePreference === opt.value}
-              className={`theme-segment${themePreference === opt.value ? ' is-selected' : ''}`}
-              onClick={() => onThemePreferenceChange(opt.value)}
-            >
-              {opt.label}
-            </button>
-          ))}
-        </div>
+          {passphraseSaved ? (
+            <Unlock size={16} strokeWidth={2} aria-hidden="true" />
+          ) : (
+            <Lock size={16} strokeWidth={2} aria-hidden="true" />
+          )}
+        </button>
       </div>
 
-          </section>
+      <PassphraseSheet
+        open={sheetOpen}
+        onClose={() => setSheetOpen(false)}
+        onSavedChange={setPassphraseSaved}
+      />
+    </section>
   );
 }

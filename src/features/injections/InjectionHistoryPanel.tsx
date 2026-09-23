@@ -3,6 +3,7 @@ import { X } from 'lucide-react';
 import { createInjection, reviseInjection, type Injection } from '../../../lib/injections';
 import { PATIENT } from '../../../lib/patient';
 import { loadAppSettings } from '../../../lib/appSettings';
+import { AppSheet, type AppSheetAction } from '../../components/ui/AppSheet';
 import { InjectionList } from './InjectionList';
 import { InjectionForm } from './InjectionForm';
 import { InjectionConfirmation } from './InjectionConfirmation';
@@ -111,12 +112,39 @@ export function InjectionHistoryPanel({
   const title = getHistorySectionTitle(state.view, selectedRecord);
   const activeError = state.formError || saveError || refreshError;
   const isRootList = state.view === 'history';
-  const sheetOpen = state.view === 'detail' || state.view === 'void';
+  const recordSheetOpen =
+    state.view === 'form' || state.view === 'max-dose-warn' || state.view === 'confirm';
+  // Detail/void still use local backdrop chrome; AppSheet owns form/max/confirm scroll lock.
+  const legacySheetOpen = state.view === 'detail' || state.view === 'void';
+
+  const dismissFormSheet = () => {
+    clearErrors();
+    if (onCancelForm) onCancelForm();
+    else workflow.backToHistory();
+  };
 
   useEffect(() => {
-    document.body.classList.toggle('history-sheet-open', sheetOpen);
+    document.body.classList.toggle('history-sheet-open', legacySheetOpen);
     return () => document.body.classList.remove('history-sheet-open');
-  }, [sheetOpen]);
+  }, [legacySheetOpen]);
+
+  let recordSheetActions: AppSheetAction[] | undefined;
+  if (state.view === 'max-dose-warn') {
+    recordSheetActions = [
+      { label: 'Confirm dose amount', tone: 'primary', onClick: workflow.ackMaxDose },
+      { label: 'Back to edit', tone: 'ghost', onClick: workflow.backToForm },
+    ];
+  } else if (state.view === 'confirm') {
+    recordSheetActions = [
+      {
+        label: saving ? 'Saving…' : 'Save',
+        tone: 'primary',
+        onClick: () => void handleSave(false),
+        disabled: saving,
+      },
+      { label: 'Back', tone: 'ghost', onClick: workflow.backToForm, disabled: saving },
+    ];
+  }
 
   return (
     <div
@@ -147,17 +175,22 @@ export function InjectionHistoryPanel({
         state.view !== 'form' &&
         state.view !== 'confirm' &&
         state.view !== 'max-dose-warn' && (
-        <header className="injection-heading injection-heading--page">
-          <h2 id="injection-title" className="text-heading-16">
+          <header className="injection-heading injection-heading--page">
+            <h2 id="injection-title" className="text-heading-16">
+              {title}
+            </h2>
+          </header>
+        )}
+      {variant === 'page' &&
+        (state.view === 'form' ||
+          state.view === 'max-dose-warn' ||
+          state.view === 'confirm' ||
+          state.view === 'detail' ||
+          state.view === 'void') && (
+          <span id="injection-title" className="sr-only">
             {title}
-          </h2>
-        </header>
-      )}
-      {variant === 'page' && state.view === 'form' && (
-        <span id="injection-title" className="sr-only">
-          {title}
-        </span>
-      )}
+          </span>
+        )}
 
       {variant === 'page' && isRootList && (
         <span id="injection-title" className="sr-only">
@@ -178,7 +211,12 @@ export function InjectionHistoryPanel({
 
       {notice && <p role="status">{notice}</p>}
 
-      {(state.view === 'history' || state.view === 'detail' || state.view === 'void') && (
+      {(state.view === 'history' ||
+        state.view === 'detail' ||
+        state.view === 'void' ||
+        state.view === 'form' ||
+        state.view === 'max-dose-warn' ||
+        state.view === 'confirm') && (
         <InjectionList
           records={records}
           now={now}
@@ -194,50 +232,45 @@ export function InjectionHistoryPanel({
         />
       )}
 
-      {state.view === 'form' && (
-        <InjectionForm
-          units={state.units}
-          date={state.date}
-          clock={state.clock}
-          glucose={state.glucose}
-          carbs={state.carbs}
-          onUnitsChange={(val) => workflow.updateField('units', val)}
-          onDateChange={(val) => workflow.updateField('date', val)}
-          onClockChange={(val) => workflow.updateField('clock', val)}
-          onGlucoseChange={(val) => workflow.updateField('glucose', val)}
-          onCarbsChange={(val) => workflow.updateField('carbs', val)}
-          onStepDose={(delta) => workflow.stepDose(delta)}
-          onSetTimeToNow={workflow.setTimeToNow}
-          onSubmit={(e) => {
-            e.preventDefault();
-            workflow.validateAndReview(maxDoseThreshold);
-          }}
-          onCancel={() => {
-            clearErrors();
-            if (onCancelForm) onCancelForm();
-            else workflow.backToHistory();
-          }}
-        />
-      )}
+      <AppSheet
+        open={recordSheetOpen}
+        title={title}
+        onClose={dismissFormSheet}
+        actions={recordSheetActions}
+      >
+        {state.view === 'form' && (
+          <InjectionForm
+            units={state.units}
+            date={state.date}
+            clock={state.clock}
+            glucose={state.glucose}
+            carbs={state.carbs}
+            onUnitsChange={(val) => workflow.updateField('units', val)}
+            onDateChange={(val) => workflow.updateField('date', val)}
+            onClockChange={(val) => workflow.updateField('clock', val)}
+            onGlucoseChange={(val) => workflow.updateField('glucose', val)}
+            onCarbsChange={(val) => workflow.updateField('carbs', val)}
+            onStepDose={(delta) => workflow.stepDose(delta)}
+            onSetTimeToNow={workflow.setTimeToNow}
+            onSubmit={(e) => {
+              e.preventDefault();
+              workflow.validateAndReview(maxDoseThreshold);
+            }}
+            onCancel={dismissFormSheet}
+          />
+        )}
 
-      {state.view === 'max-dose-warn' && (
-        <InjectionMaxDoseWarning
-          units={Number(state.units)}
-          threshold={maxDoseThreshold}
-          onAcknowledge={workflow.ackMaxDose}
-          onBack={workflow.backToForm}
-        />
-      )}
+        {state.view === 'max-dose-warn' && (
+          <InjectionMaxDoseWarning units={Number(state.units)} threshold={maxDoseThreshold} />
+        )}
 
-      {state.view === 'confirm' && (
-        <InjectionConfirmation
-          values={workflow.getFormValues()}
-          isEditing={selectedRecord != null}
-          saving={saving}
-          onConfirm={() => void handleSave(false)}
-          onBack={workflow.backToForm}
-        />
-      )}
+        {state.view === 'confirm' && (
+          <InjectionConfirmation
+            values={workflow.getFormValues()}
+            isEditing={selectedRecord != null}
+          />
+        )}
+      </AppSheet>
 
       {(state.view === 'detail' || state.view === 'void') && selectedRecord && (
         <div
