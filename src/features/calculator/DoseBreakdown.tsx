@@ -63,7 +63,7 @@ export function DoseBreakdown({ result, carbRatio = PATIENT.carbRatio }: DoseBre
     correctionFormula = (
       <>
         <span className="breakdown-formula-text formula-full text-copy-13">Below target (&lt; 150)</span>
-        <span className="breakdown-formula-text formula-compact text-copy-13">No corr.</span>
+        <span className="breakdown-formula-text formula-compact text-copy-13">No correction</span>
       </>
     );
     correctionValue = <span className="breakdown-value text-label-14">0u</span>;
