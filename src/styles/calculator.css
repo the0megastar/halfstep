@@ -576,19 +576,44 @@
   color: #c3cbbb !important;
 }
 
-/* Teaching Box — always expanded; body matches Learn the Math intro (copy-13) */
+/* Teaching Box — collapsible disclosure */
 .teaching-box {
-  padding: 16px 18px;
+  padding: 0;
   background-color: #3c4439 !important;
   border: 1px solid #555e50 !important;
   border-radius: 5px;
+  overflow: hidden;
+}
+
+.teaching-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 14px 16px;
+  margin: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  text-align: left;
+  transition: background-color 0.15s ease;
+}
+
+.teaching-toggle:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.teaching-toggle:focus-visible {
+  outline: 2px solid #deac8c;
+  outline-offset: -2px;
 }
 
 .teaching-header {
   display: flex;
   align-items: center;
   gap: 7px;
-  margin: 0 0 8px;
+  margin: 0;
   color: #f7f6ee !important;
   text-transform: none;
   letter-spacing: -0.28px;
@@ -597,6 +622,32 @@
 .teaching-header svg {
   color: #deac8c !important;
   flex-shrink: 0;
+}
+
+.teaching-chevron {
+  color: #c3cbbb;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.teaching-chevron.is-expanded {
+  transform: rotate(180deg);
+}
+
+.teaching-content {
+  padding: 0 16px 14px 16px;
+  animation: slide-in 0.2s ease-out;
+}
+
+@keyframes slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .teaching-sentence {
@@ -1064,12 +1115,12 @@
     display: none;
   }
 
-  .teaching-box {
+  .teaching-toggle {
     padding: 12px 14px;
   }
 
-  .teaching-header {
-    margin-bottom: 6px;
+  .teaching-content {
+    padding: 0 14px 12px 14px;
   }
 
 }
@@ -1092,13 +1143,31 @@
 
 
 /* Estimated glucose after dose */
+/* Dose with estimate side-by-side layout */
+.dose-with-estimate {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 18px;
+  align-items: start;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.dose-estimate-separator {
+  width: 1px;
+  align-self: stretch;
+  margin-top: 12px;
+  margin-bottom: 12px;
+  background-color: #555e50;
+}
+
 .estimate-panel {
   margin-top: 0;
   margin-bottom: 0;
-  padding: 16px 18px;
-  border-radius: 6px;
-  background-color: #3c4439 !important;
-  border: 1px solid #555e50 !important;
+  padding: 0;
+  border-radius: 0;
+  background-color: transparent !important;
+  border: 0 !important;
   color: #f7f6ee !important;
 }
 .estimate-main {
@@ -1108,13 +1177,14 @@
 }
 .estimate-label {
   margin: 0;
-  color: #deac8c !important;
+  color: #c3cbbb !important;
+  font-size: 0.875rem;
 }
 .estimate-value {
   display: flex;
   align-items: baseline;
   gap: 0.35rem;
-  font-size: 1.5rem;
+  font-size: 1.35rem;
   line-height: 1.2;
   color: #f7f6ee !important;
 }
@@ -1125,14 +1195,37 @@
   color: #bec5b7 !important;
 }
 .estimate-unit {
-  font-size: 0.875rem;
+  font-size: 0.75rem;
   color: #c3cbbb !important;
 }
 .estimate-note {
   margin: 0.45rem 0 0;
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   line-height: 1.35;
   color: #bec5b7 !important;
+}
+
+/* Narrow phones: stack dose above estimate */
+@media (max-width: 520px) {
+  .dose-with-estimate {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  
+  .dose-estimate-separator {
+    display: none;
+  }
+  
+  .estimate-panel {
+    padding: 12px 14px;
+    border-radius: 6px;
+    background-color: #3c4439 !important;
+    border: 1px solid #555e50 !important;
+  }
+  
+  .estimate-label {
+    font-size: 0.8125rem;
+  }
 }
 
 

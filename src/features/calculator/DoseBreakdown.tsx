@@ -1,5 +1,6 @@
+import { useState } from 'react';
 import type { ReactNode } from 'react';
-import { Utensils, Droplet, CheckCircle2 } from 'lucide-react';
+import { Utensils, Droplet, CheckCircle2, ChevronDown } from 'lucide-react';
 import { displayCompactUnits, type CalculationResult } from '../../../lib/dose';
 import { PATIENT } from '../../../lib/patient';
 
@@ -9,6 +10,8 @@ export interface DoseBreakdownProps {
 }
 
 export function DoseBreakdown({ result, carbRatio = PATIENT.carbRatio }: DoseBreakdownProps) {
+  const [isMathExpanded, setIsMathExpanded] = useState(false);
+
   const foodFormula =
     result.carbs !== null ? (
       <>
@@ -119,12 +122,29 @@ export function DoseBreakdown({ result, carbRatio = PATIENT.carbRatio }: DoseBre
 
 
       {(result.glucose !== null || result.carbs !== null) && (
-        <div className="teaching-box" aria-live="polite">
-          <div className="teaching-header text-heading-14">
-            <CheckCircle2 size={16} aria-hidden="true" />
-            <span>How the Math Works</span>
-          </div>
-          <p className="teaching-sentence text-copy-13">{result.casualSentence}</p>
+        <div className="teaching-box">
+          <button
+            type="button"
+            className="teaching-toggle"
+            onClick={() => setIsMathExpanded(!isMathExpanded)}
+            aria-expanded={isMathExpanded}
+            aria-controls="math-explanation"
+          >
+            <div className="teaching-header text-heading-14">
+              <CheckCircle2 size={16} aria-hidden="true" />
+              <span>How the Math Works</span>
+            </div>
+            <ChevronDown
+              size={18}
+              className={`teaching-chevron ${isMathExpanded ? 'is-expanded' : ''}`}
+              aria-hidden="true"
+            />
+          </button>
+          {isMathExpanded && (
+            <div id="math-explanation" className="teaching-content">
+              <p className="teaching-sentence text-copy-13">{result.casualSentence}</p>
+            </div>
+          )}
         </div>
       )}
     </>

@@ -63,64 +63,68 @@ export function DoseResult({ result, onRecordDose, children, carbRatio }: DoseRe
         </button>
       </div>
 
-      <div className="hero-dose-container">
-        {result.isLowGlucose ? (
-          <div className="dose-callout dose-low">
-            <div className="hero-dose-number text-low">NO DOSE</div>
-            <div className="dose-sublabel text-copy-14">
-              Low glucose · Follow your hypoglycemia plan
+      <div className="dose-with-estimate">
+        <div className="hero-dose-container">
+          {result.isLowGlucose ? (
+            <div className="dose-callout dose-low">
+              <div className="hero-dose-number text-low">NO DOSE</div>
+              <div className="dose-sublabel text-copy-14">
+                Low glucose · Follow your hypoglycemia plan
+              </div>
+            </div>
+          ) : result.exceedsMaxDose ? (
+            <div className="dose-callout is-empty">
+              <div className="hero-dose-number">—</div>
+              <div className="dose-sublabel text-copy-14">
+                Above locked maximum · Confirm the glucose and carb numbers
+              </div>
+            </div>
+          ) : isDoseAvailable ? (
+            <div className="dose-callout">
+              <div className="dose-number-row">
+                <span className="hero-dose-number">{result.rounding!.rounded.toFixed(1)}</span>
+                <span className="hero-dose-unit text-heading-20">
+                  {unitWord(result.rounding!.rounded)}
+                </span>
+              </div>
+              <div className="dose-meta-row">
+                <span className="exact-text text-copy-13">
+                  Before rounding: <strong>{formatTeachingAmount(result.total)}</strong>
+                </span>
+              </div>
+            </div>
+          ) : (
+            <div className="dose-callout is-empty">
+              <div className="hero-dose-number">—</div>
+              <div className="dose-sublabel text-copy-14">Glucose and carbs produce a dose here</div>
+            </div>
+          )}
+        </div>
+
+        <div className="dose-estimate-separator" aria-hidden="true" />
+
+        <div className="estimate-panel" aria-live="polite">
+          <div className="estimate-main">
+            <div className="estimate-label text-heading-14">Estimated Glucose After Dose</div>
+            <div className="estimate-value text-heading-20">
+              {estimate.complete ? (
+                <>
+                  <strong>{formatEstimatedGlucose(estimate.estimatedGlucose)}</strong>
+                  <span className="estimate-unit text-label-12">mg/dL</span>
+                </>
+              ) : (
+                <strong className="dim">—</strong>
+              )}
             </div>
           </div>
-        ) : result.exceedsMaxDose ? (
-          <div className="dose-callout is-empty">
-            <div className="hero-dose-number">—</div>
-            <div className="dose-sublabel text-copy-14">
-              Above locked maximum · Confirm the glucose and carb numbers
-            </div>
-          </div>
-        ) : isDoseAvailable ? (
-          <div className="dose-callout">
-            <div className="dose-number-row">
-              <span className="hero-dose-number">{result.rounding!.rounded.toFixed(1)}</span>
-              <span className="hero-dose-unit text-heading-20">
-                {unitWord(result.rounding!.rounded)}
-              </span>
-            </div>
-            <div className="dose-meta-row">
-              <span className="exact-text text-copy-13">
-                Before rounding: <strong>{formatTeachingAmount(result.total)}</strong>
-              </span>
-            </div>
-          </div>
-        ) : (
-          <div className="dose-callout is-empty">
-            <div className="hero-dose-number">—</div>
-            <div className="dose-sublabel text-copy-14">Glucose and carbs produce a dose here</div>
-          </div>
-        )}
+          <p className="estimate-note text-copy-13">
+            Uses carb ratio and ISF only. Does not include active IOB, absorption timing, or
+            exercise.
+          </p>
+        </div>
       </div>
 
       {children}
-
-      <div className="estimate-panel" aria-live="polite">
-        <div className="estimate-main">
-          <div className="estimate-label text-heading-14">Estimated Glucose After Dose</div>
-          <div className="estimate-value text-heading-20">
-            {estimate.complete ? (
-              <>
-                <strong>{formatEstimatedGlucose(estimate.estimatedGlucose)}</strong>
-                <span className="estimate-unit text-label-12">mg/dL</span>
-              </>
-            ) : (
-              <strong className="dim">—</strong>
-            )}
-          </div>
-        </div>
-        <p className="estimate-note text-copy-13">
-          Uses carb ratio and ISF only. Does not include active IOB, absorption timing, or
-          exercise.
-        </p>
-      </div>
     </section>
   );
 }
