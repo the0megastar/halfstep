@@ -9,6 +9,7 @@ import { SettingsPage } from './pages/SettingsPage';
 import { HistoryPage, type HistoryPageHandle } from './pages/HistoryPage';
 import InjectionHistory from './components/InjectionHistory';
 import type { CalculationResult } from '../lib/dose';
+import { useForegroundSync } from './features/sealed/useForegroundSync';
 
 /** Dev-only typography specimen; not linked from Settings in v0.2.0. */
 const DesignSystemPage = React.lazy(() => import('./pages/DesignSystemPage'));
@@ -20,6 +21,8 @@ export default function App() {
   const historyRef = useRef<HistoryPageHandle>(null);
   const [currentResult, setCurrentResult] = useState<CalculationResult | null>(null);
   const [logEpoch, setLogEpoch] = useState(0);
+
+  useForegroundSync();
 
   const suggestedDose =
     currentResult &&
