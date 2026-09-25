@@ -25,6 +25,9 @@ function CompactFacts({
   if (record.carbsGrams != null && Number.isFinite(record.carbsGrams)) {
     meta.push({ value: String(record.carbsGrams), unit: 'g' });
   }
+  if (record.carbRatio != null && Number.isFinite(record.carbRatio)) {
+    meta.push({ value: `1:${record.carbRatio}` });
+  }
   if (record.insulin && record.insulin !== PATIENT.insulinName) {
     meta.push({ value: record.insulin });
   }
@@ -173,7 +176,6 @@ export function InjectionList({
                       {record.carbsGrams != null && Number.isFinite(record.carbsGrams)
                         ? ` · ${record.carbsGrams} g`
                         : ''}
-                      {record.caregiver?.trim() ? ` · ${record.caregiver}` : ''}
                     </span>
 
                     {hasRemaining && timing && (

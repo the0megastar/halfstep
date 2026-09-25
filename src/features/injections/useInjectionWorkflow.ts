@@ -85,7 +85,6 @@ function valuesFromState(state: WorkflowState): InjectionValues {
   return {
     units: unitsNum,
     administeredAt: parsedTime,
-    caregiver: '',
     glucoseMgDl: glucoseMgDl !== null && Number.isFinite(glucoseMgDl) ? glucoseMgDl : null,
     carbsGrams: carbsGrams !== null && Number.isFinite(carbsGrams) ? carbsGrams : null,
   };

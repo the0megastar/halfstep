@@ -11,7 +11,7 @@ import InjectionHistory from './components/InjectionHistory';
 import type { CalculationResult } from '../lib/dose';
 import { useForegroundSync } from './features/sealed/useForegroundSync';
 
-/** Dev-only typography specimen; not linked from Settings in v0.2.0. */
+/** Typography specimen for development. */
 const DesignSystemPage = React.lazy(() => import('./pages/DesignSystemPage'));
 
 export default function App() {

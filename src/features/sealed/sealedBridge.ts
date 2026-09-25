@@ -10,7 +10,7 @@ import { SEALED_PAYLOAD_SCHEMA_VERSION } from './sealedStore';
 import { deriveSealedStoreId } from './sealedStoreId';
 import { fetchSealedStore, isSealedSyncConfigured, upsertSealedStore } from './sealedSync';
 import { readSealedPassphrase, rememberSealedPassphrase } from './sealedSession';
-import { isPassphraseSaved, savePassphraseMarker } from './sealedPassphrase';
+import { isPassphraseSaved, rememberPassphraseForDevice, savePassphraseMarker } from './sealedPassphrase';
 
 const BROADCAST_CHANNEL_NAME = 'halfstep-injections';
 
@@ -86,6 +86,7 @@ export async function linkSealedStore(passphrase: string): Promise<LinkSealedRes
     await pushSnapshot(trimmed, merged);
     rememberSealedPassphrase(trimmed);
     savePassphraseMarker(trimmed);
+    await rememberPassphraseForDevice(trimmed);
     notifyHistoryTabs();
     return { action: 'joined', count: merged.length };
   }
@@ -93,6 +94,7 @@ export async function linkSealedStore(passphrase: string): Promise<LinkSealedRes
   await pushSnapshot(trimmed, local);
   rememberSealedPassphrase(trimmed);
   savePassphraseMarker(trimmed);
+  await rememberPassphraseForDevice(trimmed);
   return { action: 'created', count: local.length };
 }
 
@@ -110,6 +112,7 @@ export async function refreshSealedStore(passphrase: string): Promise<{ count: n
   if (!remote) {
     await pushSnapshot(trimmed, local);
     rememberSealedPassphrase(trimmed);
+    await rememberPassphraseForDevice(trimmed);
     return { count: local.length };
   }
 
@@ -118,6 +121,7 @@ export async function refreshSealedStore(passphrase: string): Promise<{ count: n
   await replaceAllInjections(merged);
   await pushSnapshot(trimmed, merged);
   rememberSealedPassphrase(trimmed);
+  await rememberPassphraseForDevice(trimmed);
   notifyHistoryTabs();
   return { count: merged.length };
 }

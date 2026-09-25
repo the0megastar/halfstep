@@ -3,7 +3,7 @@
 interface ImportMetaEnv {
   readonly VITE_SUPABASE_URL?: string;
   readonly VITE_SUPABASE_ANON_KEY?: string;
-  /** Opt-in cloud sync. Leave unset/false for local feel-testing. */
+  /** Enables encrypted household sync when set to true. */
   readonly VITE_SEALED_SYNC_ENABLED?: string;
 }
 

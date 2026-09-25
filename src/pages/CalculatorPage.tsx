@@ -70,10 +70,10 @@ export function CalculatorPage({ onDoseLogged, onResultChange }: CalculatorPageP
       const record = createInjection(generateUUID(), {
         units: pendingDose,
         administeredAt: new Date().toISOString(),
-        caregiver: '',
         glucoseMgDl:
           glucoseMgDl !== null && Number.isFinite(glucoseMgDl) ? glucoseMgDl : null,
         carbsGrams: carbsGrams !== null && Number.isFinite(carbsGrams) ? carbsGrams : null,
+        carbRatio: activeCarbRatio,
       });
       await saveInjection(record);
       setPendingDose(null);

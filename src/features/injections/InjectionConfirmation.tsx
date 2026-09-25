@@ -1,6 +1,7 @@
 import { formatTimestamp } from './dateUtils';
 import type { InjectionValues } from '../../../lib/injections';
 import { PATIENT } from '../../../lib/patient';
+import { deriveCarbRatio } from '../../../lib/injections';
 
 export interface InjectionConfirmationProps {
   values: InjectionValues;
@@ -16,6 +17,7 @@ export function InjectionConfirmation({ values, isEditing }: InjectionConfirmati
     values.carbsGrams != null && Number.isFinite(values.carbsGrams)
       ? `${values.carbsGrams} g`
       : '—';
+  const ratio = deriveCarbRatio(values);
 
   return (
     <>
@@ -40,6 +42,10 @@ export function InjectionConfirmation({ values, isEditing }: InjectionConfirmati
             <dt>Carbs</dt>
             <dd>{carbsLabel}</dd>
           </div>
+        </div>
+        <div className="confirm-row">
+          <dt>Carb ratio</dt>
+          <dd>{ratio == null ? 'Unavailable' : `1:${ratio}`}</dd>
         </div>
       </dl>
       {isEditing && (

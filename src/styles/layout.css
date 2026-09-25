@@ -265,7 +265,7 @@
 .bottom-tab.is-selected .bottom-tab-label {
   font-weight: 600;
 }
-/* Laptop / large screens: keep the roomier bar that already felt right */
+/* Use the roomier tab bar on large screens. */
 @media (min-width: 768px) {
   .site.glyph.has-bottom-tabs {
     padding-bottom: calc(4.25rem + env(safe-area-inset-bottom, 0px));
@@ -409,8 +409,7 @@
   margin-top: 2px;
 }
 
-/* IOB chip after theme toggle removal */
-/* IOB chip layout lives in dropdowns.css (units | ring | time stack) */
+/* IOB chip layout is defined in dropdowns.css. */
 
 /* Log / clear circular header actions */
 .icon-badge-btn:disabled,
@@ -526,7 +525,7 @@
   letter-spacing: 0;
 }
 
-/* Drop decorative entry footer when tip removed */
+/* Entry form footer. */
 .entry-panel .entry-footer:empty {
   display: none;
 }

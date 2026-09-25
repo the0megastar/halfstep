@@ -177,6 +177,9 @@ export function InjectionForm({
             />
           </div>
         </div>
+        <p className="field-hint text-copy-14">
+          Carb ratio is shown when glucose, carbs, and dose provide enough information to calculate it.
+        </p>
       </div>
 
       <div className="history-actions">

@@ -122,7 +122,7 @@ export function IobPopover({
                     </span>
                   </span>
                   <span className="text-copy-13 iob-item-subtitle">
-                    {formatTimeShort(record.administeredAt)} · {record.caregiver}
+                    {formatTimeShort(record.administeredAt)}
                   </span>
                   <span className="iob-item-timing">
                     <progress

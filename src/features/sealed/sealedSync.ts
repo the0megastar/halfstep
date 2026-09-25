@@ -1,8 +1,7 @@
 import type { SealedStoreRow, SealedStoreUpsert } from './sealedStore';
 
 /**
- * Thin PostgREST client for public.sealed_stores.
- * Encrypt before upsert; decrypt after fetch. No @supabase/supabase-js required yet.
+ * Reads and writes sealed store rows through the Supabase REST API.
  */
 
 function sealedSyncEnabled(): boolean {
@@ -32,7 +31,7 @@ function restHeaders(anonKey: string, prefer?: string): HeadersInit {
   return headers;
 }
 
-/** Fetch one sealed row by id. Returns null when the store does not exist yet. */
+/** Fetches a sealed store row by id, or returns null when no row exists. */
 export async function fetchSealedStore(id: string): Promise<SealedStoreRow | null> {
   const { url, anonKey } = supabaseConfig();
   const endpoint = `${url}/rest/v1/sealed_stores?id=eq.${encodeURIComponent(id)}&select=id,payload,schema_version,updated_at`;
@@ -47,7 +46,7 @@ export async function fetchSealedStore(id: string): Promise<SealedStoreRow | nul
   return rows[0] ?? null;
 }
 
-/** Insert or replace the sealed blob for this id. Server sets updated_at. */
+/** Inserts or replaces the sealed store row. */
 export async function upsertSealedStore(row: SealedStoreUpsert): Promise<SealedStoreRow> {
   const { url, anonKey } = supabaseConfig();
   const endpoint = `${url}/rest/v1/sealed_stores`;
@@ -75,7 +74,7 @@ export async function upsertSealedStore(row: SealedStoreUpsert): Promise<SealedS
   return saved;
 }
 
-/** Remove the remote sealed blob (optional; local clear can leave the row). */
+/** Removes a sealed store row by id. */
 export async function deleteSealedStore(id: string): Promise<void> {
   const { url, anonKey } = supabaseConfig();
   const endpoint = `${url}/rest/v1/sealed_stores?id=eq.${encodeURIComponent(id)}`;

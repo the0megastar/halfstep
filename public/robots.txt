@@ -1,35 +1,6 @@
-# Halfstep - Private Caregiver & School Diabetes Math Helper
-# Disallow all web crawlers, search engines, and AI bots
-
 User-agent: *
-Disallow: /
+Disallow:
 
-# Search Engine Crawlers
-User-agent: Googlebot
-Disallow: /
-
-User-agent: Googlebot-Image
-Disallow: /
-
-User-agent: Bingbot
-Disallow: /
-
-User-agent: Applebot
-Disallow: /
-
-User-agent: Applebot-Extended
-Disallow: /
-
-User-agent: DuckDuckBot
-Disallow: /
-
-User-agent: Baiduspider
-Disallow: /
-
-User-agent: YandexBot
-Disallow: /
-
-# AI Scrapers & LLM Training Bots
 User-agent: GPTBot
 Disallow: /
 
@@ -74,3 +45,18 @@ Disallow: /
 
 User-agent: Cohere-ai
 Disallow: /
+
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+User-agent: Baiduspider
+Allow: /
+
+User-agent: YandexBot
+Allow: /

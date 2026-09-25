@@ -10,7 +10,7 @@ export interface InjectionDetailsProps {
 
 function eventLabel(action: string): string {
   if (action === 'corrected') return 'Edited';
-  if (action === 'created') return 'Created';
+  if (action === 'created') return 'Recorded';
   if (action === 'voided') return 'Voided';
   return action;
 }
@@ -30,7 +30,7 @@ export function InjectionDetails({
       ? `${record.carbsGrams} g`
       : '—';
   const isActive = record.status === 'active';
-  // Summary already shows current dose/time; audit only earns space after a change.
+  // Show the change history when the record has edits or a void event.
   const showAudit = record.events.some((event) => event.action !== 'created');
 
   return (
@@ -61,6 +61,10 @@ export function InjectionDetails({
           <dt>Carbs</dt>
           <dd>{carbsLabel}</dd>
         </div>
+        <div className="confirm-row">
+          <dt>Carb ratio</dt>
+          <dd>{record.carbRatio == null ? 'Unavailable' : `1:${record.carbRatio}`}</dd>
+        </div>
       </dl>
 
       {showAudit && (
@@ -68,7 +72,6 @@ export function InjectionDetails({
           <h3 className="history-sheet-section text-heading-14">Changes</h3>
           <ol className="history-audit">
             {record.events
-              .filter((event) => event.action !== 'created')
               .map((event, index) => (
                 <li key={index}>
                   <strong>{eventLabel(event.action)}</strong>
@@ -76,6 +79,7 @@ export function InjectionDetails({
                   <br />
                   <span className="history-audit-detail">
                     {event.values.units} units · {formatTimestamp(event.values.administeredAt)}
+                    {event.values.carbRatio == null ? '' : ` · 1:${event.values.carbRatio}`}
                   </span>
                 </li>
               ))}

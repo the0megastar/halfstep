@@ -50,7 +50,7 @@ export function PassphraseSheet({ open, onClose, onSavedChange }: PassphraseShee
       return;
     }
     if (!isSealedSyncConfigured()) {
-      // Local feel-test: remember on this device only; do not touch Supabase.
+      // Store the passphrase locally when cloud sync is not configured.
       savePassphraseMarker(passphrase.trim());
       rememberSealedPassphrase(passphrase.trim());
       onSavedChange(true);

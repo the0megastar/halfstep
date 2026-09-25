@@ -3,10 +3,10 @@ import { PATIENT } from './patient.ts';
 export interface InjectionValues {
   units: number;
   administeredAt: string;
-  /** Optional; kept for older records. Not collected in v0.2.0 UI. */
-  caregiver: string;
   glucoseMgDl?: number | null;
   carbsGrams?: number | null;
+  /** Grams covered by one unit. Stored as the denominator (35 means 1:35). */
+  carbRatio?: number | null;
 }
 
 export interface InjectionEvent {
@@ -48,7 +48,7 @@ export function validateInjection(values: InjectionValues, now = Date.now()): st
 function cleanValues(values: InjectionValues): InjectionValues {
   return {
     ...values,
-    caregiver: (values.caregiver ?? '').trim(),
+    carbRatio: deriveCarbRatio(values),
     glucoseMgDl:
       values.glucoseMgDl != null && Number.isFinite(values.glucoseMgDl)
         ? values.glucoseMgDl
@@ -58,6 +58,29 @@ function cleanValues(values: InjectionValues): InjectionValues {
         ? values.carbsGrams
         : null,
   };
+}
+
+/** Derive food ratio after removing the locked glucose correction component. */
+export function deriveCarbRatio(values: InjectionValues): number | null {
+  if (values.carbRatio != null && Number.isFinite(values.carbRatio) && values.carbRatio > 0) {
+    return values.carbRatio;
+  }
+  const { units, glucoseMgDl, carbsGrams } = values;
+  if (
+    !Number.isFinite(units) || units <= 0 ||
+    glucoseMgDl == null || !Number.isFinite(glucoseMgDl) ||
+    carbsGrams == null || !Number.isFinite(carbsGrams) || carbsGrams <= 0
+  ) return null;
+  const correction = Math.max(0, (glucoseMgDl - PATIENT.targetGlucose) / PATIENT.isf);
+  const foodUnits = units - correction;
+  if (foodUnits <= 0) return null;
+  const ratio = carbsGrams / foodUnits;
+  return Number.isFinite(ratio) && ratio > 0 ? Math.round(ratio) : null;
+}
+
+function stripLegacyCaregiver<T extends object>(record: T): T {
+  const { caregiver: _legacyCaregiver, ...current } = record as T & { caregiver?: unknown };
+  return current as T;
 }
 
 export function createInjection(id: string, values: InjectionValues, now = Date.now()): Injection {
@@ -90,7 +113,7 @@ export function reviseInjection(
   if (error) throw new Error(error);
   const clean = cleanValues(values);
   return {
-    ...record,
+    ...stripLegacyCaregiver(record),
     ...clean,
     insulin: PATIENT.insulinName,
     revision: record.revision + 1,
