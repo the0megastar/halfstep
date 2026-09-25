@@ -850,6 +850,36 @@ body.keyboard-open .site.glyph.has-bottom-tabs {
   gap: 14px;
 }
 
+.passphrase-input-wrap {
+  position: relative;
+}
+
+.passphrase-input-wrap .history-text-input {
+  padding-right: 48px !important;
+}
+
+.passphrase-visibility {
+  position: absolute;
+  top: 50%;
+  right: 4px;
+  display: inline-flex;
+  width: 40px;
+  height: 40px;
+  align-items: center;
+  justify-content: center;
+  transform: translateY(-50%);
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.passphrase-visibility:focus-visible {
+  outline: 2px solid var(--accent, #c4785a);
+  outline-offset: -2px;
+}
+
 /* Status + muted support — caption gap, not the body 14px used before actions */
 .passphrase-sheet-lead {
   display: flex;

@@ -1,4 +1,5 @@
 import { useEffect, useState, type FormEvent } from 'react';
+import { Eye, EyeOff } from 'lucide-react';
 import { AppSheet } from '../../components/ui/AppSheet';
 import { linkSealedStore, refreshSealedStore } from './sealedBridge';
 import {
@@ -24,6 +25,56 @@ type SheetMode = 'edit' | 'linked' | 'remove-confirm' | 'unlock';
 const FORM_ID = 'sealed-passphrase-form';
 const UNLOCK_FORM_ID = 'sealed-passphrase-unlock-form';
 
+function PassphraseInput({
+  id,
+  label,
+  autoComplete,
+  value,
+  onChange,
+  disabled,
+  visible,
+  onToggleVisibility,
+}: {
+  id: string;
+  label: string;
+  autoComplete: string;
+  value: string;
+  onChange: (value: string) => void;
+  disabled: boolean;
+  visible: boolean;
+  onToggleVisibility: () => void;
+}) {
+  return (
+    <div className="history-field">
+      <div className="history-field-header">
+        <label htmlFor={id} className="history-field-label">{label}</label>
+      </div>
+      <div className="passphrase-input-wrap">
+        <input
+          id={id}
+          type={visible ? 'text' : 'password'}
+          autoComplete={autoComplete}
+          className="history-text-input"
+          value={value}
+          onChange={(event) => onChange(event.target.value)}
+          required
+          disabled={disabled}
+        />
+        <button
+          type="button"
+          className="passphrase-visibility"
+          aria-label={visible ? 'Hide passphrase' : 'Show passphrase'}
+          aria-pressed={visible}
+          onClick={onToggleVisibility}
+          disabled={disabled}
+        >
+          {visible ? <EyeOff size={19} aria-hidden="true" /> : <Eye size={19} aria-hidden="true" />}
+        </button>
+      </div>
+    </div>
+  );
+}
+
 export function PassphraseSheet({ open, onClose, onSavedChange }: PassphraseSheetProps) {
   const [mode, setMode] = useState<SheetMode>('edit');
   const [passphrase, setPassphrase] = useState('');
@@ -31,6 +82,7 @@ export function PassphraseSheet({ open, onClose, onSavedChange }: PassphraseShee
   const [error, setError] = useState<string | null>(null);
   const [refreshNote, setRefreshNote] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [visibleField, setVisibleField] = useState<string | null>(null);
 
   useEffect(() => {
     if (!open) return;
@@ -40,6 +92,7 @@ export function PassphraseSheet({ open, onClose, onSavedChange }: PassphraseShee
     setError(null);
     setRefreshNote(null);
     setBusy(false);
+    setVisibleField(null);
   }, [open]);
 
   const handleSave = async (event: FormEvent) => {
@@ -206,41 +259,14 @@ export function PassphraseSheet({ open, onClose, onSavedChange }: PassphraseShee
             copy.
           </p>
 
-          <div className="history-field">
-            <div className="history-field-header">
-              <label htmlFor="sealed-passphrase" className="history-field-label">
-                Passphrase
-              </label>
-            </div>
-            <input
-              id="sealed-passphrase"
-              type="password"
-              autoComplete="new-password"
-              className="history-text-input"
-              value={passphrase}
-              onChange={(event) => setPassphrase(event.target.value)}
-              required
-              disabled={busy}
-            />
-          </div>
-
-          <div className="history-field">
-            <div className="history-field-header">
-              <label htmlFor="sealed-passphrase-confirm" className="history-field-label">
-                Confirm passphrase
-              </label>
-            </div>
-            <input
-              id="sealed-passphrase-confirm"
-              type="password"
-              autoComplete="new-password"
-              className="history-text-input"
-              value={confirm}
-              onChange={(event) => setConfirm(event.target.value)}
-              required
-              disabled={busy}
-            />
-          </div>
+          <PassphraseInput id="sealed-passphrase" label="Passphrase" autoComplete="new-password"
+            value={passphrase} onChange={setPassphrase} disabled={busy}
+            visible={visibleField === 'sealed-passphrase'}
+            onToggleVisibility={() => setVisibleField(visibleField === 'sealed-passphrase' ? null : 'sealed-passphrase')} />
+          <PassphraseInput id="sealed-passphrase-confirm" label="Confirm passphrase" autoComplete="new-password"
+            value={confirm} onChange={setConfirm} disabled={busy}
+            visible={visibleField === 'sealed-passphrase-confirm'}
+            onToggleVisibility={() => setVisibleField(visibleField === 'sealed-passphrase-confirm' ? null : 'sealed-passphrase-confirm')} />
 
           {error && (
             <p role="alert" className="passphrase-sheet-error text-copy-13">
@@ -255,23 +281,10 @@ export function PassphraseSheet({ open, onClose, onSavedChange }: PassphraseShee
           <p className="text-copy-13 passphrase-sheet-copy">
             Enter the passphrase again to pull the sealed copy onto this device.
           </p>
-          <div className="history-field">
-            <div className="history-field-header">
-              <label htmlFor="sealed-passphrase-unlock" className="history-field-label">
-                Passphrase
-              </label>
-            </div>
-            <input
-              id="sealed-passphrase-unlock"
-              type="password"
-              autoComplete="current-password"
-              className="history-text-input"
-              value={passphrase}
-              onChange={(event) => setPassphrase(event.target.value)}
-              required
-              disabled={busy}
-            />
-          </div>
+          <PassphraseInput id="sealed-passphrase-unlock" label="Passphrase" autoComplete="current-password"
+            value={passphrase} onChange={setPassphrase} disabled={busy}
+            visible={visibleField === 'sealed-passphrase-unlock'}
+            onToggleVisibility={() => setVisibleField(visibleField === 'sealed-passphrase-unlock' ? null : 'sealed-passphrase-unlock')} />
           {error && (
             <p role="alert" className="passphrase-sheet-error text-copy-13">
               {error}
